@@ -10,12 +10,12 @@ import retrofit2.http.Path
 
 interface BattleApi {
 
-    @POST("/activity/battle/match/wait/{mongId}")
+    @POST("activity/battle/match/wait/{mongId}")
     suspend fun createWaitMatching(@Path("mongId") mongId: Long) : Response<ResponseDto<Void>>
 
-    @DELETE("/activity/battle/match/wait/{mongId}")
+    @DELETE("activity/battle/match/wait/{mongId}")
     suspend fun deleteWaitMatching(@Path("mongId") mongId: Long) : Response<ResponseDto<Void>>
 
-    @GET("/activity/battle/match/{roomId}")
+    @GET("activity/battle/match/{roomId}")
     suspend fun overBattle(@Path("roomId") roomId: Long) : Response<ResponseDto<OverBattleResponseDto>>
 }

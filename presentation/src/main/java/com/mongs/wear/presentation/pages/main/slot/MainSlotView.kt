@@ -8,7 +8,6 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mongs.wear.domain.management.vo.MongVo
-import com.mongs.wear.presentation.assets.MongResourceCode
 import com.mongs.wear.presentation.assets.NavItem
 
 @Composable
@@ -38,7 +37,6 @@ fun MainSlotView(
                 graduationReady = {
                     mainSlotViewModel.graduationReady(mongId = mongVo.mongId)
                 },
-                uiState = mainSlotViewModel.uiState,
                 modifier = Modifier.zIndex(2f),
             )
         }

@@ -38,7 +38,7 @@ class StepSensorManager @Inject constructor(
 //                    val totalWalkingCount = event.values[0].toInt()
                     val totalWalkingCount = SystemClock.uptimeMillis().toInt()      // TODO: 센서 값 변경
 
-                    Log.i(TAG, "[sync device] totalWalkingCount: $totalWalkingCount")
+                    Log.i(TAG, "[Manager] 총 걸음 수 : $totalWalkingCount")
 
                     setTotalWalkingCountUseCase(
                         SetTotalWalkingCountUseCase.Param(
@@ -55,12 +55,12 @@ class StepSensorManager @Inject constructor(
     fun listen() {
         stepSensor?.let {
             sensorManager.registerListener(stepListener, it, SensorManager.SENSOR_DELAY_FASTEST)
-            Log.i(TAG, "step sensor listen start.")
+            Log.i(TAG, "[Manager] 스텝 센서 수신 시작")
         }
     }
 
     fun stop() {
         sensorManager.unregisterListener(stepListener)
-        Log.i(TAG, "step sensor listen stop.")
+        Log.i(TAG, "[Manager] 스텝 센서 수신 중지")
     }
 }

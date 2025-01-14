@@ -17,7 +17,7 @@ class TrainingMongUseCase @Inject constructor(
         withContext(Dispatchers.IO) {
 
             when(param.trainingCode) {
-
+                // 훈련 달리기
                 TrainingCode.RUNNER -> {
                     trainingRepository.trainingRunner(
                         mongId = param.mongId,
@@ -25,6 +25,7 @@ class TrainingMongUseCase @Inject constructor(
                     )
                 }
 
+                // 훈련 농구
                 TrainingCode.BASKETBALL -> {
 
                 }

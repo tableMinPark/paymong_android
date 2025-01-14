@@ -40,7 +40,7 @@ class DefaultConsumer @Inject constructor(
                 try {
                     val responseDto = gson.fromJson(message.toString(), ResponseDto::class.java)
 
-                    Log.i(TAG, "$responseDto")
+                    Log.i(TAG, "[Consume] ${responseDto.message} : ${responseDto.result}")
 
                     responseDto.code?.let { code ->
                         val resultJson = gson.toJson(responseDto.result)
@@ -63,7 +63,7 @@ class DefaultConsumer @Inject constructor(
                         }
                     }
                 } catch (e: Exception) {
-                    Log.e(TAG, "mqtt message parsing fail.")
+                    Log.e(TAG, "[Consume] mqtt message 파싱 실패")
                 }
             }
         }

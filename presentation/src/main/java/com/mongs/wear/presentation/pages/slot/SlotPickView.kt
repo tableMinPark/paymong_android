@@ -28,7 +28,6 @@ import com.mongs.wear.presentation.component.slot.Slot
 import com.mongs.wear.presentation.dialog.common.ConfirmAndCancelDialog
 import com.mongs.wear.presentation.dialog.slotPick.SlotAddDialog
 import com.mongs.wear.presentation.dialog.slotPick.SlotDetailDialog
-import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import kotlin.math.max
 import kotlin.math.min
 
@@ -163,9 +162,11 @@ fun SlotPickView(
         }
     }
 
-    LaunchedEffect(slotPickViewModel.uiState.navMainPager) {
-        if (slotPickViewModel.uiState.navMainPager) {
-            navController.navigate(NavItem.MainPager.route) { popUpTo(navController.graph.id) }
+    LaunchedEffect(slotPickViewModel.uiState.navMainEvent) {
+        slotPickViewModel.uiState.navMainEvent.collect {
+            navController.navigate(NavItem.MainPager.route) {
+                popUpTo(navController.graph.id)
+            }
         }
     }
 }

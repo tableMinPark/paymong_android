@@ -1,7 +1,5 @@
 package com.mongs.wear.presentation.pages.main.interaction
 
-import android.content.Context
-import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -75,7 +72,6 @@ private fun MainInteractionContent(
     training: () -> Unit,
     battle: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
-    context: Context = LocalContext.current
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -92,21 +88,12 @@ private fun MainInteractionContent(
                 CircleImageButton(
                     icon = R.drawable.feed,
                     border = R.drawable.interaction_bnt_yellow,
-                    onClick = {
-                        mongVo?.let {
-                            if (MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg) {
-                                Toast.makeText(context, "알 상태에서는 불가능", Toast.LENGTH_SHORT).show()
-                            } else if (mongVo.isSleeping) {
-                                Toast.makeText(context, "수면 상태에서는 불가능", Toast.LENGTH_SHORT).show()
-                            } else if (mongVo.stateCode == MongStateCode.DEAD) {
-                                Toast.makeText(context, "죽음 상태에서는 불가능", Toast.LENGTH_SHORT).show()
-                            } else {
-                                feed()
-                            }
-                        } ?: run {
-                            Toast.makeText(context, "선택 된 몽이 없음", Toast.LENGTH_SHORT).show()
-                        }
-                    },
+                    disable = mongVo?.let {
+                        MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg ||
+                        mongVo.isSleeping ||
+                        mongVo.stateCode == MongStateCode.DEAD
+                    } ?: true,
+                    onClick = feed,
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -125,19 +112,11 @@ private fun MainInteractionContent(
                 CircleImageButton(
                     icon = R.drawable.sleep,
                     border = R.drawable.interaction_bnt_blue,
-                    onClick = {
-                        mongVo?.let {
-                            if (MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg) {
-                                Toast.makeText(context, "알 상태에서는 불가능", Toast.LENGTH_SHORT).show()
-                            } else if (mongVo.stateCode == MongStateCode.DEAD) {
-                                Toast.makeText(context, "죽음 상태에서는 불가능", Toast.LENGTH_SHORT).show()
-                            } else {
-                                sleeping()
-                            }
-                        } ?: run {
-                            Toast.makeText(context, "선택 된 몽이 없음", Toast.LENGTH_SHORT).show()
-                        }
-                    },
+                    disable = mongVo?.let {
+                        MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg ||
+                        mongVo.stateCode == MongStateCode.DEAD
+                    } ?: true,
+                    onClick = sleeping,
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -153,21 +132,12 @@ private fun MainInteractionContent(
                 CircleImageButton(
                     icon = R.drawable.poop,
                     border = R.drawable.interaction_bnt_purple,
-                    onClick = {
-                        mongVo?.let {
-                            if (MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg) {
-                                Toast.makeText(context, "알 상태에서는 불가능", Toast.LENGTH_SHORT).show()
-                            } else if (mongVo.stateCode == MongStateCode.DEAD) {
-                                Toast.makeText(context, "죽음 상태에서는 불가능", Toast.LENGTH_SHORT).show()
-                            } else if (mongVo.isSleeping) {
-                                Toast.makeText(context, "수면 상태에서는 불가능", Toast.LENGTH_SHORT).show()
-                            } else {
-                                poopClean()
-                            }
-                        } ?: run {
-                            Toast.makeText(context, "선택 된 몽이 없음", Toast.LENGTH_SHORT).show()
-                        }
-                    }
+                    disable = mongVo?.let {
+                        MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg ||
+                        mongVo.stateCode == MongStateCode.DEAD ||
+                        mongVo.isSleeping
+                    } ?: true,
+                    onClick = poopClean,
                 )
             }
 
@@ -178,21 +148,12 @@ private fun MainInteractionContent(
                 CircleImageButton(
                     icon = R.drawable.activity,
                     border = R.drawable.interaction_bnt_green,
-                    onClick = {
-                        mongVo?.let {
-                            if (MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg) {
-                                Toast.makeText(context, "알 상태에서는 불가능", Toast.LENGTH_SHORT).show()
-                            } else if (mongVo.isSleeping) {
-                                Toast.makeText(context, "수면 상태에서는 불가능", Toast.LENGTH_SHORT).show()
-                            } else if (mongVo.stateCode == MongStateCode.DEAD) {
-                                Toast.makeText(context, "죽음 상태에서는 불가능", Toast.LENGTH_SHORT).show()
-                            } else {
-                                training()
-                            }
-                        } ?: run {
-                            Toast.makeText(context, "선택 된 몽이 없음", Toast.LENGTH_SHORT).show()
-                        }
-                    },
+//                    disable = mongVo?.let {
+//                        MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg ||
+//                        mongVo.stateCode == MongStateCode.DEAD ||
+//                        mongVo.isSleeping
+//                    } ?: true,
+                    onClick = training,
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -200,21 +161,12 @@ private fun MainInteractionContent(
                 CircleImageButton(
                     icon = R.drawable.battle,
                     border = R.drawable.interaction_bnt_pink,
-                    onClick = {
-                        mongVo?.let {
-                            if (MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg) {
-                                Toast.makeText(context, "알 상태에서는 불가능", Toast.LENGTH_SHORT).show()
-                            } else if (mongVo.isSleeping) {
-                                Toast.makeText(context, "수면 상태에서는 불가능", Toast.LENGTH_SHORT).show()
-                            } else if (mongVo.stateCode == MongStateCode.DEAD) {
-                                Toast.makeText(context, "죽음 상태에서는 불가능", Toast.LENGTH_SHORT).show()
-                            } else {
-                                battle()
-                            }
-                        } ?: run {
-                            Toast.makeText(context, "선택 된 몽이 없음", Toast.LENGTH_SHORT).show()
-                        }
-                    },
+                    disable = mongVo?.let {
+                        MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg ||
+                                mongVo.stateCode == MongStateCode.DEAD ||
+                                mongVo.isSleeping
+                    } ?: true,
+                    onClick = battle,
                 )
             }
         }

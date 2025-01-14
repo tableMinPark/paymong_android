@@ -14,6 +14,7 @@ import kotlinx.coroutines.launch
 import java.time.Duration
 import java.time.LocalDateTime
 import kotlin.math.min
+import kotlin.math.sqrt
 
 class RunnerEngine(
     private val defaultY: Float,
@@ -23,14 +24,18 @@ class RunnerEngine(
         private const val TAG = "RunnerEngine"
 
         private const val GRAVITY = 9.8f
-        private const val FRAME = 30L
-        private const val COLLISION_PADDING = 15
-        private const val HURDLE_GENERATE_DELAY_MILLIS = 5000
+        private const val FRAME = 60L   // 60FPS
+        private const val COLLISION_PADDING = 4
+        private const val HURDLE_GENERATE_DELAY_MILLIS = 3000
 
-        private const val PLAYER_SPEED = 40f
+        private const val PLAYER_START_X = 24f
+        private const val PLAYER_SPEED = 42f
+
+        private const val HURDLE_START_X = 250f
+        private const val HURDLE_SPEED = 3f
     }
 
-    private val _endEvent = MutableSharedFlow<Unit>()
+    private val _endEvent = MutableSharedFlow<Long>()
     val endEvent = _endEvent.asSharedFlow()
 
     val playMillis: MutableState<Long> = mutableLongStateOf(0L)
@@ -55,7 +60,7 @@ class RunnerEngine(
                 height = height,
                 width = width,
                 sy = defaultY,
-                sx = 25f,
+                sx = PLAYER_START_X,
                 ss = PLAYER_SPEED,
                 sf = 0.2f,
             )
@@ -67,51 +72,87 @@ class RunnerEngine(
                 // 게임 시간 증가
                 playMillis.value += 1000L / FRAME
 
-                // 좌표 변경 및 충돌 확인
-                player.value?.let { player ->
-                    // 플레이어 이동
-                    player.move()
+                // 플레이어 이동
+                movePlayer()
 
-                    // 장애물 이동
-                    val hurdleIterator = hurdleList.iterator()
+                // 장애물 이동
+                moveHurdle()
 
-                    while(hurdleIterator.hasNext()) {
-
-                        val hurdle = hurdleIterator.next()
-
-                        hurdle.move()
-
-                        // 장애물 충돌 확인
-                        if (isCollision(player = player, hurdle = hurdle)) {
-                            isStartGame.value = false
-                        }
-                        // 장애물 넘음 확인
-                        else if (isUnder(player = player, hurdle = hurdle) && !hurdle.isContainedScore) {
-                            hurdle.isContainedScore = true
-                            score.value++
-                        }
-
-                        // 지나가 장애물 삭제
-                        if (hurdle.px.value < -350f) {
-                            hurdleIterator.remove()
-                        }
-                    }
-
-                    // 장애물 생성
-                    if (playMillis.value / HURDLE_GENERATE_DELAY_MILLIS > generateHurdleCount) {
-                        generateHurdle()
-                        generateHurdleCount = playMillis.value / HURDLE_GENERATE_DELAY_MILLIS
-                    }
+                // 장애물 생성
+                if (playMillis.value / HURDLE_GENERATE_DELAY_MILLIS > generateHurdleCount) {
+                    generateHurdle()
+                    generateHurdleCount = playMillis.value / HURDLE_GENERATE_DELAY_MILLIS
                 }
 
                 // 좌표 변경 로직 시간 측정
                 val processMillis = Duration.between(processStart, LocalDateTime.now()).toMillis()
 
                 // 좌표 변경 로직 시간 제외한 딜레이 진행
-                delay(Math.max(0, 1000 / FRAME - processMillis))
+                delay(0L.coerceAtLeast(1000L / FRAME - processMillis))
             }
 
-            _endEvent.emit(Unit)
+            // 게임 끝 -> 점프 중인 경우 지면에 도착할 때까지 프레임 진행
+            player.value?.let {
+                while (it.isJump.value) {
+
+                    val processStart = LocalDateTime.now()
+
+                    // 플레이어 이동
+                    movePlayer()
+
+                    // 장애물 이동
+                    moveHurdle()
+
+                    // 좌표 변경 로직 시간 측정
+                    val processMillis = Duration.between(processStart, LocalDateTime.now()).toMillis()
+
+                    // 좌표 변경 로직 시간 제외한 딜레이 진행
+                    delay(0L.coerceAtLeast(1000L / FRAME - processMillis))
+                }
+            }
+
+            _endEvent.emit(System.currentTimeMillis())
+        }
+    }
+
+    /**
+     * 플레이어 이동
+     */
+    private fun movePlayer() {
+        player.value?.move()
+    }
+
+    /**
+     * 장애물 이동
+     */
+    private fun moveHurdle() {
+        player.value?.let { player ->
+
+            val deleteHurdle = ArrayList<Hurdle>()
+
+            for (hurdle in hurdleList) {
+                hurdle.move()
+
+                // 장애물 충돌 확인
+                if (isCollision(player = player, hurdle = hurdle)) {
+                    isStartGame.value = false
+                }
+                // 장애물 넘음 확인
+                else if (isUnder(player = player, hurdle = hurdle) && !hurdle.isContainedScore) {
+                    hurdle.isContainedScore = true
+                    score.value++
+                }
+
+                // 지나간 장애물 확인 후 적재
+                if (hurdle.px.value < -150f) {
+                    deleteHurdle.add(hurdle)
+                }
+            }
+
+            // 지나간 장애물 삭제
+            for (hurdle in deleteHurdle) {
+                hurdleList.remove(hurdle)
+            }
         }
     }
 
@@ -121,11 +162,11 @@ class RunnerEngine(
     private fun generateHurdle() {
         hurdleList.add(
             Hurdle(
-                height = 30,
-                width = 40,
+                height = 25,
+                width = 35,
                 sy = defaultY,
-                sx = 350f,
-                ss = 3f
+                sx = HURDLE_START_X,
+                ss = HURDLE_SPEED,
             )
         )
     }
@@ -139,26 +180,54 @@ class RunnerEngine(
 
     /**
      * 충돌 여부 확인
-     * TODO: 확인 필요
      */
     private fun isCollision(player: Player, hurdle: Hurdle) : Boolean {
 
-        val playerMinY = player.py.value + COLLISION_PADDING
-        val playerMaxY = player.py.value - COLLISION_PADDING + player.height
+        val playerMinY = player.py.value - COLLISION_PADDING + player.height
+        val playerMaxY = player.py.value + COLLISION_PADDING
         val playerMinX = player.px.value + COLLISION_PADDING
         val playerMaxX = player.px.value - COLLISION_PADDING + player.width
-
-        val hurdleMinY = hurdle.py.value + COLLISION_PADDING
-        val hurdleMaxY = hurdle.py.value - COLLISION_PADDING + hurdle.height
+        val hurdleMinY = hurdle.py.value - COLLISION_PADDING + hurdle.height
+        val hurdleMaxY = hurdle.py.value + COLLISION_PADDING
         val hurdleMinX = hurdle.px.value + COLLISION_PADDING
         val hurdleMaxX = hurdle.px.value - COLLISION_PADDING + hurdle.width
 
-        return (
-            (hurdleMinY in playerMinY..playerMaxY && hurdleMinX in playerMinX..playerMaxX) ||
-            (hurdleMaxY in playerMinY..playerMaxY && hurdleMaxX in playerMinX..playerMaxX) ||
-            (hurdleMinY in playerMinY..playerMaxY && hurdleMaxX in playerMinX..playerMaxX) ||
-            (hurdleMaxY in playerMinY..playerMaxY && hurdleMinX in playerMinX..playerMaxX)
+
+        val playerRect = listOf(
+            Point(playerMinX, playerMinY),
+            Point(playerMinX, playerMaxY),
+            Point(playerMaxX, playerMaxY),
+            Point(playerMaxX, playerMinY),
         )
+
+        val hurdleRect = listOf(
+            Point(hurdleMinX, hurdleMinY),
+            Point(hurdleMinX, hurdleMaxY),
+            Point(hurdleMaxX, hurdleMaxY),
+            Point(hurdleMaxX, hurdleMinY),
+        )
+
+        val axes = mutableListOf<Point>()
+
+        listOf(playerRect, hurdleRect).forEach { rect ->
+            for (i in rect.indices) {
+                val p1 = rect[i]
+                val p2 = rect[(i + 1) % rect.size]
+                val edge = Point(p2.x - p1.x, p2.y - p1.y)
+                val normal = Point(-edge.y, edge.x)
+                axes.add(normalize(normal))
+            }
+        }
+
+        for (axis in axes) {
+            val (minA, maxA) = projectPolygon(playerRect, axis)
+            val (minB, maxB) = projectPolygon(hurdleRect, axis)
+            if (!overlap(minA, maxA, minB, maxB)) {
+                return false
+            }
+        }
+
+        return true
     }
 
     /**
@@ -182,19 +251,19 @@ class RunnerEngine(
         private val sf: Float,
         private var jumpSpeed: Float = ss,
         private var jumpFrame: Float = sf,
-        private var isJump: Boolean = false,
         val height: Int,
         val width: Int,
         var py: MutableState<Float> = mutableFloatStateOf(sy),
         var px: MutableState<Float> = mutableFloatStateOf(sx),
+        var isJump: MutableState<Boolean> = mutableStateOf(false),
     ) {
 
         /**
          * 점프
          */
         fun jump() {
-            if (!isJump) {
-                this.isJump = true
+            if (!isJump.value) {
+                this.isJump.value = true
                 this.py.value = this.sy
                 this.jumpSpeed = this.ss
                 this.jumpFrame = this.sf
@@ -205,7 +274,7 @@ class RunnerEngine(
          * 이동
          */
         fun move() {
-            if (isJump) {
+            if (isJump.value) {
                 // 스피드 변경
                 this.jumpSpeed -= GRAVITY * this.jumpFrame
 
@@ -215,7 +284,7 @@ class RunnerEngine(
 
                 // 지면 도착 여부 확인
                 if (this.py.value == this.sy) {
-                    this.isJump = false
+                    this.isJump.value = false
                     this.jumpSpeed = 0f
                     this.jumpFrame = 0f
                 }
@@ -237,5 +306,21 @@ class RunnerEngine(
         fun move() {
             px.value -= this.speed
         }
+    }
+
+    data class Point(val x: Float, val y: Float)
+
+    private fun projectPolygon(points: List<Point>, axis: Point): Pair<Float, Float> {
+        val projections = points.map { point -> point.x * axis.x + point.y * axis.y }
+        return projections.minOrNull()!! to projections.maxOrNull()!!
+    }
+
+    private fun overlap(minA: Float, maxA: Float, minB: Float, maxB: Float): Boolean {
+        return maxA >= minB && maxB >= minA
+    }
+
+    private fun normalize(vector: Point): Point {
+        val magnitude = sqrt(vector.x * vector.x + vector.y * vector.y)
+        return Point(vector.x / magnitude, vector.y / magnitude)
     }
 }

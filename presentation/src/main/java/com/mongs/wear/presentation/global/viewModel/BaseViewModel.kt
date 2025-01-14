@@ -27,15 +27,15 @@ abstract class BaseViewModel : ViewModel() {
         private val _successEvent = MutableSharedFlow<String>()
         val successEvent = _successEvent.asSharedFlow()
 
-        private val _pageScrollMainPagerViewEvent = MutableSharedFlow<Unit>()
-        val pageScrollMainPagerViewEvent = _pageScrollMainPagerViewEvent.asSharedFlow()
+        private val _animatePageScrollMainPagerViewEvent = MutableSharedFlow<Long>()
+        val animatePageScrollMainPagerViewEvent = _animatePageScrollMainPagerViewEvent.asSharedFlow()
 
         suspend fun toastEvent(message: String) {
             _successEvent.emit(message)
         }
 
         suspend fun scrollPageMainPagerView() {
-            _pageScrollMainPagerViewEvent.emit(Unit)
+            _animatePageScrollMainPagerViewEvent.emit(System.currentTimeMillis())
         }
 
         val effectState = BaseEffectState()

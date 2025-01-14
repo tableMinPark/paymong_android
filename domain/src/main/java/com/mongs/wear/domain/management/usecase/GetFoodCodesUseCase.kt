@@ -24,7 +24,7 @@ class GetFoodCodesUseCase @Inject constructor(
 
         return withContext(Dispatchers.IO) {
             val feedItemVoList = slotRepository.getCurrentSlot()?.let { slotModel ->
-                managementRepository.getFeedItems(mongId = slotModel.mongId, foodTypeGroupCode = FOOD_TYPE_GROUP_CODE).map { //.associateBy { it.foodTypeCode }
+                managementRepository.getFeedItems(mongId = slotModel.mongId, foodTypeGroupCode = FOOD_TYPE_GROUP_CODE).map {
                     FeedItemVo(
                         foodTypeCode = it.foodTypeCode,
                         foodTypeName = it.foodTypeName,

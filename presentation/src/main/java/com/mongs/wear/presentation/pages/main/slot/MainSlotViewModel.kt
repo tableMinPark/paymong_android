@@ -63,9 +63,7 @@ class MainSlotViewModel @Inject constructor(
 
     val uiState: UiState = UiState()
 
-    class UiState : BaseUiState() {
-        var isEvolution by mutableStateOf(false)
-    }
+    class UiState : BaseUiState() {}
 
     override fun exceptionHandler(exception: Throwable) {
 
@@ -76,7 +74,6 @@ class MainSlotViewModel @Inject constructor(
 
             is EvolutionMongException -> {
                 uiState.loadingBar = false
-                uiState.isEvolution = false
             }
 
             is GraduateCheckException -> {
@@ -84,7 +81,6 @@ class MainSlotViewModel @Inject constructor(
 
             else -> {
                 uiState.loadingBar = false
-                uiState.isEvolution = false
             }
         }
     }

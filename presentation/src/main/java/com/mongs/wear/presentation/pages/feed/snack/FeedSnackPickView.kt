@@ -111,14 +111,14 @@ fun FeedSnackPickView(
         }
     }
 
-    LaunchedEffect(feedSnackPickViewModel.uiState.navMainPager) {
-        if (feedSnackPickViewModel.uiState.navMainPager) {
+    LaunchedEffect(feedSnackPickViewModel.uiState.navMainEvent) {
+        feedSnackPickViewModel.uiState.navMainEvent.collect {
             navController.popBackStack(route = NavItem.FeedNested.route, inclusive = true)
         }
     }
 
-    LaunchedEffect(feedSnackPickViewModel.uiState.navFeedMenu) {
-        if (feedSnackPickViewModel.uiState.navFeedMenu) {
+    LaunchedEffect(feedSnackPickViewModel.uiState.navFeedMenuEvent) {
+        feedSnackPickViewModel.uiState.navFeedMenuEvent.collect {
             navController.popBackStack()
         }
     }

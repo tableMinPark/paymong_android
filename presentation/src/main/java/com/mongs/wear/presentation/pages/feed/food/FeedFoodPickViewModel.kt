@@ -14,7 +14,9 @@ import com.mongs.wear.domain.management.vo.FeedItemVo
 import com.mongs.wear.domain.management.vo.MongVo
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -60,31 +62,34 @@ class FeedFoodPickViewModel @Inject constructor(
             effectState.eatingEffect()
 
             scrollPageMainPagerView()
-            uiState.navMainPager = true
+
+            uiState.navMainEvent.emit(System.currentTimeMillis())
         }
     }
 
     val uiState: UiState = UiState()
 
     class UiState : BaseUiState() {
+        var navMainEvent = MutableSharedFlow<Long>()
+        var navFeedMenuEvent = MutableSharedFlow<Long>()
         var buyDialog by mutableStateOf(false)
         var detailDialog by mutableStateOf(false)
-        var navMainPager by mutableStateOf(false)
-        var navFeedMenu by mutableStateOf(false)
     }
 
     override fun exceptionHandler(exception: Throwable) {
 
-        when(exception) {
+        CoroutineScope(Dispatchers.IO).launch {
+            when (exception) {
 
-            is FoodCodesEmptyException -> {
-                uiState.navFeedMenu = true
-            }
+                is FoodCodesEmptyException -> {
+                    uiState.navFeedMenuEvent.emit(System.currentTimeMillis())
+                }
 
-            else -> {
-                uiState.loadingBar = false
-                uiState.detailDialog = false
-                uiState.buyDialog = false
+                else -> {
+                    uiState.loadingBar = false
+                    uiState.detailDialog = false
+                    uiState.buyDialog = false
+                }
             }
         }
     }

@@ -44,7 +44,6 @@ import com.mongs.wear.presentation.component.common.pagenation.PageIndicator
 import com.mongs.wear.presentation.component.common.textbox.PayPoint
 import com.mongs.wear.presentation.dialog.common.ConfirmAndCancelDialog
 import com.mongs.wear.presentation.dialog.feed.FeedItemDetailDialog
-import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import kotlin.math.max
 import kotlin.math.min
 
@@ -111,14 +110,14 @@ fun FeedFoodPickView(
             )
         }
 
-        LaunchedEffect(feedFoodPickViewModel.uiState.navMainPager) {
-            if (feedFoodPickViewModel.uiState.navMainPager) {
+        LaunchedEffect(feedFoodPickViewModel.uiState.navMainEvent) {
+            feedFoodPickViewModel.uiState.navMainEvent.collect {
                 navController.popBackStack(route = NavItem.FeedNested.route, inclusive = true)
             }
         }
 
-        LaunchedEffect(feedFoodPickViewModel.uiState.navFeedMenu) {
-            if (feedFoodPickViewModel.uiState.navFeedMenu) {
+        LaunchedEffect(feedFoodPickViewModel.uiState.navFeedMenuEvent) {
+            feedFoodPickViewModel.uiState.navFeedMenuEvent.collect {
                 navController.popBackStack()
             }
         }

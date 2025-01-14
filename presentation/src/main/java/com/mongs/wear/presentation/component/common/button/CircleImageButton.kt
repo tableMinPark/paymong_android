@@ -28,6 +28,7 @@ fun CircleImageButton(
     border: Int,
     size: Int = 54,
     onClick: () -> Unit,
+    disable: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -41,26 +42,44 @@ fun CircleImageButton(
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null,
-                onClick = onClick
+                onClick = {
+                    if (!disable) {
+                        onClick()
+                    }
+                }
             )
     ) {
+
         Image(
-            alpha = 0.6f,
+            alpha = 0.55f,
             painter = painterResource(R.drawable.interaction_bnt),
             contentDescription = null,
             modifier = Modifier.zIndex(0f)
         )
+
         Image(
+            alpha = if (disable) 0.4f else 1f,
             painter = painterResource(icon),
             contentDescription = null,
             modifier = Modifier
                 .size((size / 2).dp)
-                .zIndex(1f)
+                .zIndex(if (disable) -1f else 1f)
         )
+
+        if (disable) {
+            Image(
+                painter = painterResource(R.drawable.locker),
+                contentDescription = null,
+                modifier = Modifier
+                    .size((size / 2).dp)
+                    .zIndex(2f)
+            )
+        }
+
         Image(
             painter = painterResource(border),
             contentDescription = null,
-            modifier = Modifier.zIndex(1.2f)
+            modifier = Modifier.zIndex(3f)
         )
     }
 }
@@ -71,6 +90,7 @@ private fun LongBlueButtonPreview() {
     CircleImageButton(
         icon = R.drawable.basketball,
         border = R.drawable.interaction_bnt_yellow,
+        disable = true,
         onClick = {},
     )
 }

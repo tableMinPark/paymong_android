@@ -35,7 +35,7 @@ class StepSensorWorker @AssistedInject constructor(
 
         val totalWalkingCount = this.getWalkingCount()
 
-        Log.i(TAG, "[sync server] totalWalkingCount: $totalWalkingCount")
+        Log.i(TAG, "[Worker] 총 걸음 수 : $totalWalkingCount")
 
         syncTotalWalkingCountUseCase(
             SyncTotalWalkingCountUseCase.Param(

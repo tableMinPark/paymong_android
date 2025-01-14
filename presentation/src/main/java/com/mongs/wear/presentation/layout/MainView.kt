@@ -40,6 +40,8 @@ import com.mongs.wear.presentation.component.common.background.ServerErrorBackgr
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
 import com.mongs.wear.presentation.component.common.button.BlueButton
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
+import com.mongs.wear.presentation.pages.battle.match.BattleMatchView
+import com.mongs.wear.presentation.pages.battle.menu.BattleMenuView
 import com.mongs.wear.presentation.pages.collection.map.CollectionMapPickView
 import com.mongs.wear.presentation.pages.collection.menu.CollectionMenuView
 import com.mongs.wear.presentation.pages.collection.mong.CollectionMongPickView
@@ -54,8 +56,8 @@ import com.mongs.wear.presentation.pages.slot.SlotPickView
 import com.mongs.wear.presentation.pages.store.chargeStartPoint.StoreChargeStarPointView
 import com.mongs.wear.presentation.pages.store.exchangePayPoint.StoreExchangePayPointView
 import com.mongs.wear.presentation.pages.store.menu.StoreMenuView
-import com.mongs.wear.presentation.pages.training.runner.TrainingRunnerView
 import com.mongs.wear.presentation.pages.training.menu.TrainingMenuView
+import com.mongs.wear.presentation.pages.training.runner.TrainingRunnerView
 
 @Composable
 fun MainView (
@@ -157,8 +159,8 @@ fun NavContent() {
     /**
      * 메인 페이지 스크롤 이벤트
      */
-    LaunchedEffect(Unit) {
-        BaseViewModel.pageScrollMainPagerViewEvent.collect {
+    LaunchedEffect(BaseViewModel.animatePageScrollMainPagerViewEvent) {
+        BaseViewModel.animatePageScrollMainPagerViewEvent.collect {
             emptyPagerState.animateScrollToPage(0)
             pagerState.animateScrollToPage(2)
         }
@@ -244,18 +246,18 @@ fun NavContent() {
                 TrainingRunnerView(navController = navController)
             }
         }
-//
-//        navigation(
-//            startDestination = NavItem.BattleMenu.route,
-//            route = NavItem.BattleNested.route
-//        ) {
-//            composable(route = NavItem.BattleMenu.route) {
-//                BattleMenuView(navController = navController)
-//            }
-//            composable(route = NavItem.BattleMatch.route) {
-//                BattleMatchView(navController = navController)
-//            }
-//        }
+
+        navigation(
+            startDestination = NavItem.BattleMenu.route,
+            route = NavItem.BattleNested.route
+        ) {
+            composable(route = NavItem.BattleMenu.route) {
+                BattleMenuView(navController = navController)
+            }
+            composable(route = NavItem.BattleMatch.route) {
+                BattleMatchView(navController = navController)
+            }
+        }
 
         navigation(
             startDestination = NavItem.HelpMenu.route,

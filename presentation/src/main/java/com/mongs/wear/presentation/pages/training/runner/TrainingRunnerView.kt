@@ -39,7 +39,7 @@ import com.mongs.wear.presentation.assets.MongResourceCode
 import com.mongs.wear.presentation.assets.NavItem
 import com.mongs.wear.presentation.component.common.background.TrainingNestedBackground
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
-import com.mongs.wear.presentation.component.common.textbox.ScoreBox
+import com.mongs.wear.presentation.component.common.textbox.PayPoint
 import com.mongs.wear.presentation.dialog.training.TrainingEndDialog
 import com.mongs.wear.presentation.dialog.training.TrainingStartDialog
 
@@ -57,8 +57,6 @@ fun TrainingRunnerView(
             window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         }
     }
-
-
 
     Box {
         if (trainingRunnerViewModel.uiState.loadingBar) {
@@ -105,7 +103,7 @@ fun TrainingRunnerView(
                         trainingEnd = {
                             trainingRunnerViewModel.runnerEnd(
                                 mongId = it.mongId,
-                                score = score.value,
+                                score = score.value * 5,
                             )
                         },
                         rewardPayPoint = score.value,
@@ -116,8 +114,8 @@ fun TrainingRunnerView(
         }
     }
 
-    LaunchedEffect(trainingRunnerViewModel.uiState.navMainPager) {
-        if (trainingRunnerViewModel.uiState.navMainPager) {
+    LaunchedEffect(trainingRunnerViewModel.uiState.navMainEvent) {
+        trainingRunnerViewModel.uiState.navMainEvent.collect {
             navController.popBackStack(route = NavItem.TrainingJumping.route, inclusive = true)
         }
     }
@@ -190,13 +188,14 @@ private fun TrainingRunnerContent(
                                 .offset {
                                     IntOffset(
                                         y = (player.py.value).dp.roundToPx(),
-                                        x = 0.dp.roundToPx()
+                                        x = (player.px.value).dp.roundToPx(),
                                     )
                                 }
                         )
                     }
                 }
             }
+
             Row(
                 horizontalArrangement = Arrangement.Start,
                 modifier = Modifier
@@ -218,10 +217,10 @@ private fun TrainingRunnerInfoContent(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .fillMaxSize()
-            .padding(top = 15.dp, bottom = 15.dp)
+            .padding(top = 10.dp)
     ) {
-        ScoreBox(
-            score = score,
+        PayPoint(
+            payPoint = score * 10,
             modifier = Modifier
                 .align(Alignment.TopCenter)
         )
@@ -265,7 +264,7 @@ private fun Hurdle(
         contentAlignment = Alignment.Center,
         modifier = modifier
             .height(height.dp)
-            .width(width.dp),
+            .width(width.dp)
     ) {
         Image(
             painter = painterResource(image),

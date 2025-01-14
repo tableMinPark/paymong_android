@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.mongs.wear.domain.management.exception.FoodCodesEmptyException
 import com.mongs.wear.domain.management.usecase.FeedMongUseCase
 import com.mongs.wear.domain.management.usecase.GetCurrentSlotUseCase
 import com.mongs.wear.domain.management.usecase.GetSnackCodesUseCase
@@ -13,7 +14,9 @@ import com.mongs.wear.domain.management.vo.FeedItemVo
 import com.mongs.wear.domain.management.vo.MongVo
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -58,26 +61,34 @@ class FeedSnackPickViewModel @Inject constructor(
             effectState.eatingEffect()
 
             scrollPageMainPagerView()
-            uiState.navMainPager = true
+
+            uiState.navMainEvent.emit(System.currentTimeMillis())
         }
     }
 
     val uiState: UiState = UiState()
 
     class UiState : BaseUiState() {
+        var navMainEvent = MutableSharedFlow<Long>()
+        var navFeedMenuEvent = MutableSharedFlow<Long>()
         var buyDialog by mutableStateOf(false)
         var detailDialog by mutableStateOf(false)
-        var navMainPager by mutableStateOf(false)
-        var navFeedMenu by mutableStateOf(false)
     }
 
     override fun exceptionHandler(exception: Throwable) {
 
-        when (exception) {
-            else -> {
-                uiState.loadingBar = false
-                uiState.detailDialog = false
-                uiState.buyDialog = false
+        CoroutineScope(Dispatchers.IO).launch {
+            when (exception) {
+
+                is FoodCodesEmptyException -> {
+                    uiState.navFeedMenuEvent.emit(System.currentTimeMillis())
+                }
+
+                else -> {
+                    uiState.loadingBar = false
+                    uiState.detailDialog = false
+                    uiState.buyDialog = false
+                }
             }
         }
     }

@@ -14,6 +14,9 @@ class TrainingRepositoryImpl @Inject constructor(
     private val trainingApi: TrainingApi,
 ) : TrainingRepository {
 
+    /**
+     * 훈련 달리기 완료
+     */
     override suspend fun trainingRunner(mongId: Long, score: Int) {
 
         val response = trainingApi.trainingRunner(mongId = mongId,

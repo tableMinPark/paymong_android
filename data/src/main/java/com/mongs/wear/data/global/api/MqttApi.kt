@@ -4,10 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.google.gson.Gson
 import com.mongs.wear.data.R
-import com.mongs.wear.data.activity.consumer.BattleConsumer
 import com.mongs.wear.data.global.consumer.DefaultConsumer
-import com.mongs.wear.data.manager.consumer.ManagementConsumer
-import com.mongs.wear.data.user.consumer.PlayerConsumer
 import dagger.hilt.android.qualifiers.ApplicationContext
 import info.mqtt.android.service.MqttAndroidClient
 import kotlinx.coroutines.Dispatchers
@@ -56,9 +53,9 @@ class MqttApi @Inject constructor(
             connectPending = false
 
             if (mqttAndroidClient.isConnected) {
-                Log.i(TAG, "mqtt broker connect success.")
+                Log.i(TAG, "[Mqtt] 브로커 연결 성공")
             } else {
-                Log.i(TAG, "mqtt broker connect fail.")
+                Log.i(TAG, "[Mqtt] 브로커 연결 실패")
             }
         }
     }
@@ -67,7 +64,7 @@ class MqttApi @Inject constructor(
         withContext(Dispatchers.IO) {
             if (mqttAndroidClient.isConnected) {
                 mqttAndroidClient.disconnect().await()
-                Log.i(TAG, "mqtt broker disConnect.")
+                Log.i(TAG, "[Mqtt] 브로커 연결 해제")
             }
         }
     }
@@ -76,9 +73,9 @@ class MqttApi @Inject constructor(
         withContext(Dispatchers.IO) {
             if (mqttAndroidClient.isConnected) {
                 mqttAndroidClient.subscribe(topic, 2).await()
-                Log.i(TAG, "$topic subscribe.")
+                Log.i(TAG, "[Mqtt] 토픽 구독 성공 : $topic ")
             } else {
-                Log.e(TAG, "$topic subscribe fail.")
+                Log.e(TAG, "[Mqtt] 토픽 구독 실패 : $topic")
             }
         }
     }
@@ -87,9 +84,9 @@ class MqttApi @Inject constructor(
         withContext(Dispatchers.IO) {
             if (mqttAndroidClient.isConnected) {
                 mqttAndroidClient.unsubscribe(topic).await()
-                Log.i(TAG, "$topic unSubscribe.")
+                Log.i(TAG, "[Mqtt] 토픽 구독 해제 성공 : $topic")
             } else {
-                Log.e(TAG, "$topic unSubscribe fail.")
+                Log.e(TAG, "[Mqtt] 토픽 구독 해제 실패 : $topic")
             }
         }
     }
@@ -102,9 +99,9 @@ class MqttApi @Inject constructor(
 
                 mqttAndroidClient.publish(topic = topic, payload = payload, qos = 1, retained = true).await()
 
-                Log.i(TAG, "$topic produce ===> $payload")
+                Log.i(TAG, "[Mqtt] 메시지 전송 성공 : $topic => $payload")
             } else {
-                Log.e(TAG, "$topic produce fail.")
+                Log.e(TAG, "[Mqtt] 메시지 전송 실패 : $topic")
             }
         }
     }
@@ -116,7 +113,7 @@ class MqttApi @Inject constructor(
             }
 
             override fun onFailure(asyncActionToken: IMqttToken?, exception: Throwable?) {
-                cont.resumeWithException(exception ?: Exception("Unknown error"))
+                cont.resumeWithException(exception ?: Exception("[Mqtt] 알 수 없는 에러"))
             }
         }
     }

@@ -46,10 +46,10 @@ class StoreChargeStarPointViewModel @Inject constructor(
     private val billingErrorEvent: SharedFlow<ErrorException> = billingManager.errorEvent
 
     // 결제 중단 플래그
-    private val billingAbortEvent: SharedFlow<Unit> = billingManager.abortEvent
+    private val billingAbortEvent: SharedFlow<Long> = billingManager.abortEvent
 
     // 결제 성공 플래그
-    private val billingSuccessEvent: SharedFlow<Unit> = billingManager.successEvent
+    private val billingSuccessEvent: SharedFlow<Long> = billingManager.successEvent
 
     init {
         viewModelScopeWithHandler.launch(Dispatchers.Main) {
@@ -123,7 +123,9 @@ class StoreChargeStarPointViewModel @Inject constructor(
         // 소비 성공 이벤트
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
             billingSuccessEvent.collect {
+
                 getProducts()
+
                 uiState.loadingBar = false
 
                 toastEvent("충전 성공")

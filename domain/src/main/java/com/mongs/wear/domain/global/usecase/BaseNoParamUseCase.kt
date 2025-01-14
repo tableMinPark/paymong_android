@@ -1,11 +1,9 @@
 package com.mongs.wear.domain.global.usecase
 
 import android.util.Log
+import com.mongs.wear.core.errors.DomainErrorCode
 import com.mongs.wear.core.exception.ErrorException
 import com.mongs.wear.core.exception.UseCaseException
-import com.mongs.wear.core.errors.DomainErrorCode
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 
 abstract class BaseNoParamUseCase<R> {
 
@@ -17,7 +15,7 @@ abstract class BaseNoParamUseCase<R> {
 
     suspend operator fun invoke(): R {
 
-        Log.i(TAG, "[invoke] ${this.javaClass.simpleName}")
+        Log.i(TAG, "[UseCase] ${this.javaClass.name}")
 
         return try {
             // 메서드 실행
@@ -28,7 +26,7 @@ abstract class BaseNoParamUseCase<R> {
                 is UseCaseException -> throw exception
 
                 is ErrorException -> {
-                    Log.i(TAG, "${exception.javaClass.simpleName} ===> ${exception.message} ${exception.result}")
+                    Log.i(TAG, "[Exception] ${exception.javaClass.name} ${exception.message} ${exception.result}")
 
                     handleException(exception = exception)
 
@@ -40,7 +38,7 @@ abstract class BaseNoParamUseCase<R> {
                 }
 
                 else -> {
-                    Log.i(TAG, "${exception.javaClass.simpleName} ===> ${exception.message ?: ""}")
+                    Log.i(TAG, "[Exception] ${exception.javaClass.name} ${exception.message ?: ""}")
 
                     throw UseCaseException(
                         code = DomainErrorCode.DOMAIN_GLOBAL_UNKNOWN_ERROR,

@@ -5,14 +5,23 @@ import java.time.LocalDateTime
 
 interface DeviceRepository {
 
+    /**
+     * 기기 ID 설정
+     */
     suspend fun setDeviceId(deviceId: String)
     /**
      * deviceId 조회
      */
     suspend fun getDeviceId(): String
 
+    /**
+     * 기기 부팅 시간 설정
+     */
     suspend fun setDeviceBootedDt(deviceBootedDt: LocalDateTime)
 
+    /**
+     * 기기 부팅 시간 조회
+     */
     suspend fun getDeviceBootedDt(): LocalDateTime
 
     /**

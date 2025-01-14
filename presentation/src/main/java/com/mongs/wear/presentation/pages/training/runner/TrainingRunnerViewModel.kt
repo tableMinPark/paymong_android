@@ -12,6 +12,7 @@ import com.mongs.wear.domain.management.vo.MongVo
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -78,14 +79,14 @@ class TrainingRunnerViewModel @Inject constructor(
                 )
             )
 
-            uiState.navMainPager = true
+            uiState.navMainEvent.emit(System.currentTimeMillis())
         }
     }
 
     val uiState = UiState()
 
     class UiState : BaseUiState() {
-        var navMainPager by mutableStateOf(false)
+        var navMainEvent = MutableSharedFlow<Long>()
         var trainingStartDialog by mutableStateOf(true)
         var trainingOverDialog by mutableStateOf(false)
     }

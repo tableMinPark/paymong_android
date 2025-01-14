@@ -4,8 +4,14 @@ import com.mongs.wear.core.enums.MatchRoundCode
 
 interface MqttClient {
 
+    /**
+     * 연결 여부 플래그 조회
+     */
     suspend fun isConnected(): Boolean
 
+    /**
+     * 연결 진행 중 플래그 조회
+     */
     suspend fun isConnectPending(): Boolean
 
     /**
@@ -35,8 +41,14 @@ interface MqttClient {
      */
     suspend fun subManager(mongId :Long)
 
+    /**
+     * Manager 재구독
+     */
     suspend fun resumeManager()
 
+    /**
+     * Manager 구독 일시 중지
+     */
     suspend fun pauseManager()
 
     /**
@@ -50,8 +62,14 @@ interface MqttClient {
      */
     suspend fun subSearchMatch(deviceId: String)
 
+    /**
+     * SearchMatch 재구독
+     */
     suspend fun resumeSearchMatch()
 
+    /**
+     * SearchMatch 구독 일시 중지
+     */
     suspend fun pauseSearchMatch()
 
     /**
@@ -80,8 +98,14 @@ interface MqttClient {
      */
     suspend fun pubBattleMatchExit(roomId: Long, playerId: String)
 
+    /**
+     * BattleMatch 재구독
+     */
     suspend fun resumeBattleMatch()
 
+    /**
+     * BattleMatch 구독 일시 중지
+     */
     suspend fun pauseBattleMatch()
 
     /**
@@ -95,8 +119,14 @@ interface MqttClient {
      */
     suspend fun subPlayer(accountId: Long)
 
+    /**
+     * Player 재구독
+     */
     suspend fun resumePlayer()
 
+    /**
+     * Player 구독 일시 중지
+     */
     suspend fun pausePlayer()
 
     /**

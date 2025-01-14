@@ -25,7 +25,9 @@ import com.mongs.wear.domain.player.usecase.GetSlotCountUseCase
 import com.mongs.wear.domain.player.usecase.GetStarPointUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -142,7 +144,8 @@ class SlotPickViewModel @Inject constructor(
             )
 
             scrollPageMainPagerView()
-            uiState.navMainPager = true
+
+            uiState.navMainEvent.emit(System.currentTimeMillis())
         }
     }
 
@@ -181,7 +184,7 @@ class SlotPickViewModel @Inject constructor(
     val uiState: UiState = UiState()
 
     class UiState : BaseUiState() {
-        var navMainPager by mutableStateOf(false)
+        var navMainEvent = MutableSharedFlow<Long>()
         var mongDetailDialog by mutableStateOf(false)
         var mongCreateDialog by mutableStateOf(false)
         var mongDeleteDialog by mutableStateOf(false)
@@ -192,49 +195,51 @@ class SlotPickViewModel @Inject constructor(
 
     override fun exceptionHandler(exception: Throwable) {
 
-        when(exception) {
-            is GetSlotsException -> {
-                uiState.loadingBar = false
-                uiState.navMainPager = true
-            }
+        CoroutineScope(Dispatchers.IO).launch {
+            when (exception) {
+                is GetSlotsException -> {
+                    uiState.loadingBar = false
+                    uiState.navMainEvent.emit(System.currentTimeMillis())
+                }
 
-            is CreateMongException -> {
-                uiState.loadingBar = false
-                uiState.mongCreateDialog = false
-            }
+                is CreateMongException -> {
+                    uiState.loadingBar = false
+                    uiState.mongCreateDialog = false
+                }
 
-            is DeleteMongException -> {
-                uiState.loadingBar = false
-                uiState.mongDeleteDialog = false
-            }
+                is DeleteMongException -> {
+                    uiState.loadingBar = false
+                    uiState.mongDeleteDialog = false
+                }
 
-            is GraduateMongException -> {
-                uiState.loadingBar = false
-                uiState.mongGraduateDialog = false
-            }
+                is GraduateMongException -> {
+                    uiState.loadingBar = false
+                    uiState.mongGraduateDialog = false
+                }
 
-            is GetStarPointException -> {
-                uiState.loadingBar = false
-                uiState.navMainPager = true
-            }
+                is GetStarPointException -> {
+                    uiState.loadingBar = false
+                    uiState.navMainEvent.emit(System.currentTimeMillis())
+                }
 
-            is GetSlotCountException -> {
-                uiState.loadingBar = false
-                uiState.navMainPager = true
-            }
+                is GetSlotCountException -> {
+                    uiState.loadingBar = false
+                    uiState.navMainEvent.emit(System.currentTimeMillis())
+                }
 
-            is SetCurrentSlotException -> {
-                uiState.loadingBar = false
-                uiState.pickDialog = false
-            }
+                is SetCurrentSlotException -> {
+                    uiState.loadingBar = false
+                    uiState.pickDialog = false
+                }
 
-            is BuySlotException -> {
-                uiState.loadingBar = false
-                uiState.buySlotDialog = false
-            }
+                is BuySlotException -> {
+                    uiState.loadingBar = false
+                    uiState.buySlotDialog = false
+                }
 
-            else -> {
-                uiState.loadingBar = false
+                else -> {
+                    uiState.loadingBar = false
+                }
             }
         }
     }

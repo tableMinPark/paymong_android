@@ -46,10 +46,10 @@ class BillingManager @Inject constructor(
     private val _errorEvent = MutableSharedFlow<ErrorException>()
     val errorEvent = _errorEvent.asSharedFlow()
 
-    private val _abortEvent = MutableSharedFlow<Unit>()
+    private val _abortEvent = MutableSharedFlow<Long>()
     val abortEvent = _abortEvent.asSharedFlow()
 
-    private val _successEvent = MutableSharedFlow<Unit>()
+    private val _successEvent = MutableSharedFlow<Long>()
     val successEvent = _successEvent.asSharedFlow()
 
     private val billingClient = BillingClient.newBuilder(context)
@@ -80,7 +80,7 @@ class BillingManager @Inject constructor(
                             )
                         )
 
-                        _successEvent.emit(Unit)
+                        _successEvent.emit(System.currentTimeMillis())
 
                     } catch (exception: ErrorException) {
 
@@ -96,7 +96,7 @@ class BillingManager @Inject constructor(
             ) {
 
             CoroutineScope(Dispatchers.IO).launch {
-                _abortEvent.emit(Unit)
+                _abortEvent.emit(System.currentTimeMillis())
             }
         }
     }

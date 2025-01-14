@@ -47,7 +47,7 @@ class HttpLogInterceptor(
 
             val responseDto = gson.fromJson(bodyJson, ResponseDto::class.java)
 
-            Log.i(TAG, "${request.method()} ${request.url()} ==> [${response.code()}] $responseDto")
+            Log.i(TAG, "[Api] ${request.method()} ${request.url()} ==> [${response.code()}] $responseDto")
 
             return response.newBuilder()
                 .body(RealResponseBody(body = bodyJson, originalBody = responseBody))

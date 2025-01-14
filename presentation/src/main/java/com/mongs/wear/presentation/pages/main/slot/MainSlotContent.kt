@@ -53,13 +53,11 @@ fun MainSlotContent(
             }
 
             MongStateCode.EVOLUTION_READY -> {
-                if (!uiState.isEvolution) {
-                    NormalContent(
-                        mongVo = mongVo,
-                        stroke = {},
-                        modifier = modifier,
-                    )
-                }
+                NormalContent(
+                    mongVo = mongVo,
+                    stroke = {},
+                    modifier = modifier,
+                )
             }
 
             MongStateCode.GRADUATE -> {
