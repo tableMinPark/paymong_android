@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -38,16 +37,15 @@ import androidx.wear.compose.material.Text
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsLightGray
 import com.mongs.wear.presentation.component.common.button.BlueButton
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
 
 @Composable
 fun TimePickerDialog(
+    initValue: Int = 0,
     valueRange: List<Int>,
     confirm: (Int) -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
-    val listState = rememberScalingLazyListState(initialCenterItemIndex = 0)
+    val listState = rememberScalingLazyListState(initialCenterItemIndex = initValue)
 
     val isScrollInProgress = remember { derivedStateOf { listState.isScrollInProgress } }
 
@@ -98,9 +96,8 @@ fun TimePickerDialog(
                                 modifier = Modifier
                                     .size(width = 100.dp, height = 40.dp)
                                     .padding(3.dp)
-                                    .offset(x = 1.dp, y = 3.dp)
-                                ,
-                                text = "$it",
+                                    .offset(x = 1.dp, y = 3.dp),
+                                text = it.toString().padStart(2, '0'),
                                 textAlign = TextAlign.Center,
                                 fontFamily = DAL_MU_RI,
                                 fontWeight = FontWeight.Light,

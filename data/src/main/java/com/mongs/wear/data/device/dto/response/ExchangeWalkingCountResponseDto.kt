@@ -1,4 +1,4 @@
-package com.mongs.wear.data.user.dto.response
+package com.mongs.wear.data.device.dto.response
 
 data class ExchangeWalkingCountResponseDto(
 

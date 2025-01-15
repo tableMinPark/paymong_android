@@ -6,23 +6,39 @@ import java.time.LocalDateTime
 interface DeviceRepository {
 
     /**
+     * 기기 등록
+     */
+    suspend fun createDevice(deviceId: String, totalWalkingCount: Int, deviceBootedDt: LocalDateTime, fcmToken: String)
+
+    /**
+     * 플레이어 걸음 수 환전
+     */
+    suspend fun exchangeWalkingCount(mongId: Long, walkingCount: Int, deviceBootedDt: LocalDateTime)
+
+    /**
+     * 기기 총 걸음 수 서버 동기화
+     */
+    suspend fun updateWalkingCountInServer(deviceId: String, totalWalkingCount: Int, deviceBootedDt: LocalDateTime)
+
+    /**
+     * 기기 총 걸음 수 동기화
+     */
+    suspend fun updateWalkingCountInLocal(totalWalkingCount: Int)
+
+    /**
+     * 플레이어 걸음 수 라이브 객체 조회
+     */
+    suspend fun getStepsLive(): LiveData<Int>
+
+    /**
      * 기기 ID 설정
      */
     suspend fun setDeviceId(deviceId: String)
+
     /**
      * deviceId 조회
      */
     suspend fun getDeviceId(): String
-
-    /**
-     * 기기 부팅 시간 설정
-     */
-    suspend fun setDeviceBootedDt(deviceBootedDt: LocalDateTime)
-
-    /**
-     * 기기 부팅 시간 조회
-     */
-    suspend fun getDeviceBootedDt(): LocalDateTime
 
     /**
      * 배경 화면 맵 타입 코드 등록

@@ -46,6 +46,7 @@ fun MatchPickDialog(
     val progress = remember { mutableFloatStateOf(0f) }
     val timer = remember { mutableFloatStateOf(0f) }
 
+    // 타이머
     LaunchedEffect(Unit) {
         while (progress.floatValue < 100f) {
             delay(200)

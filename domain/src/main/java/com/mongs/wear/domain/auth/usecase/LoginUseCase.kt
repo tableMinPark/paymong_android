@@ -11,20 +11,17 @@ import com.mongs.wear.domain.auth.repository.AuthRepository
 import com.mongs.wear.domain.device.repository.DeviceRepository
 import com.mongs.wear.domain.global.client.MqttClient
 import com.mongs.wear.domain.global.usecase.BaseParamUseCase
+import com.mongs.wear.domain.player.repository.PlayerRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class LoginUseCase @Inject constructor(
     private val mqttClient: MqttClient,
     private val deviceRepository: DeviceRepository,
+    private val playerRepository: PlayerRepository,
     private val authRepository: AuthRepository,
 ) : BaseParamUseCase<LoginUseCase.Param, Unit>() {
-
-    companion object {
-        private const val MQTT_CONNECT_PENDING_CHECK_DELAY = 500L
-    }
 
     override suspend fun execute(param: Param) {
 
@@ -36,20 +33,24 @@ class LoginUseCase @Inject constructor(
 
             val deviceId = deviceRepository.getDeviceId()
 
+            // 로그인
             val accountId = authRepository.login(
                 deviceId = deviceId,
                 email = param.email,
                 googleAccountId = param.googleAccountId
             )
 
-            // 재 로그인 시 ResumeConnect 완료 후 연결을 위해 대기
-            while (mqttClient.isConnectPending() && !mqttClient.isConnected()) {
-                delay(MQTT_CONNECT_PENDING_CHECK_DELAY)
-            }
+            // 플레이어 정보 등록
+            playerRepository.createPlayer()
+
+            // 브로커 연결
+            mqttClient.connect()
 
             if (mqttClient.isConnected()) {
                 // 회원 정보 구독
                 mqttClient.subPlayer(accountId = accountId)
+
+                deviceRepository.setNetwork(network = true)
             } else {
                 deviceRepository.setNetwork(network = false)
             }

@@ -25,7 +25,7 @@ class RunnerEngine(
 
         private const val GRAVITY = 9.8f
         private const val FRAME = 60L   // 60FPS
-        private const val COLLISION_PADDING = 4
+        private const val COLLISION_PADDING = 10
         private const val HURDLE_GENERATE_DELAY_MILLIS = 3000
 
         private const val PLAYER_START_X = 24f
@@ -80,7 +80,9 @@ class RunnerEngine(
 
                 // 장애물 생성
                 if (playMillis.value / HURDLE_GENERATE_DELAY_MILLIS > generateHurdleCount) {
-                    generateHurdle()
+                    // 장애물 5개 당 0.125 씩 스피드 증가
+                    val hurdleSpeed = HURDLE_SPEED + (generateHurdleCount / 5 * 0.125f)
+                    generateHurdle(hurdleSpeed = hurdleSpeed)
                     generateHurdleCount = playMillis.value / HURDLE_GENERATE_DELAY_MILLIS
                 }
 
@@ -159,14 +161,14 @@ class RunnerEngine(
     /**
      * 장애물 생성
      */
-    private fun generateHurdle() {
+    private fun generateHurdle(hurdleSpeed: Float) {
         hurdleList.add(
             Hurdle(
                 height = 25,
                 width = 35,
                 sy = defaultY,
                 sx = HURDLE_START_X,
-                ss = HURDLE_SPEED,
+                ss = hurdleSpeed,
             )
         )
     }

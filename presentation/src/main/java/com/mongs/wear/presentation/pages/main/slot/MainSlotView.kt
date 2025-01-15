@@ -23,8 +23,8 @@ fun MainSlotView(
             isPageChanging = isPageChanging.value,
             stroke = { mongId -> mainSlotViewModel.stroke(mongId = mongId) },
             navSlotPick = { navController.navigate(NavItem.SlotPick.route) },
+            modifier = Modifier.zIndex(1f),
             uiState = mainSlotViewModel.uiState,
-            modifier = Modifier.zIndex(1f)
         )
 
         mongVo?.let {
@@ -38,6 +38,7 @@ fun MainSlotView(
                     mainSlotViewModel.graduationReady(mongId = mongVo.mongId)
                 },
                 modifier = Modifier.zIndex(2f),
+                uiState = mainSlotViewModel.uiState,
             )
         }
     }

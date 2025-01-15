@@ -55,12 +55,12 @@ private val delayList = listOf(
 @Composable
 fun EvolutionEffect(
     mongVo: MongVo,
-    evolutionState: Boolean,
+    isEvolution: Boolean,
     evolutionStart: () -> Unit,
     evolution: (Long) -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
-    if (!evolutionState) {
+    if (!isEvolution) {
         Box(
             contentAlignment = Alignment.Center,
             modifier = modifier

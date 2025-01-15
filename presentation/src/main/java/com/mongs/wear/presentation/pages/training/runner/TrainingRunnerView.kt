@@ -43,6 +43,8 @@ import com.mongs.wear.presentation.component.common.textbox.PayPoint
 import com.mongs.wear.presentation.dialog.training.TrainingEndDialog
 import com.mongs.wear.presentation.dialog.training.TrainingStartDialog
 
+private val REWARD_PAY_POINT = 5
+
 @Composable
 fun TrainingRunnerView(
     navController: NavController,
@@ -82,7 +84,7 @@ fun TrainingRunnerView(
                     )
 
                     TrainingRunnerInfoContent(
-                        score = score.value,
+                        payPoint = score.value * REWARD_PAY_POINT,
                         modifier = Modifier.zIndex(2f),
                     )
                 }
@@ -94,7 +96,7 @@ fun TrainingRunnerView(
                     TrainingStartDialog(
                         firstText = "화면을 클릭하여",
                         secondText = "장애물을 뛰어넘기!",
-                        rewardPayPoint = 2,
+                        rewardPayPoint = REWARD_PAY_POINT,
                         trainingStart = { trainingRunnerViewModel.runnerStart() },
                         modifier = Modifier.zIndex(3f),
                     )
@@ -103,10 +105,10 @@ fun TrainingRunnerView(
                         trainingEnd = {
                             trainingRunnerViewModel.runnerEnd(
                                 mongId = it.mongId,
-                                score = score.value * 5,
+                                score = score.value * REWARD_PAY_POINT,
                             )
                         },
-                        rewardPayPoint = score.value,
+                        rewardPayPoint = score.value * REWARD_PAY_POINT,
                         modifier = Modifier.zIndex(3f),
                     )
                 }
@@ -210,7 +212,7 @@ private fun TrainingRunnerContent(
 
 @Composable
 private fun TrainingRunnerInfoContent(
-    score: Int,
+    payPoint: Int,
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
     Box(
@@ -220,7 +222,7 @@ private fun TrainingRunnerInfoContent(
             .padding(top = 10.dp)
     ) {
         PayPoint(
-            payPoint = score * 10,
+            payPoint = payPoint,
             modifier = Modifier
                 .align(Alignment.TopCenter)
         )

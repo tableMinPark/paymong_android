@@ -1,22 +1,22 @@
-package com.mongs.wear.domain.player.usecase
+package com.mongs.wear.domain.device.usecase
 
 import androidx.lifecycle.LiveData
 import com.mongs.wear.core.exception.ErrorException
+import com.mongs.wear.domain.device.repository.DeviceRepository
 import com.mongs.wear.domain.global.usecase.BaseNoParamUseCase
-import com.mongs.wear.domain.player.exception.GetStepsException
-import com.mongs.wear.domain.player.repository.PlayerRepository
+import com.mongs.wear.domain.device.exception.GetStepsException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GetStepsUseCase @Inject constructor(
-    private val playerRepository: PlayerRepository,
+    private val deviceRepository: DeviceRepository,
 ) : BaseNoParamUseCase<LiveData<Int>>() {
 
     override suspend fun execute(): LiveData<Int> {
 
         return withContext(Dispatchers.IO) {
-            playerRepository.getStepsLive()
+            deviceRepository.getStepsLive()
         }
     }
 

@@ -63,7 +63,9 @@ class MainSlotViewModel @Inject constructor(
 
     val uiState: UiState = UiState()
 
-    class UiState : BaseUiState() {}
+    class UiState : BaseUiState() {
+        var isEvolution by mutableStateOf(false)
+    }
 
     override fun exceptionHandler(exception: Throwable) {
 

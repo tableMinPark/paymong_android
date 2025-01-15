@@ -22,11 +22,8 @@ class LogoutUseCase @Inject constructor(
             authRepository.logout()
 
             mqttClient.disSubManager()
-
             mqttClient.disSubPlayer()
-
             mqttClient.disSubBattleMatch()
-
             mqttClient.disSubSearchMatch()
         }
     }

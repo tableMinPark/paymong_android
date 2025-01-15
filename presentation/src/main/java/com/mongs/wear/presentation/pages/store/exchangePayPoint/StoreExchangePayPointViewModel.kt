@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import com.mongs.wear.domain.device.exception.ExchangeWalkingCountException
 import com.mongs.wear.domain.management.exception.GetCurrentSlotException
 import com.mongs.wear.domain.management.usecase.GetCurrentSlotUseCase
 import com.mongs.wear.domain.management.vo.MongVo
-import com.mongs.wear.domain.player.exception.ExchangeWalkingCountException
-import com.mongs.wear.domain.player.exception.GetStepsException
+import com.mongs.wear.domain.device.exception.GetStepsException
 import com.mongs.wear.domain.player.usecase.ExchangeStarPointUseCase
 import com.mongs.wear.domain.player.usecase.GetStarPointUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel

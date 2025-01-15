@@ -50,6 +50,7 @@ enum class DataErrorCode(
     DATA_USER_COLLECTION_GET_MAP_COLLECTIONS("컬렉션 맵 조회 실패했습니다.", false),
     DATA_USER_COLLECTION_GET_MONG_COLLECTIONS("컬렉션 맵 조회 실패했습니다.", false),
     DATA_USER_FEEDBACK_CREATE_FEEDBACK("오류 신고 실패했습니다.", false),
+    DATA_USER_PLAYER_CREATE_PLAYER("플레이어 정보 등록 실패했습니다.", false),
     DATA_USER_PLAYER_GET_PLAYER("플레이어 정보 조회 실패했습니다.", false),
     DATA_USER_PLAYER_BUY_SLOT("슬롯 구매 실패했습니다.", false),
     DATA_USER_PLAYER_EXCHANGE_WALKING("걸음 수 환전 실패했습니다.", false),
@@ -57,6 +58,8 @@ enum class DataErrorCode(
     DATA_USER_STORE_GET_PRODUCT_IDS("상품 목록 조회에 실패했습니다.", false),
     DATA_USER_STORE_CONSUME_PRODUCT_ORDER("상품 소비에 실패했습니다.", false),
     DATA_USER_STORE_CONSUMED_ORDER_IDS("상품 소비 ID 목록 조회에 실패했습니다.", false),
+    DATA_USER_DEVICE_CREATE_DEVICE("기기 정보 등록 실패했습니다.", false),
+    DATA_USER_DEVICE_UPDATE_FCM_TOKEN("FCM 토큰 갱신에 실패했습니다.", false),
     ;
 
     override fun getMessage(): String {

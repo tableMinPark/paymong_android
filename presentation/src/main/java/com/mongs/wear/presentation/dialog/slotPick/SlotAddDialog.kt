@@ -152,11 +152,11 @@ fun SlotAddDialog(
                         minute = sleepEndMinute.intValue,
                         hourTimePickerDialog = {
                             timePickerDialog.value = true
-                            timePickerFlag.intValue = 2
+                            timePickerFlag.intValue = 0
                         },
                         minuteTimePickerDialog = {
                             timePickerDialog.value = true
-                            timePickerFlag.intValue = 3
+                            timePickerFlag.intValue = 1
                         }
                     )
                 }
@@ -188,32 +188,35 @@ fun SlotAddDialog(
         }
     }
 
-
     if (timePickerDialog.value) {
         TimePickerDialog(
+            initValue = when(timePickerFlag.intValue) {
+                0 -> 12
+                1 -> 0
+                else -> 0
+            },
             valueRange = when(timePickerFlag.intValue) {
                 0 -> (0..23).toList()
                 1 -> (0..59).toList()
-                2 -> (0..23).toList()
-                else -> (0..59).toList()
+                else -> emptyList()
             },
             confirm = when(timePickerFlag.intValue) {
                 0 -> { value ->
-                    sleepStartHour.intValue = value
+                    when(tabIndex.intValue) {
+                        1 -> { sleepStartHour.intValue = value }
+                        2 -> { sleepEndHour.intValue = value }
+                    }
                     timePickerDialog.value = false
                 }
+
                 1 -> { value ->
-                    sleepStartMinute.intValue = value
+                    when(tabIndex.intValue) {
+                        1 -> { sleepStartMinute.intValue = value }
+                        2 -> { sleepEndMinute.intValue = value }
+                    }
                     timePickerDialog.value = false
                 }
-                2 -> { value ->
-                    sleepEndHour.intValue = value
-                    timePickerDialog.value = false
-                }
-                else -> { value ->
-                    sleepEndMinute.intValue = value
-                    timePickerDialog.value = false
-                }
+                else -> { _ -> }
             },
         )
     }

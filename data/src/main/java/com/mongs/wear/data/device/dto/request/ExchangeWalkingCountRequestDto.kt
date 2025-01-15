@@ -1,4 +1,4 @@
-package com.mongs.wear.data.user.dto.request
+package com.mongs.wear.data.device.dto.request
 
 import java.time.LocalDateTime
 

@@ -3,9 +3,11 @@ package com.mongs.wear.presentation.pages.main.configure
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.work.WorkManager
 import com.mongs.wear.domain.auth.exception.LogoutException
 import com.mongs.wear.domain.auth.usecase.LogoutUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
+import com.mongs.wear.presentation.global.worker.StepSensorWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -13,6 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainConfigureViewModel @Inject constructor(
+    private val workerManager: WorkManager,
     private val logoutUseCase: LogoutUseCase,
 ): BaseViewModel() {
 
@@ -28,7 +31,12 @@ class MainConfigureViewModel @Inject constructor(
     fun logout() {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
             logoutUseCase()
+
             scrollPageMainPagerView()
+
+            // 워커 삭제
+            workerManager.cancelUniqueWork(StepSensorWorker.WORKER_NAME)
+
             uiState.navLoginView = true
         }
     }

@@ -38,13 +38,6 @@ enum class DomainErrorCode(
     DOMAIN_COLLECTION_GET_MAP_COLLECTIONS_FAILED("맵 도감 조회 실패", false),
     DOMAIN_COLLECTION_GET_MONG_COLLECTIONS_FAILED("몽 도감 조회 실패", false),
 
-    // Device
-    DOMAIN_DEVICE_CONNECT_MQTT_FAILED("MQTT 연결 실패", false),
-    DOMAIN_DEVICE_GET_BACKGROUND_MAP_CODE_FAILED("배경 조회 실패", false),
-    DOMAIN_DEVICE_SET_BACKGROUND_MAP_CODE_FAILED("배경 변경 실패", false),
-    DOMAIN_DEVICE_GET_NETWORK_FAILED("네트워크 FLAG 조회 실패", false),
-    DOMAIN_DEVICE_SET_NETWORK_FAILED("네트워크 FLAG 변경 실패", false),
-
     // Feedback
     DOMAIN_FEEDBACK_CREATE_FEEDBACK_FAILED("오류 신고 실패", true),
 
@@ -69,12 +62,22 @@ enum class DomainErrorCode(
     // Player
     DOMAIN_PLAYER_EXCHANGE_STAR_POINT_FAILED("스타 포인트 환전 실패", true),
     DOMAIN_PLAYER_BUY_SLOT_FAILED("슬롯 구매 실패", true),
-    DOMAIN_PLAYER_EXCHANGE_WALKING_COUNT_FAILED("걸음 수 환전 실패", true),
+    DOMAIN_PLAYER_CREATE_PLAYER_FAILED("플레이어 등록 실패", false),
     DOMAIN_PLAYER_GET_SLOT_COUNT_FAILED("슬롯 수 조회 실패", false),
     DOMAIN_PLAYER_GET_STAR_POINT_FAILED("스타 포인트 조회 실패", false),
+
+    // Device
+    DOMAIN_DEVICE_GET_BACKGROUND_MAP_CODE_FAILED("배경 조회 실패", false),
+    DOMAIN_DEVICE_SET_BACKGROUND_MAP_CODE_FAILED("배경 변경 실패", false),
+    DOMAIN_DEVICE_GET_NETWORK_FAILED("네트워크 FLAG 조회 실패", false),
+    DOMAIN_DEVICE_SET_NETWORK_FAILED("네트워크 FLAG 변경 실패", false),
+    DOMAIN_DEVICE_SET_FCM_TOKEN_FAILED("FCM 토큰 변경 실패", false),
+    DOMAIN_PLAYER_CREATE_DEVICE_FAILED("기기 등록 실패", false),
     DOMAIN_PLAYER_GET_STEPS_FAILED("걸음 수 조회 실패", false),
+    DOMAIN_PLAYER_EXCHANGE_WALKING_COUNT_FAILED("걸음 수 환전 실패", true),
     DOMAIN_PLAYER_SET_TOTAL_WALKING_COUNT_FAILED("총 걸음 수 조회 실패", false),
-    DOMAIN_PLAYER_SYNC_TOTAL_WALKING_COUNT_FAILED("총 걸음 수 동기화 실패", false),
+    DOMAIN_PLAYER_UPDATE_TOTAL_WALKING_COUNT_FAILED("총 걸음 수 동기화 실패", false),
+
 
     // Store
     DOMAIN_STORE_CONSUME_PRODUCT_ORDER_FAILED("상품 주문 소비 실패", false),

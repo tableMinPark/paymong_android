@@ -78,4 +78,7 @@ dependencies {
 
     // billing
     implementation "com.android.billingclient:billing-ktx:7.1.1"
+
+    // fcm
+    implementation 'com.google.firebase:firebase-messaging-ktx:24.1.0'
 }

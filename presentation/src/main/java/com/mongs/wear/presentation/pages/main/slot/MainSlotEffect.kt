@@ -1,8 +1,6 @@
 package com.mongs.wear.presentation.pages.main.slot
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.zIndex
 import com.mongs.wear.core.enums.MongStateCode
@@ -15,6 +13,7 @@ import com.mongs.wear.presentation.component.main.slot.effect.PoopCleanEffect
 import com.mongs.wear.presentation.component.main.slot.effect.PoopEffect
 import com.mongs.wear.presentation.component.main.slot.effect.SleepEffect
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
+import com.mongs.wear.presentation.pages.main.slot.MainSlotViewModel.UiState
 
 @Composable
 fun MainSlotEffect(
@@ -23,6 +22,7 @@ fun MainSlotEffect(
     evolution: (Long) -> Unit,
     graduationReady: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
+    uiState: UiState,
 ) {
     when (mongVo.stateCode) {
 
@@ -58,13 +58,11 @@ fun MainSlotEffect(
 
         MongStateCode.EVOLUTION_READY -> {
 
-            val evolutionState = remember { mutableStateOf(false) }
-
-            if (!isPageChanging) {
+            if (!isPageChanging && !mongVo.isSleeping) {
                 EvolutionEffect(
                     mongVo = mongVo,
-                    evolutionState = evolutionState.value,
-                    evolutionStart = { evolutionState.value = true },
+                    isEvolution = uiState.isEvolution,
+                    evolutionStart = { uiState.isEvolution = true },
                     evolution = { mongId -> evolution(mongId) },
                     modifier = modifier,
                 )

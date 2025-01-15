@@ -51,8 +51,8 @@ fun MainWalkingView(
 
     val payPoint = mainWalkingViewModel.payPoint.observeAsState(0)
     val ratio = remember { mutableIntStateOf(0) }
-    val totalWalkingCount = mainWalkingViewModel.walkingCount.observeAsState(0)
-    val walkingCount = remember { derivedStateOf { totalWalkingCount.value - 1000 * ratio.intValue }}
+    val steps = mainWalkingViewModel.steps.observeAsState(0)
+    val remainingSteps = remember { derivedStateOf { steps.value - 1000 * ratio.intValue }}
     val chargePayPoint = remember { derivedStateOf { 100 * ratio.intValue }}
 
     Box {
@@ -75,11 +75,11 @@ fun MainWalkingView(
                 mongVo = mongVo,
                 chargePayPoint = chargePayPoint.value,
                 payPoint = payPoint.value,
-                walkingCount = walkingCount.value,
-                uiState = mainWalkingViewModel.uiState,
-                increaseRatio = { ratio.intValue = min(ratio.intValue + 1, totalWalkingCount.value / 100) },
+                remainingSteps = remainingSteps.value,
+                increaseRatio = { ratio.intValue = min(ratio.intValue + 1, steps.value / 1000) },
                 decreaseRatio = { ratio.intValue = max(ratio.intValue - 1, 0) },
-                modifier = Modifier.zIndex(1f)
+                modifier = Modifier.zIndex(1f),
+                uiState = mainWalkingViewModel.uiState,
             )
         }
     }
@@ -90,11 +90,11 @@ private fun MainWalkingContent(
     mongVo: MongVo?,
     chargePayPoint: Int,
     payPoint: Int,
-    walkingCount: Int,
-    uiState: UiState,
+    remainingSteps: Int,
     increaseRatio: () -> Unit,
     decreaseRatio: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
+    uiState: UiState,
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -142,7 +142,7 @@ private fun MainWalkingContent(
                             .weight(0.3f)
                     ) {
                         Text(
-                            text = "$walkingCount 걸음",
+                            text = "$remainingSteps 걸음",
                             textAlign = TextAlign.Center,
                             fontFamily = DAL_MU_RI,
                             fontWeight = FontWeight.Light,

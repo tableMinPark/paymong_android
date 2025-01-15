@@ -1,18 +1,17 @@
-package com.mongs.wear.domain.player.usecase
+package com.mongs.wear.domain.device.usecase
 
 import com.mongs.wear.core.exception.ErrorException
+import com.mongs.wear.domain.device.exception.UpdateTotalWalkingCountException
 import com.mongs.wear.domain.device.repository.DeviceRepository
 import com.mongs.wear.domain.global.usecase.BaseParamUseCase
-import com.mongs.wear.domain.player.exception.SyncTotalWalkingCountException
-import com.mongs.wear.domain.player.repository.PlayerRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.time.LocalDateTime
 import javax.inject.Inject
 
-class SyncTotalWalkingCountUseCase @Inject constructor(
+class UpdateTotalWalkingCountUseCase @Inject constructor(
     private val deviceRepository: DeviceRepository,
-    private val playerRepository: PlayerRepository,
-) : BaseParamUseCase<SyncTotalWalkingCountUseCase.Param, Unit>() {
+) : BaseParamUseCase<UpdateTotalWalkingCountUseCase.Param, Unit>() {
 
     override suspend fun execute(param: Param) {
 
@@ -20,25 +19,26 @@ class SyncTotalWalkingCountUseCase @Inject constructor(
 
             val deviceId = deviceRepository.getDeviceId()
 
-            val deviceBootedDt = deviceRepository.getDeviceBootedDt()
-
-            playerRepository.syncTotalWalkingCount(
+            deviceRepository.updateWalkingCountInServer(
                 deviceId = deviceId,
                 totalWalkingCount = param.totalWalkingCount,
-                deviceBootedDt = deviceBootedDt
+                deviceBootedDt = param.deviceBootedDt,
             )
         }
     }
 
     data class Param(
+
         val totalWalkingCount: Int,
+
+        val deviceBootedDt: LocalDateTime,
     )
 
     override fun handleException(exception: ErrorException) {
         super.handleException(exception)
 
         when(exception.code) {
-            else -> throw SyncTotalWalkingCountException()
+            else -> throw UpdateTotalWalkingCountException()
         }
     }
 }

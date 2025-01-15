@@ -5,14 +5,11 @@ import com.mongs.wear.data.global.utils.HttpUtil
 import com.mongs.wear.data.user.api.PlayerApi
 import com.mongs.wear.data.user.datastore.PlayerDataStore
 import com.mongs.wear.data.user.dto.request.ExchangeStarPointRequestDto
-import com.mongs.wear.data.user.dto.request.ExchangeWalkingCountRequestDto
-import com.mongs.wear.data.user.dto.request.SyncWalkingCountRequestDto
 import com.mongs.wear.data.user.exception.BuySlotException
+import com.mongs.wear.data.user.exception.CreatePlayerException
 import com.mongs.wear.data.user.exception.ExchangeStarPointException
-import com.mongs.wear.data.user.exception.ExchangeWalkingException
 import com.mongs.wear.data.user.exception.GetPlayerException
 import com.mongs.wear.domain.player.repository.PlayerRepository
-import java.time.LocalDateTime
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -23,6 +20,9 @@ class PlayerRepositoryImpl @Inject constructor(
     private val playerDataStore: PlayerDataStore,
 ): PlayerRepository {
 
+    /**
+     * 플레이어 정보 갱신
+     */
     override suspend fun updatePlayer() {
 
         val response = playerApi.getPlayer()
@@ -33,6 +33,18 @@ class PlayerRepositoryImpl @Inject constructor(
             }
         } else {
             throw GetPlayerException(result = httpUtil.getErrorResult(response.errorBody()))
+        }
+    }
+
+    /**
+     * 플레이어 정보 등록
+     */
+    override suspend fun createPlayer() {
+
+        val response = playerApi.createPlayer()
+
+        if (!response.isSuccessful) {
+            throw CreatePlayerException()
         }
     }
 
@@ -89,66 +101,5 @@ class PlayerRepositoryImpl @Inject constructor(
         if (!response.isSuccessful) {
             throw ExchangeStarPointException(result = httpUtil.getErrorResult(response.errorBody()))
         }
-    }
-
-    /**
-     * 걸음 수 환전
-     */
-    override suspend fun exchangeWalkingCount(mongId: Long, walkingCount: Int, deviceBootedDt: LocalDateTime) {
-
-        val totalWalkingCount = playerDataStore.getSteps()
-
-        val response = playerApi.exchangeWalkingCount(
-            exchangeWalkingCountRequestDto = ExchangeWalkingCountRequestDto(
-                mongId = mongId,
-                walkingCount = walkingCount,
-                totalWalkingCount = totalWalkingCount,
-                deviceBootedDt = deviceBootedDt,
-            )
-        )
-
-        if (response.isSuccessful) {
-            response.body()?.let { body ->
-                playerDataStore.setWalkingCount(walkingCount = body.result.walkingCount)
-                playerDataStore.setConsumeWalkingCount(consumeWalkingCount = body.result.consumeWalkingCount)
-            }
-        } else {
-            throw ExchangeWalkingException(result = httpUtil.getErrorResult(response.errorBody()))
-        }
-    }
-
-    /**
-     * 걸음 수 서버 동기화
-     */
-    override suspend fun syncTotalWalkingCount(deviceId: String, totalWalkingCount: Int, deviceBootedDt: LocalDateTime) {
-
-        playerDataStore.setTotalWalkingCount(totalWalkingCount = totalWalkingCount)
-
-        val response = playerApi.syncWalkingCount(
-            SyncWalkingCountRequestDto(
-                deviceId = deviceId,
-                totalWalkingCount = totalWalkingCount,
-                deviceBootedDt = deviceBootedDt,
-            )
-        )
-
-        if (response.isSuccessful) {
-            response.body()?.let { body ->
-                playerDataStore.setWalkingCount(walkingCount = body.result.walkingCount)
-                playerDataStore.setConsumeWalkingCount(consumeWalkingCount = body.result.consumeWalkingCount)
-            }
-        }
-    }
-
-    /**
-     * 걸음 수 조회
-     */
-    override suspend fun getStepsLive(): LiveData<Int> = playerDataStore.getStepsLive()
-
-    /**
-     * 걸음 수 로컬 동기화
-     */
-    override suspend fun setTotalWalkingCount(totalWalkingCount: Int) {
-        playerDataStore.setTotalWalkingCount(totalWalkingCount = totalWalkingCount)
     }
 }
