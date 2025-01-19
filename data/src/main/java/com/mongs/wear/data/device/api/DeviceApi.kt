@@ -1,7 +1,6 @@
 package com.mongs.wear.data.device.api
 
 import com.mongs.wear.core.dto.response.ResponseDto
-import com.mongs.wear.data.device.dto.request.CreateDeviceRequestDto
 import com.mongs.wear.data.device.dto.request.ExchangeWalkingCountRequestDto
 import com.mongs.wear.data.device.dto.request.UpdateWalkingCountRequestDto
 import com.mongs.wear.data.device.dto.response.ExchangeWalkingCountResponseDto
@@ -13,12 +12,9 @@ import retrofit2.http.POST
 
 interface DeviceApi {
 
-    @POST("user/device/exchange/walking")
+    @POST("user/step/exchange/walking")
     suspend fun exchangeWalkingCount(@Body exchangeWalkingCountRequestDto: ExchangeWalkingCountRequestDto) : Response<ResponseDto<ExchangeWalkingCountResponseDto>>
 
-    @POST("user/open/device")
-    suspend fun createDevice(@Body createDeviceRequestDto: CreateDeviceRequestDto) : Response<ResponseDto<Void>>
-
-    @PATCH("user/open/device/walking")
+    @PATCH("user/step/walking")
     suspend fun updateWalkingCount(@Body updateWalkingCountRequestDto: UpdateWalkingCountRequestDto) : Response<ResponseDto<UpdateWalkingCountResponseDto>>
 }

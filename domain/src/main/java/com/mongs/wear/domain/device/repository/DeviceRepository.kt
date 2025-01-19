@@ -6,11 +6,6 @@ import java.time.LocalDateTime
 interface DeviceRepository {
 
     /**
-     * 기기 등록
-     */
-    suspend fun createDevice(deviceId: String, totalWalkingCount: Int, deviceBootedDt: LocalDateTime, fcmToken: String)
-
-    /**
      * 플레이어 걸음 수 환전
      */
     suspend fun exchangeWalkingCount(mongId: Long, walkingCount: Int, deviceBootedDt: LocalDateTime)
@@ -18,7 +13,7 @@ interface DeviceRepository {
     /**
      * 기기 총 걸음 수 서버 동기화
      */
-    suspend fun updateWalkingCountInServer(deviceId: String, totalWalkingCount: Int, deviceBootedDt: LocalDateTime)
+    suspend fun updateWalkingCountInServer(totalWalkingCount: Int, deviceBootedDt: LocalDateTime)
 
     /**
      * 기기 총 걸음 수 동기화

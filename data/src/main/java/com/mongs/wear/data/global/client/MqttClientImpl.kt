@@ -173,41 +173,17 @@ class MqttClientImpl @Inject constructor(
                     dao.findByMongId(mongId = mongId)?.let { mongEntity ->
                         dao.save(
                             mongEntity.update(
-                                mongName = body.result.mongName,
-                                mongTypeCode = body.result.mongTypeCode,
-                                payPoint = body.result.payPoint,
-                                stateCode = body.result.stateCode,
-                                isSleeping = body.result.isSleep,
-                                statusCode = body.result.statusCode,
-                                expRatio = body.result.expRatio,
-                                weight = body.result.weight,
-                                healthyRatio = body.result.healthyRatio,
-                                satietyRatio = body.result.satietyRatio,
-                                strengthRatio = body.result.strengthRatio,
-                                fatigueRatio = body.result.fatigueRatio,
-                                poopCount = body.result.poopCount,
-                                updatedAt = body.result.updatedAt,
+                                mongBasicDto = body.result.basic,
+                                mongStateDto = body.result.state,
+                                mongStatusDto = body.result.status,
                             )
                         ).toMongModel()
                     } ?: run {
                         dao.save(
-                            MongEntity(
-                                mongId = body.result.mongId,
-                                mongName = body.result.mongName,
-                                mongTypeCode = body.result.mongTypeCode,
-                                payPoint = body.result.payPoint,
-                                stateCode = body.result.stateCode,
-                                isSleeping = body.result.isSleep,
-                                statusCode = body.result.statusCode,
-                                expRatio = body.result.expRatio,
-                                weight = body.result.weight,
-                                healthyRatio = body.result.healthyRatio,
-                                satietyRatio = body.result.satietyRatio,
-                                strengthRatio = body.result.strengthRatio,
-                                fatigueRatio = body.result.fatigueRatio,
-                                poopCount = body.result.poopCount,
-                                createdAt = body.result.createdAt,
-                                updatedAt = body.result.updatedAt,
+                            MongEntity.of(
+                                mongBasicDto = body.result.basic,
+                                mongStateDto = body.result.state,
+                                mongStatusDto = body.result.status,
                             )
                         ).toMongModel()
                     }
@@ -224,10 +200,6 @@ class MqttClientImpl @Inject constructor(
 
         try {
             if (mqttState.manager == MqttState.MqttStateCode.DIS_SUB) {
-                // 현재 슬롯 동기화
-//                roomDB.mongDao().findByIsCurrentTrue()?.let { mongEntity ->
-//                    this.updateMong(mongId = mongEntity.mongId)
-//                }
                 mqttState.managerTopic =  "${context.getString(R.string.mqtt_manager_topic)}/$mongId"
                 mqttApi.subscribe(mqttState.managerTopic)
                 mqttState.manager = MqttState.MqttStateCode.SUB

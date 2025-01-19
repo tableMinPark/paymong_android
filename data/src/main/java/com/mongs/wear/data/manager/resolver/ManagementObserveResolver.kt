@@ -2,7 +2,9 @@ package com.mongs.wear.data.manager.resolver
 
 import androidx.room.Transaction
 import com.mongs.wear.data.global.room.RoomDB
-import com.mongs.wear.data.manager.dto.response.GetMongResponseDto
+import com.mongs.wear.data.manager.dto.response.MongBasicDto
+import com.mongs.wear.data.manager.dto.response.MongStateDto
+import com.mongs.wear.data.manager.dto.response.MongStatusDto
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -11,26 +13,46 @@ class ManagementObserveResolver @Inject constructor(
     private val roomDB: RoomDB,
 ) {
 
+    /**
+     * 몽 정보 변경 옵저빙 함수
+     */
     @Transaction
-    fun updateMong(getMongResponseDto: GetMongResponseDto) {
+    fun updateMongBasic(mongBasicDto: MongBasicDto) {
 
-        roomDB.mongDao().findByMongId(mongId = getMongResponseDto.mongId)?.let { mongEntity ->
+        roomDB.mongDao().findByMongId(mongId = mongBasicDto.mongId)?.let { mongEntity ->
             roomDB.mongDao().save(
-                mongEntity.update(
-                    mongName = getMongResponseDto.mongName,
-                    mongTypeCode = getMongResponseDto.mongTypeCode,
-                    payPoint = getMongResponseDto.payPoint,
-                    stateCode = getMongResponseDto.stateCode,
-                    isSleeping = getMongResponseDto.isSleep,
-                    statusCode = getMongResponseDto.statusCode,
-                    expRatio = getMongResponseDto.expRatio,
-                    weight = getMongResponseDto.weight,
-                    healthyRatio = getMongResponseDto.healthyRatio,
-                    satietyRatio = getMongResponseDto.satietyRatio,
-                    strengthRatio = getMongResponseDto.strengthRatio,
-                    fatigueRatio = getMongResponseDto.fatigueRatio,
-                    poopCount = getMongResponseDto.poopCount,
-                    updatedAt = getMongResponseDto.updatedAt,
+                mongEntity.updateBasic(
+                    mongBasicDto = mongBasicDto,
+                )
+            )
+        }
+    }
+
+    /**
+     * 몽 상태 변경 옵저빙 함수
+     */
+    @Transaction
+    fun updateMongState(mongStateDto: MongStateDto) {
+
+        roomDB.mongDao().findByMongId(mongId = mongStateDto.mongId)?.let { mongEntity ->
+            roomDB.mongDao().save(
+                mongEntity.updateState(
+                    mongStateDto = mongStateDto,
+                )
+            )
+        }
+    }
+
+    /**
+     * 몽 지수 변경 옵저빙 함수
+     */
+    @Transaction
+    fun updateMongStatus(mongStatusDto: MongStatusDto) {
+
+        roomDB.mongDao().findByMongId(mongId = mongStatusDto.mongId)?.let { mongEntity ->
+            roomDB.mongDao().save(
+                mongEntity.updateStatus(
+                    mongStatusDto = mongStatusDto,
                 )
             )
         }

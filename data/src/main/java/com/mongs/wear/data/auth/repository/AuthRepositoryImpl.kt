@@ -3,9 +3,11 @@ package com.mongs.wear.data.auth.repository
 import android.content.Context
 import com.mongs.wear.data.auth.api.AuthApi
 import com.mongs.wear.data.auth.dataStore.TokenDataStore
+import com.mongs.wear.data.auth.dto.request.CreateDeviceRequestDto
 import com.mongs.wear.data.auth.dto.request.JoinRequestDto
 import com.mongs.wear.data.auth.dto.request.LoginRequestDto
 import com.mongs.wear.data.auth.dto.request.LogoutRequestDto
+import com.mongs.wear.data.auth.exception.CreateDeviceException
 import com.mongs.wear.data.auth.exception.JoinException
 import com.mongs.wear.data.auth.exception.LoginException
 import com.mongs.wear.data.auth.exception.LogoutException
@@ -26,6 +28,13 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     /**
+     * 로그인 여부 조회
+     */
+    override suspend fun isLogin() : Boolean {
+        return tokenDataStore.getAccessToken().isNotEmpty()
+    }
+
+    /**
      * 회원 가입
      */
     override suspend fun join(email: String, name: String, googleAccountId: String) {
@@ -43,10 +52,8 @@ class AuthRepositoryImpl @Inject constructor(
     override suspend fun login(deviceId: String, email: String, googleAccountId: String) : Long {
 
         val appPackageName = context.packageName
-
-        val buildVersion = context.packageManager.getPackageInfo(context.packageName, 0).versionName
-
         val deviceName = android.os.Build.MODEL
+        val buildVersion = context.packageManager.getPackageInfo(context.packageName, 0).versionName
 
         val response = authApi.login(
             LoginRequestDto(
@@ -97,6 +104,28 @@ class AuthRepositoryImpl @Inject constructor(
             }
         } else {
             throw LogoutException(result = httpUtil.getErrorResult(response.errorBody()))
+        }
+    }
+
+    /**
+     * 기기 등록
+     */
+    override suspend fun createDevice(deviceId: String, fcmToken: String) {
+
+        val appPackageName = context.packageName
+        val deviceName = android.os.Build.MODEL
+
+        val response = authApi.createDevice(
+            createDeviceRequestDto = CreateDeviceRequestDto(
+                deviceId = deviceId,
+                deviceName = deviceName,
+                appPackageName = appPackageName,
+                fcmToken = fcmToken,
+            )
+        )
+
+        if (!response.isSuccessful) {
+            throw CreateDeviceException()
         }
     }
 }

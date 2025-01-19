@@ -1,9 +1,10 @@
 package com.mongs.wear.presentation.pages.login
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.util.Log
+import android.provider.Settings
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.runtime.getValue
@@ -11,6 +12,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.firebase.messaging.FirebaseMessaging
 import com.mongs.wear.domain.auth.exception.LoginException
 import com.mongs.wear.domain.auth.exception.NeedJoinException
 import com.mongs.wear.domain.auth.exception.NeedUpdateAppException
@@ -21,13 +23,17 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val joinUseCase: JoinUseCase,
     private val loginUseCase: LoginUseCase,
+    private val firebaseMessaging: FirebaseMessaging,
 ): BaseViewModel() {
 
     /**
@@ -42,7 +48,8 @@ class LoginViewModel @Inject constructor(
                 loginUseCase(
                     LoginUseCase.Param(
                         googleAccountId = account.id,
-                        email = account.email
+                        email = account.email,
+                        fcmToken = firebaseMessaging.getTokenSuspend(),
                     )
                 )
                 uiState.navMainPagerView = true
@@ -63,7 +70,8 @@ class LoginViewModel @Inject constructor(
                     loginUseCase(
                         LoginUseCase.Param(
                             googleAccountId = account.id,
-                            email = account.email
+                            email = account.email,
+                            fcmToken = firebaseMessaging.getTokenSuspend(),
                         )
                     )
                     uiState.navMainPagerView = true
@@ -93,7 +101,8 @@ class LoginViewModel @Inject constructor(
                 loginUseCase(
                     LoginUseCase.Param(
                         googleAccountId = account.id,
-                        email = account.email
+                        email = account.email,
+                        fcmToken = firebaseMessaging.getTokenSuspend(),
                     )
                 )
 
@@ -127,6 +136,19 @@ class LoginViewModel @Inject constructor(
             }
 
             googleLoginLauncher.launch(googleSignInClient.signInIntent)
+        }
+    }
+
+    /**
+     * FCM 토큰 조회
+     */
+    private suspend fun FirebaseMessaging.getTokenSuspend(): String = suspendCancellableCoroutine { cont ->
+        getToken().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                cont.resume(task.result ?: "")
+            } else {
+                cont.resumeWithException(task.exception ?: Exception("Unknown error occurred"))
+            }
         }
     }
 

@@ -25,11 +25,11 @@ class SlotRepositoryImpl @Inject constructor(
         roomDB.mongDao().let { dao ->
             // 전체 선택 해제 (오류 값 보정)
             dao.findAllByIsCurrentTrue().map { mongEntity ->
-                dao.save(mongEntity.update(isCurrent = false))
+                dao.save(mongEntity.unPick())
             }
 
             dao.findByMongId(mongId = mongId)?.let { mongEntity ->
-                dao.save(mongEntity.update(isCurrent = true))
+                dao.save(mongEntity.pick())
             }
         }
     }
@@ -76,41 +76,17 @@ class SlotRepositoryImpl @Inject constructor(
                         dao.findByMongId(mongId = mongEntity.mongId)?.let { mongEntity ->
                             dao.save(
                                 mongEntity.update(
-                                    mongName = body.result.mongName,
-                                    mongTypeCode = body.result.mongTypeCode,
-                                    payPoint = body.result.payPoint,
-                                    stateCode = body.result.stateCode,
-                                    isSleeping = body.result.isSleep,
-                                    statusCode = body.result.statusCode,
-                                    expRatio = body.result.expRatio,
-                                    weight = body.result.weight,
-                                    healthyRatio = body.result.healthyRatio,
-                                    satietyRatio = body.result.satietyRatio,
-                                    strengthRatio = body.result.strengthRatio,
-                                    fatigueRatio = body.result.fatigueRatio,
-                                    poopCount = body.result.poopCount,
-                                    updatedAt = body.result.updatedAt,
+                                    mongBasicDto = body.result.basic,
+                                    mongStateDto = body.result.state,
+                                    mongStatusDto = body.result.status,
                                 )
                             )
                         } ?: run {
                             dao.save(
-                                MongEntity(
-                                    mongId = body.result.mongId,
-                                    mongName = body.result.mongName,
-                                    mongTypeCode = body.result.mongTypeCode,
-                                    payPoint = body.result.payPoint,
-                                    stateCode = body.result.stateCode,
-                                    isSleeping = body.result.isSleep,
-                                    statusCode = body.result.statusCode,
-                                    expRatio = body.result.expRatio,
-                                    weight = body.result.weight,
-                                    healthyRatio = body.result.healthyRatio,
-                                    satietyRatio = body.result.satietyRatio,
-                                    strengthRatio = body.result.strengthRatio,
-                                    fatigueRatio = body.result.fatigueRatio,
-                                    poopCount = body.result.poopCount,
-                                    createdAt = body.result.createdAt,
-                                    updatedAt = body.result.updatedAt,
+                                MongEntity.of(
+                                    mongBasicDto = body.result.basic,
+                                    mongStateDto = body.result.state,
+                                    mongStatusDto = body.result.status,
                                 )
                             )
                         }

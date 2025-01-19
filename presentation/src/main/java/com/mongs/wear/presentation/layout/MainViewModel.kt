@@ -3,31 +3,23 @@ package com.mongs.wear.presentation.layout
 import android.annotation.SuppressLint
 import android.content.Context
 import android.provider.Settings
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.google.firebase.messaging.FirebaseMessaging
-import com.mongs.wear.core.utils.TimeUtil
-import com.mongs.wear.domain.device.usecase.CreateDeviceUseCase
 import com.mongs.wear.domain.device.usecase.GetNetworkUseCase
+import com.mongs.wear.domain.device.usecase.SetDeviceIdUseCase
 import com.mongs.wear.domain.device.usecase.SetNetworkUseCase
-import com.mongs.wear.presentation.global.manager.StepSensorManager
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import com.mongs.wear.presentation.global.worker.StepSensorWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlinx.coroutines.withContext
-import okhttp3.internal.wait
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 @SuppressLint("HardwareIds")
 @HiltViewModel
@@ -35,10 +27,8 @@ class MainViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val setNetworkUseCase: SetNetworkUseCase,
     private val getNetworkUseCase: GetNetworkUseCase,
-    private val createDeviceUseCase: CreateDeviceUseCase,
-    private val stepSensorManager: StepSensorManager,
+    private val setDeviceIdUseCase: SetDeviceIdUseCase,
     private val workerManager: WorkManager,
-    private val firebaseMessaging: FirebaseMessaging,
 ) : BaseViewModel() {
 
     val network: LiveData<Boolean> get() = _network
@@ -49,8 +39,15 @@ class MainViewModel @Inject constructor(
 
             uiState.loadingBar = true
 
+            // 기기 ID 설정
+            setDeviceIdUseCase(
+                SetDeviceIdUseCase.Param(
+                    deviceId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID),
+                )
+            )
+
             // network flag true 로 변경
-            setNetworkUseCase(param =
+            setNetworkUseCase(
                 SetNetworkUseCase.Param(
                     network = true
                 )
@@ -61,37 +58,14 @@ class MainViewModel @Inject constructor(
                 _network.value = it
             }
 
-            // 기기 정보 등록 + 걸음 수 갱신
-            createDeviceUseCase(
-                CreateDeviceUseCase.Param(
-                    deviceId = Settings.Secure.getString(context.contentResolver, Settings.Secure.ANDROID_ID),
-                    totalWalkingCount = stepSensorManager.getWalkingCount(),
-                    deviceBootedDt = TimeUtil.getBootedDt(),
-                    fcmToken = firebaseMessaging.getTokenSuspend(),
-                )
-            )
-
             // 15분 간격 걸음 수 서버 동기화 워커 실행
             workerManager.enqueueUniquePeriodicWork(
                 StepSensorWorker.WORKER_NAME,
-                ExistingPeriodicWorkPolicy.KEEP,
+                ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
                 PeriodicWorkRequestBuilder<StepSensorWorker>(15, TimeUnit.MINUTES).build()
             )
 
             uiState.loadingBar = false
-        }
-    }
-
-    /**
-     * FCM 토큰 조회
-     */
-    private suspend fun FirebaseMessaging.getTokenSuspend(): String = suspendCancellableCoroutine { cont ->
-        getToken().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                cont.resume(task.result ?: "")
-            } else {
-                cont.resumeWithException(task.exception ?: Exception("Unknown error occurred"))
-            }
         }
     }
 

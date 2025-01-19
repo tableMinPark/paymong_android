@@ -7,6 +7,7 @@ import com.mongs.wear.data.auth.dto.request.LogoutRequestDto
 import com.mongs.wear.data.auth.dto.request.ReissueRequestDto
 import com.mongs.wear.data.auth.dto.response.LoginResponseDto
 import com.mongs.wear.data.auth.dto.response.ReissueResponseDto
+import com.mongs.wear.data.auth.dto.request.CreateDeviceRequestDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
@@ -24,4 +25,7 @@ interface AuthApi {
 
     @POST("auth/logout")
     suspend fun logout(@Body logoutRequestDto: LogoutRequestDto) : Response<ResponseDto<Void>>
+
+    @POST("auth/device")
+    suspend fun createDevice(@Body createDeviceRequestDto: CreateDeviceRequestDto) : Response<ResponseDto<Void>>
 }

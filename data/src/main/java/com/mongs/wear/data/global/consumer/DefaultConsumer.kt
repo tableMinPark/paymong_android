@@ -34,6 +34,9 @@ class DefaultConsumer @Inject constructor(
         private const val MANAGER_MANAGEMENT_PREFIX = "MANAGER-MANAGEMENT-"
     }
 
+    /**
+     * Consume 이벤트 함수
+     */
     override fun messageArrived(topic: String?, message: MqttMessage?) {
         message?.let {
             topic?.let {

@@ -1,5 +1,6 @@
 package com.mongs.wear.data.global.interceptor
 
+import android.util.Log
 import com.mongs.wear.data.auth.api.AuthApi
 import com.mongs.wear.data.auth.dataStore.TokenDataStore
 import com.mongs.wear.data.auth.dto.request.ReissueRequestDto
@@ -19,6 +20,9 @@ class AuthorizationInterceptor (
         private const val AUTHORIZATION_HEADER = "Authorization"
     }
 
+    /**
+     * 엑세스 토큰 인터 셉터
+     */
     override fun intercept(chain: Chain): Response {
 
         val accessToken = runBlocking { tokenDataStore.getAccessToken() }
@@ -36,12 +40,12 @@ class AuthorizationInterceptor (
         }
     }
 
-    private fun generateRequest(chain: Chain, accessToken: String) : Request {
-
-        return chain.request().newBuilder()
-            .addHeader(AUTHORIZATION_HEADER, "Bearer $accessToken")
-            .build()
-    }
+    /**
+     * Http 요청 생성
+     */
+    private fun generateRequest(chain: Chain, accessToken: String) : Request = chain.request().newBuilder()
+        .addHeader(AUTHORIZATION_HEADER, "Bearer $accessToken")
+        .build()
 
     /**
      * 토큰 재발행

@@ -2,6 +2,7 @@ package com.mongs.wear.domain.auth.usecase
 
 import com.mongs.wear.core.errors.DataErrorCode
 import com.mongs.wear.core.exception.ErrorException
+import com.mongs.wear.domain.auth.exception.CreateDeviceException
 import com.mongs.wear.domain.auth.exception.LoginException
 import com.mongs.wear.domain.auth.exception.NeedJoinException
 import com.mongs.wear.domain.auth.exception.NeedUpdateAppException
@@ -31,28 +32,34 @@ class LoginUseCase @Inject constructor(
 
             if (param.googleAccountId.isNullOrEmpty()) throw NotExistsGoogleAccountIdException()
 
-            val deviceId = deviceRepository.getDeviceId()
+            // 기기 등록
+            authRepository.createDevice(
+                deviceId = deviceRepository.getDeviceId(),
+                fcmToken = param.fcmToken,
+            )
 
             // 로그인
             val accountId = authRepository.login(
-                deviceId = deviceId,
+                deviceId = deviceRepository.getDeviceId(),
                 email = param.email,
                 googleAccountId = param.googleAccountId
             )
 
-            // 플레이어 정보 등록
-            playerRepository.createPlayer()
-
             // 브로커 연결
             mqttClient.connect()
 
+            // 브로커 연결 여부 확인
             if (mqttClient.isConnected()) {
-                // 회원 정보 구독
+                // 플레이어 정보 등록
+                playerRepository.createPlayer()
+
+                // 플레이어 정보 구독
                 mqttClient.subPlayer(accountId = accountId)
 
                 deviceRepository.setNetwork(network = true)
             } else {
-                deviceRepository.setNetwork(network = false)
+                throw LoginException()
+//                deviceRepository.setNetwork(network = false)
             }
         }
     }
@@ -61,7 +68,9 @@ class LoginUseCase @Inject constructor(
 
         val googleAccountId: String?,
 
-        val email: String?
+        val email: String?,
+
+        val fcmToken: String,
     )
 
     override fun handleException(exception: ErrorException) {
@@ -72,6 +81,8 @@ class LoginUseCase @Inject constructor(
             DataErrorCode.DATA_AUTH_NEED_JOIN -> throw NeedJoinException()
 
             DataErrorCode.DATA_AUTH_NEED_UPDATE_APP -> throw NeedUpdateAppException()
+
+            DataErrorCode.DATA_AUTH_CREATE_DEVICE -> throw CreateDeviceException()
 
             else -> throw LoginException()
         }

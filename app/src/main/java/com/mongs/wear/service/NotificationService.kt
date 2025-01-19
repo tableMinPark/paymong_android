@@ -23,9 +23,7 @@ class NotificationService : FirebaseMessagingService() {
     }
 
     override fun onNewToken(token: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            Log.i(TAG, "[FIREBASE] onNewToken : $token")
-        }
+        Log.i(TAG, "[FIREBASE] onNewToken : $token")
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {

@@ -3,10 +3,8 @@ package com.mongs.wear.data.device.repository
 import androidx.lifecycle.LiveData
 import com.mongs.wear.data.device.api.DeviceApi
 import com.mongs.wear.data.device.datastore.DeviceDataStore
-import com.mongs.wear.data.device.dto.request.CreateDeviceRequestDto
 import com.mongs.wear.data.device.dto.request.ExchangeWalkingCountRequestDto
 import com.mongs.wear.data.device.dto.request.UpdateWalkingCountRequestDto
-import com.mongs.wear.data.device.exception.CreateDeviceException
 import com.mongs.wear.data.device.exception.ExchangeWalkingException
 import com.mongs.wear.data.global.utils.HttpUtil
 import com.mongs.wear.domain.device.repository.DeviceRepository
@@ -21,25 +19,6 @@ class DeviceRepositoryImpl @Inject constructor(
     private val deviceApi: DeviceApi,
     private val deviceDataStore: DeviceDataStore,
 ) : DeviceRepository {
-
-    /**
-     * 기기 등록
-     */
-    override suspend fun createDevice(deviceId: String, totalWalkingCount: Int, deviceBootedDt: LocalDateTime, fcmToken: String) {
-
-        val response = deviceApi.createDevice(
-            createDeviceRequestDto = CreateDeviceRequestDto(
-                deviceId = deviceId,
-                totalWalkingCount = totalWalkingCount,
-                deviceBootedDt = deviceBootedDt,
-                fcmToken = fcmToken,
-            )
-        )
-
-        if (!response.isSuccessful) {
-            throw CreateDeviceException()
-        }
-    }
 
     /**
      * 걸음 수 환전
@@ -70,13 +49,12 @@ class DeviceRepositoryImpl @Inject constructor(
     /**
      * 걸음 수 서버 동기화
      */
-    override suspend fun updateWalkingCountInServer(deviceId: String, totalWalkingCount: Int, deviceBootedDt: LocalDateTime) {
+    override suspend fun updateWalkingCountInServer(totalWalkingCount: Int, deviceBootedDt: LocalDateTime) {
 
         deviceDataStore.setTotalWalkingCount(totalWalkingCount = totalWalkingCount)
 
         val response = deviceApi.updateWalkingCount(
             UpdateWalkingCountRequestDto(
-                deviceId = deviceId,
                 totalWalkingCount = totalWalkingCount,
                 deviceBootedDt = deviceBootedDt,
             )
@@ -102,30 +80,47 @@ class DeviceRepositoryImpl @Inject constructor(
         deviceDataStore.setTotalWalkingCount(totalWalkingCount = totalWalkingCount)
     }
 
+    /**
+     * 기기 ID 조회
+     */
     override suspend fun setDeviceId(deviceId: String) {
 
         if (deviceId.isEmpty() || "unknown" == deviceId) {
             deviceDataStore.setDeviceId(deviceId = UUID.randomUUID().toString().replace("-", ""))
-            return
+        } else {
+            deviceDataStore.setDeviceId(deviceId = deviceId)
         }
-
-        deviceDataStore.setDeviceId(deviceId = deviceId)
     }
 
+    /**
+     * 기기 ID 조회
+     */
     override suspend fun getDeviceId(): String = deviceDataStore.getDeviceId()
 
+    /**
+     * 배경 화면 설정
+     */
     override suspend fun setBgMapTypeCode(mapTypeCode: String) {
         deviceDataStore.setBgMapTypeCode(mapTypeCode = mapTypeCode)
     }
 
+    /**
+     * 배경 화면 라이브 객체 조회
+     */
     override suspend fun getBgMapTypeCodeLive(): LiveData<String> {
         return deviceDataStore.getBgMapTypeCodeLive()
     }
 
+    /**
+     * 네트 워크 flag 설정
+     */
     override suspend fun setNetwork(network: Boolean) {
         deviceDataStore.setNetwork(network = network)
     }
 
+    /**
+     * 네트 워크 flag 라이브 객체 조회
+     */
     override suspend fun getNetworkLive(): LiveData<Boolean> {
         return deviceDataStore.getNetworkLive()
     }

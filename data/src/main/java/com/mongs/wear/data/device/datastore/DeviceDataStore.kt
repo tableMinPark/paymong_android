@@ -23,17 +23,31 @@ class DeviceDataStore @Inject constructor(
     @ApplicationContext private val context: Context
 ) {
 
+    /**
+     * STEPS = TOTAL_WALKING_COUNT - CONSUME_WALKING_COUNT + WALKING_COUNT
+     */
     companion object {
         private const val DEVICE_DATA_STORE_NAME = "DEVICE"
 
+        private const val DEFAULT_BACKGROUND_MAP_CODE = "MP000"
+
+        // 보유 총 걸음 수
         private val STEPS = intPreferencesKey("STEPS")
+        // 기기 부팅 이전 보유 총 걸음 수
         private val WALKING_COUNT = intPreferencesKey("WALKING_COUNT")
+        // 기기 부팅 이후 소비한 보유 걸음 수
         private val CONSUME_WALKING_COUNT = intPreferencesKey("CONSUME_WALKING_COUNT")
+        // 기기 부팅 이후 총 걸음 수
         private val TOTAL_WALKING_COUNT = intPreferencesKey("TOTAL_WALKING_COUNT")
 
+        // 기기 ID
         private val DEVICE_ID = stringPreferencesKey("DEVICE_ID")
+        // 배경 화면 맵 코드
         private val BG_MAP_TYPE_CODE = stringPreferencesKey("BG_MAP_TYPE_CODE")
+        // 네트워크 flag
         private val NETWORK = booleanPreferencesKey("NETWORK")
+        // 알림 flag
+        private val NOTIFICATION = booleanPreferencesKey("NOTIFICATION")
     }
 
     private val Context.store by preferencesDataStore(name = DEVICE_DATA_STORE_NAME)
@@ -41,8 +55,6 @@ class DeviceDataStore @Inject constructor(
     init {
         CoroutineScope(Dispatchers.IO).launch {
             context.store.edit { preferences ->
-
-                preferences[NETWORK] = true
 
                 if (!preferences.contains(STEPS)) {
                     preferences[STEPS] = 0
@@ -65,17 +77,11 @@ class DeviceDataStore @Inject constructor(
                 }
 
                 if (!preferences.contains(BG_MAP_TYPE_CODE)) {
-                    preferences[BG_MAP_TYPE_CODE] = "MP000"
+                    preferences[BG_MAP_TYPE_CODE] = DEFAULT_BACKGROUND_MAP_CODE
                 }
-            }
-        }
-    }
 
-    fun getSteps(): Int {
-        return runBlocking {
-            context.store.data.map { preferences ->
-                preferences[STEPS]!!
-            }.first()
+                preferences[NETWORK] = true
+            }
         }
     }
 
@@ -107,14 +113,6 @@ class DeviceDataStore @Inject constructor(
         }
     }
 
-    fun getConsumeWalkingCount(): Int {
-        return runBlocking {
-            context.store.data.map { preferences ->
-                preferences[CONSUME_WALKING_COUNT]!!
-            }.first()
-        }
-    }
-
     suspend fun setTotalWalkingCount(totalWalkingCount: Int) {
         context.store.edit { preferences ->
             preferences[TOTAL_WALKING_COUNT] = totalWalkingCount
@@ -126,7 +124,7 @@ class DeviceDataStore @Inject constructor(
         }
     }
 
-    suspend fun getTotalWalkingCount() : Int {
+    fun getTotalWalkingCount() : Int {
         return runBlocking {
             context.store.data.map { preferences ->
                 preferences[TOTAL_WALKING_COUNT]!!
@@ -170,5 +168,19 @@ class DeviceDataStore @Inject constructor(
         return context.store.data.map { preferences ->
             preferences[NETWORK]!!
         }.asLiveData()
+    }
+
+    suspend fun setNotification(notification: Boolean) {
+        context.store.edit { preferences ->
+            preferences[NOTIFICATION] = notification
+        }
+    }
+
+    fun getNotification() : Boolean {
+        return runBlocking {
+            context.store.data.map { preferences ->
+                preferences[NOTIFICATION]!!
+            }.first()
+        }
     }
 }

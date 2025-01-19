@@ -41,51 +41,27 @@ class ManagementRepositoryImpl @Inject constructor(
                 roomDB.mongDao().let { dao ->
                     // 없는 Mong 삭제
                     body.result.let { getMongResponseDtos ->
-                        dao.deleteByMongIdNotIn(getMongResponseDtos.map { getMongResponseDto -> getMongResponseDto.mongId })
+                        dao.deleteByMongIdNotIn(getMongResponseDtos.map { getMongResponseDto -> getMongResponseDto.basic.mongId })
                     }
 
                     // 현재 몽 목록 동기화
                     body.result.forEach({ getMongResponseDto ->
                         // 수정
-                        dao.findByMongId(getMongResponseDto.mongId)?.let { mongEntity ->
+                        dao.findByMongId(getMongResponseDto.basic.mongId)?.let { mongEntity ->
                             dao.save(
                                 mongEntity.update(
-                                    mongName = getMongResponseDto.mongName,
-                                    mongTypeCode = getMongResponseDto.mongTypeCode,
-                                    payPoint = getMongResponseDto.payPoint,
-                                    stateCode = getMongResponseDto.stateCode,
-                                    isSleeping = getMongResponseDto.isSleep,
-                                    statusCode = getMongResponseDto.statusCode,
-                                    expRatio = getMongResponseDto.expRatio,
-                                    weight = getMongResponseDto.weight,
-                                    healthyRatio = getMongResponseDto.healthyRatio,
-                                    satietyRatio = getMongResponseDto.satietyRatio,
-                                    strengthRatio = getMongResponseDto.strengthRatio,
-                                    fatigueRatio = getMongResponseDto.fatigueRatio,
-                                    poopCount = getMongResponseDto.poopCount,
-                                    updatedAt = getMongResponseDto.updatedAt,
+                                    mongBasicDto = getMongResponseDto.basic,
+                                    mongStateDto = getMongResponseDto.state,
+                                    mongStatusDto = getMongResponseDto.status,
                                 )
                             )
                         } ?: run {
                             // 등록
                             dao.save(
-                                MongEntity(
-                                    mongId = getMongResponseDto.mongId,
-                                    mongName = getMongResponseDto.mongName,
-                                    mongTypeCode = getMongResponseDto.mongTypeCode,
-                                    payPoint = getMongResponseDto.payPoint,
-                                    stateCode = getMongResponseDto.stateCode,
-                                    isSleeping = getMongResponseDto.isSleep,
-                                    statusCode = getMongResponseDto.statusCode,
-                                    expRatio = getMongResponseDto.expRatio,
-                                    weight = getMongResponseDto.weight,
-                                    healthyRatio = getMongResponseDto.healthyRatio,
-                                    satietyRatio = getMongResponseDto.satietyRatio,
-                                    strengthRatio = getMongResponseDto.strengthRatio,
-                                    fatigueRatio = getMongResponseDto.fatigueRatio,
-                                    poopCount = getMongResponseDto.poopCount,
-                                    createdAt = getMongResponseDto.createdAt,
-                                    updatedAt = getMongResponseDto.updatedAt,
+                                MongEntity.of(
+                                    mongBasicDto = getMongResponseDto.basic,
+                                    mongStateDto = getMongResponseDto.state,
+                                    mongStatusDto = getMongResponseDto.status,
                                 )
                             )
                         }
