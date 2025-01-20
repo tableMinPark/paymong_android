@@ -19,11 +19,17 @@ class MatchWaitCancelUseCase @Inject constructor(
     override suspend fun execute() {
 
         withContext(Dispatchers.IO) {
+            slotRepository.getCurrentSlot()?.let { mongModel ->
 
-//        val slotModel = slotRepository.getNowSlot()
-//
-//        battleRepository.matchWaitCancel(mongId = slotModel.mongId)
-//        mqttClient.disSubSearchMatch()
+                // 매칭 대기열 삭제
+                battleRepository.deleteWaitMatching(mongId = mongModel.mongId)
+
+                // 매칭 결과 구독 해제
+                mqttClient.disSubSearchMatch()
+
+                // 배틀 매치 구독 해제
+                mqttClient.disSubBattleMatch()
+            }
         }
     }
 

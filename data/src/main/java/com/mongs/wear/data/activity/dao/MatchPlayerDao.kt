@@ -24,6 +24,8 @@ interface MatchPlayerDao {
     @Query("SELECT * FROM mongs_match_player WHERE isMe = false")
     fun findLiveByPlayerIdIsMeFalse() : LiveData<MatchPlayerEntity?>
 
+    @Query("DELETE FROM mongs_match_player")
+    fun deleteAll()
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(matchPlayerEntity: MatchPlayerEntity) : Long

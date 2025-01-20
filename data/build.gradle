@@ -5,18 +5,16 @@ plugins {
     id 'com.google.devtools.ksp'
 }
 
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
+}
+
 android {
     namespace 'com.mongs.wear.data'
     compileSdk 34
 
     defaultConfig {
         minSdk 30
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += ["room.schemaLocation": "$projectDir/schemas".toString()]
-            }
-        }
     }
 
     buildTypes {
@@ -61,8 +59,8 @@ dependencies {
     ksp "androidx.room:room-compiler:2.6.1"
 
     // data source
-    implementation "androidx.datastore:datastore-preferences:1.1.1"
-    implementation "androidx.datastore:datastore-preferences-core:1.1.1"
+    implementation "androidx.datastore:datastore-preferences:1.1.2"
+    implementation "androidx.datastore:datastore-preferences-core:1.1.2"
 
     // MQTT
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'

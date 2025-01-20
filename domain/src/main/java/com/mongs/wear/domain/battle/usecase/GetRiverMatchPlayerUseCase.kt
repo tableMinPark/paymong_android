@@ -3,7 +3,6 @@ package com.mongs.wear.domain.battle.usecase
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.battle.exception.GetMyMatchException
 import com.mongs.wear.domain.battle.exception.GetRiverMatchPlayerException
 import com.mongs.wear.domain.battle.repository.BattleRepository
 import com.mongs.wear.domain.battle.vo.MatchPlayerVo
@@ -20,7 +19,6 @@ class GetRiverMatchPlayerUseCase @Inject constructor(
 
         return withContext(Dispatchers.IO) {
             battleRepository.getRiverMatchPlayerLive().map { matchPlayerModel ->
-
                 MatchPlayerVo(
                     playerId = matchPlayerModel.playerId,
                     mongTypeCode = matchPlayerModel.mongTypeCode,

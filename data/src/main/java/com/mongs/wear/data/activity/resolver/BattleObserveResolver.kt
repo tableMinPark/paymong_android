@@ -17,6 +17,9 @@ class BattleObserveResolver @Inject constructor(
     private val deviceDataStore: DeviceDataStore,
 ) {
 
+    /**
+     * 매칭 성공 갱신
+     */
     @Transaction
     fun updateSearchMatch(createBattleResponseDto: CreateBattleResponseDto) {
 
@@ -24,15 +27,13 @@ class BattleObserveResolver @Inject constructor(
 
         // 배틀 룸 정보 업데이트
         roomDB.matchRoomDao().let { dao ->
-
             dao.findByDeviceId(deviceId = deviceId)?.let { matchRoomEntity ->
-
                 dao.save(
                     matchRoomEntity = matchRoomEntity.update(
                         roomId = createBattleResponseDto.roomId,
                         round = 0,
                         isLastRound = false,
-                        stateCode = MatchStateCode.MATCH_MATCHING
+                        stateCode = MatchStateCode.MATCH_MATCHING,
                     )
                 )
             }
@@ -40,9 +41,7 @@ class BattleObserveResolver @Inject constructor(
 
         // 배틀 플레이어 저장
         roomDB.matchPlayerDao().let { dao ->
-
             createBattleResponseDto.battlePlayers.forEach({ battlePlayer ->
-
                 dao.save(
                     matchPlayerEntity = MatchPlayerEntity(
                         playerId = battlePlayer.playerId,
@@ -67,9 +66,7 @@ class BattleObserveResolver @Inject constructor(
 
         // 배틀 룸 정보 업데이트
         roomDB.matchRoomDao().let { dao ->
-
             dao.findByRoomId(roomId = fightBattleResponseDto.roomId)?.let { matchRoomEntity ->
-
                 dao.save(
                     matchRoomEntity = matchRoomEntity.update(
                         round = fightBattleResponseDto.round,
@@ -82,11 +79,8 @@ class BattleObserveResolver @Inject constructor(
 
         // 배틀 플레이어 정보 업데이트
         roomDB.matchPlayerDao().let { dao ->
-
             fightBattleResponseDto.battlePlayers.forEach({ battlePlayer ->
-
                 dao.findByPlayerId(playerId = battlePlayer.playerId)?.let { matchPlayerEntity ->
-
                     dao.save(
                         matchPlayerEntity = matchPlayerEntity.update(
                             hp = battlePlayer.hp,
@@ -116,7 +110,6 @@ class BattleObserveResolver @Inject constructor(
         }
 
         roomDB.matchPlayerDao().let { dao ->
-
             dao.findByPlayerId(playerId = overBattleResponseDto.winPlayerId)
                 ?.let { matchPlayerEntity ->
                     dao.save(matchPlayerEntity = matchPlayerEntity.update(isWin = true))

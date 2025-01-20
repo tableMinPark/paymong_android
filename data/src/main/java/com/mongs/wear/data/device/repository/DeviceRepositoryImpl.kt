@@ -124,4 +124,39 @@ class DeviceRepositoryImpl @Inject constructor(
     override suspend fun getNetworkLive(): LiveData<Boolean> {
         return deviceDataStore.getNetworkLive()
     }
+
+    /**
+     * 알림 플래그 설정
+     */
+    override suspend fun setNotification(notification: Boolean) {
+        deviceDataStore.setNotification(notification = notification)
+    }
+
+    /**
+     * 알림 플래그 조회
+     */
+    override suspend fun getNotification(): Boolean {
+        return deviceDataStore.getNotification()
+    }
+
+    /**
+     * 알림 플래그 라이브 객체 조회
+     */
+    override suspend fun getNotificationLive(): LiveData<Boolean> {
+        return deviceDataStore.getNotificationLive()
+    }
+
+    /**
+     * 음량 설정
+     */
+    override suspend fun setSoundVolume(soundVolume: Float) {
+        deviceDataStore.setSoundVolume(soundVolume = soundVolume)
+    }
+
+    /**
+     * 음량 조회
+     */
+    override suspend fun getSoundVolume(): Float {
+        return deviceDataStore.getSoundVolume()
+    }
 }

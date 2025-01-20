@@ -1,32 +1,51 @@
-package com.mongs.wear.presentation.pages.main.configure
+package com.mongs.wear.presentation.pages.setting
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.work.WorkManager
 import com.mongs.wear.domain.auth.exception.LogoutException
 import com.mongs.wear.domain.auth.usecase.LogoutUseCase
+import com.mongs.wear.domain.device.usecase.GetNotificationUseCase
+import com.mongs.wear.domain.device.usecase.SetNotificationUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import com.mongs.wear.presentation.global.worker.StepSensorWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
-class MainConfigureViewModel @Inject constructor(
+class SettingViewModel @Inject constructor(
     private val workerManager: WorkManager,
     private val logoutUseCase: LogoutUseCase,
-): BaseViewModel() {
+    private val getNotificationUseCase: GetNotificationUseCase,
+    private val setNotificationUseCase: SetNotificationUseCase,
+) : BaseViewModel() {
+
+    val notification: LiveData<Boolean> get() = _notification
+    private val _notification = MediatorLiveData(false)
+
 
     init {
         viewModelScopeWithHandler.launch(Dispatchers.Main) {
+
+            uiState.loadingBar = true
+
+            // notification flag 옵저버 객체 조회
+            _notification.addSource(withContext(Dispatchers.IO) { getNotificationUseCase() }) {
+                _notification.value = it
+            }
+
             uiState.loadingBar = false
         }
     }
 
     /**
-     * 로그아웃
+     * 로그 아웃
      */
     fun logout() {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
@@ -41,7 +60,20 @@ class MainConfigureViewModel @Inject constructor(
         }
     }
 
-    val uiState: UiState = UiState()
+    /**
+     * 알림 여부 토글
+     */
+    fun toggleNotification(notification: Boolean) {
+        viewModelScopeWithHandler.launch (Dispatchers.IO) {
+            setNotificationUseCase(
+                SetNotificationUseCase.Param(
+                    notification = notification,
+                )
+            )
+        }
+    }
+
+    val uiState = UiState()
 
     class UiState : BaseUiState() {
         var navLoginView by mutableStateOf(false)

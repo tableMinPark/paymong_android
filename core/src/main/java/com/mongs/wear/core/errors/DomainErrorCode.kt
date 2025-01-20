@@ -21,19 +21,20 @@ enum class DomainErrorCode(
     DOMAIN_AUTH_CREATE_DEVICE_FAILED("기기 등록 실패", false),
 
     // BATTLE
-    DOMAIN_BATTLE_EXIT_MATCH_FAILED("매치 퇴장 실패", false),
+    DOMAIN_BATTLE_MATCH_EXIT_FAILED("매치 퇴장 실패", false),
     DOMAIN_BATTLE_GET_MATCH_FAILED("매치 조회 실패", false),
     DOMAIN_BATTLE_GET_MY_MATCH_PLAYER_FAILED("내 매치 조회 실패", false),
     DOMAIN_BATTLE_GET_RIVER_MATCH_PLAYER_FAILED("상대 매치 조회 실패", false),
     DOMAIN_BATTLE_MATCH_START_FAILED("매치 시작 실패", false),
+    DOMAIN_BATTLE_MATCH_ENTER_FAILED("매치 시작 실패", false),
     DOMAIN_BATTLE_MATCH_WAIT_CANCEL_FAILED("매치 대기 취소 실패", false),
     DOMAIN_BATTLE_MATCH_WAIT_FAILED("매치 대기 실패", false),
     DOMAIN_BATTLE_OVER_MATCH_FAILED("매치 종료 실패", false),
     DOMAIN_BATTLE_PICK_MATCH_FAILED("매치 선택 실패", false),
 
     // TRAINING
-    DOMAIN_TRAINING_RUNNER_FAILED("러너 훈련 실패", false),
-    DOMAIN_TRAINING_BASKETBALL_FAILED("농구 훈련 실패", false),
+    DOMAIN_TRAINING_RUNNER_FAILED("훈련 완료 실패", true),
+    DOMAIN_TRAINING_BASKETBALL_FAILED("훈련 완료 실패", false),
 
     // COLLECTION
     DOMAIN_COLLECTION_GET_MAP_COLLECTIONS_FAILED("맵 도감 조회 실패", false),
@@ -71,6 +72,10 @@ enum class DomainErrorCode(
     DOMAIN_DEVICE_SET_BACKGROUND_MAP_CODE_FAILED("배경 변경 실패", false),
     DOMAIN_DEVICE_GET_NETWORK_FAILED("네트워크 FLAG 조회 실패", false),
     DOMAIN_DEVICE_SET_NETWORK_FAILED("네트워크 FLAG 변경 실패", false),
+    DOMAIN_DEVICE_GET_NOTIFICATION_FAILED("알림 FLAG 조회 실패", false),
+    DOMAIN_DEVICE_SET_NOTIFICATION_FAILED("알림 FLAG 변경 실패", false),
+    DOMAIN_DEVICE_GET_SOUND_VOLUME_FAILED("음량 조회 실패", false),
+    DOMAIN_DEVICE_SET_SOUND_VOLUME_FAILED("음량 변경 실패", false),
     DOMAIN_DEVICE_SET_DEVICE_ID_FAILED("기기 ID 변경 실패", false),
     DOMAIN_PLAYER_GET_STEPS_FAILED("걸음 수 조회 실패", false),
     DOMAIN_PLAYER_EXCHANGE_WALKING_COUNT_FAILED("걸음 수 환전 실패", true),

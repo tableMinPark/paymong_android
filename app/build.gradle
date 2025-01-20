@@ -69,5 +69,7 @@ dependencies {
     implementation "androidx.activity:activity-compose:1.9.3"
 
     // fcm
+    implementation platform("com.google.firebase:firebase-bom:33.8.0")
     implementation 'com.google.firebase:firebase-messaging-ktx:24.1.0'
+    implementation "androidx.lifecycle:lifecycle-process:2.8.7"
 }

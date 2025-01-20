@@ -52,6 +52,7 @@ import com.mongs.wear.presentation.pages.feedback.FeedbackView
 import com.mongs.wear.presentation.pages.help.menu.HelpMenuView
 import com.mongs.wear.presentation.pages.login.LoginView
 import com.mongs.wear.presentation.pages.main.layout.MainPagerView
+import com.mongs.wear.presentation.pages.setting.SettingView
 import com.mongs.wear.presentation.pages.slot.SlotPickView
 import com.mongs.wear.presentation.pages.store.chargeStartPoint.StoreChargeStarPointView
 import com.mongs.wear.presentation.pages.store.exchangePayPoint.StoreExchangePayPointView
@@ -266,6 +267,10 @@ fun NavContent() {
             composable(route = NavItem.HelpMenu.route) {
                 HelpMenuView()
             }
+        }
+
+        composable(route = NavItem.Setting.route) {
+            SettingView(navController = navController)
         }
     }
 }

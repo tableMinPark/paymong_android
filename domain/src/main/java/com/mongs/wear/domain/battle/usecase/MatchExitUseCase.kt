@@ -1,16 +1,16 @@
 package com.mongs.wear.domain.battle.usecase
 
 import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.battle.exception.ExitMatchException
+import com.mongs.wear.domain.battle.exception.MatchExitException
 import com.mongs.wear.domain.battle.repository.BattleRepository
 import com.mongs.wear.domain.global.usecase.BaseParamUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class ExitMatchUseCase @Inject constructor(
+class MatchExitUseCase @Inject constructor(
     private val battleRepository: BattleRepository,
-) : BaseParamUseCase<ExitMatchUseCase.Param, Unit>() {
+) : BaseParamUseCase<MatchExitUseCase.Param, Unit>() {
 
     override suspend fun execute(param: Param) {
 
@@ -27,7 +27,7 @@ class ExitMatchUseCase @Inject constructor(
         super.handleException(exception)
 
         when(exception.code) {
-            else -> throw ExitMatchException()
+            else -> throw MatchExitException()
         }
     }
 }

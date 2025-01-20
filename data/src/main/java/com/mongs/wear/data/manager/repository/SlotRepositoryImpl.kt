@@ -18,6 +18,42 @@ class SlotRepositoryImpl @Inject constructor(
 ): SlotRepository {
 
     /**
+     * 현재 선택된 몽 정보 동기화
+     */
+//    override suspend fun updateCurrentSlot() {
+//        roomDB.mongDao().findByIsCurrentTrue()?.let { mongEntity ->
+//
+//            val response = managementApi.getMong(mongId = mongEntity.mongId)
+//
+//            if (response.isSuccessful) {
+//                response.body()?.let { body ->
+//                    roomDB.mongDao().let { dao ->
+//                        dao.findByMongId(mongId = mongEntity.mongId)?.let { mongEntity ->
+//                            dao.save(
+//                                mongEntity.update(
+//                                    mongBasicDto = body.result.basic,
+//                                    mongStateDto = body.result.state,
+//                                    mongStatusDto = body.result.status,
+//                                )
+//                            )
+//                        } ?: run {
+//                            dao.save(
+//                                MongEntity.of(
+//                                    mongBasicDto = body.result.basic,
+//                                    mongStateDto = body.result.state,
+//                                    mongStatusDto = body.result.status,
+//                                )
+//                            )
+//                        }
+//                    }
+//                }
+//            } else {
+//                roomDB.mongDao().deleteByMongId(mongId = mongEntity.mongId)
+//            }
+//        }
+//    }
+
+    /**
      * 현재 몽 선택
      */
     override suspend fun setCurrentSlot(mongId: Long) {
@@ -42,7 +78,6 @@ class SlotRepositoryImpl @Inject constructor(
         return roomDB.mongDao().findByIsCurrentTrue()?.let { currentMongEntity ->
             roomDB.mongDao().findByMongId(mongId = currentMongEntity.mongId)
                 ?.toMongModel()
-
         } ?: run {
             null
         }
@@ -59,42 +94,6 @@ class SlotRepositoryImpl @Inject constructor(
                     mongEntity?.toMongModel() ?: run { null }
                 }
             } ?: MutableLiveData(null)
-        }
-    }
-
-    /**
-     * 현재 선택된 몽 정보 동기화
-     */
-    override suspend fun updateCurrentSlot() {
-        roomDB.mongDao().findByIsCurrentTrue()?.let { mongEntity ->
-
-            val response = managementApi.getMong(mongId = mongEntity.mongId)
-
-            if (response.isSuccessful) {
-                response.body()?.let { body ->
-                    roomDB.mongDao().let { dao ->
-                        dao.findByMongId(mongId = mongEntity.mongId)?.let { mongEntity ->
-                            dao.save(
-                                mongEntity.update(
-                                    mongBasicDto = body.result.basic,
-                                    mongStateDto = body.result.state,
-                                    mongStatusDto = body.result.status,
-                                )
-                            )
-                        } ?: run {
-                            dao.save(
-                                MongEntity.of(
-                                    mongBasicDto = body.result.basic,
-                                    mongStateDto = body.result.state,
-                                    mongStatusDto = body.result.status,
-                                )
-                            )
-                        }
-                    }
-                }
-            } else {
-                roomDB.mongDao().deleteByMongId(mongId = mongEntity.mongId)
-            }
         }
     }
 }

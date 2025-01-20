@@ -54,4 +54,29 @@ interface DeviceRepository {
      * 네트워크 플래그 라이브 객체 조회
      */
     suspend fun getNetworkLive(): LiveData<Boolean>
+
+    /**
+     * 알림 플래그 설정
+     */
+    suspend fun setNotification(notification: Boolean)
+
+    /**
+     * 알림 플래그 조회
+     */
+    suspend fun getNotification() : Boolean
+
+    /**
+     * 알림 플래그 라이브 객체 조회
+     */
+    suspend fun getNotificationLive() : LiveData<Boolean>
+
+    /**
+     * 음량 설정
+     */
+    suspend fun setSoundVolume(soundVolume: Float)
+
+    /**
+     * 음량 조회
+     */
+    suspend fun getSoundVolume() : Float
 }

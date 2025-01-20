@@ -1,29 +1,25 @@
 package com.mongs.wear.activity
 
 import android.Manifest
-import android.app.NotificationManager
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.LifecycleObserver
+import com.google.android.gms.common.api.internal.LifecycleActivity
 import com.mongs.wear.presentation.assets.MongsTheme
-import com.mongs.wear.presentation.component.common.background.TrainingNestedBackground
 import com.mongs.wear.presentation.layout.MainView
 import com.mongs.wear.viewModel.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val mainActivityViewModel: MainActivityViewModel by viewModels()
-
-//    @Inject lateinit var notificationManager: NotificationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,12 +60,12 @@ class MainActivity : ComponentActivity() {
     override fun onResume() {
         super.onResume()
         mainActivityViewModel.connectSensor()
-//        mainActivityViewModel.resumeConnectMqtt()
+        mainActivityViewModel.resumeConnectMqtt()
     }
 
     override fun onPause() {
         mainActivityViewModel.disconnectSensor()
-//        mainActivityViewModel.pauseConnectMqtt()
+        mainActivityViewModel.pauseConnectMqtt()
         super.onPause()
     }
 

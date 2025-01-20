@@ -10,5 +10,5 @@ data class MatchModel(
 
     val isLastRound: Boolean,
 
-    val stateCode: MatchStateCode
+    val stateCode: MatchStateCode,
 )

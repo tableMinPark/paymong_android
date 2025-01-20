@@ -29,6 +29,9 @@ class MainSlotViewModel @Inject constructor(
     }
 
     fun stroke(mongId: Long) {
+
+        if (effectState.isHappy) return
+
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
             strokeMongUseCase(
                 StrokeMongUseCase.Param(

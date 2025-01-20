@@ -45,4 +45,7 @@ sealed class NavItem(val route: String) {
     /* Help */
     object HelpNested: NavItem("HelpNested")
     object HelpMenu: NavItem("HelpMenu")
+
+    /* Setting */
+    object Setting: NavItem("Setting")
 }

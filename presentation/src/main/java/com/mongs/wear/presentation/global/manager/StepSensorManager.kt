@@ -19,7 +19,7 @@ import kotlin.coroutines.resume
 
 class StepSensorManager @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val setTotalWalkingCountUseCase: SetTotalWalkingCountUseCase
+    private val setTotalWalkingCountUseCase: SetTotalWalkingCountUseCase,
 ) {
 
     companion object {
@@ -27,8 +27,7 @@ class StepSensorManager @Inject constructor(
     }
 
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    private val stepSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY)
-    //TYPE_STEP_DETECTOR TYPE_STEP_COUNTER TYPE_GRAVITY
+    private val stepSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY) // TODO: 센서 변경 -> TYPE_STEP_COUNTER
 
     /**
      * 지속적 걸음 수 센서 값 조회
@@ -39,7 +38,7 @@ class StepSensorManager @Inject constructor(
             event?.let {
                 CoroutineScope(Dispatchers.IO).launch {
 //                    val totalWalkingCount = event.values[0].toInt()
-                    val totalWalkingCount = SystemClock.elapsedRealtime().toInt()      // TODO: 센서 값 변경
+                    val totalWalkingCount = SystemClock.elapsedRealtime().toInt()   // TODO: 센서 값 변경
 
                     Log.i(TAG, "[Manager] 총 걸음 수 : $totalWalkingCount")
 
@@ -75,9 +74,8 @@ class StepSensorManager @Inject constructor(
     /**
      * 일발성 조회
      */
-
     private val sensorOnceManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    private val stepSensorOnce: Sensor? = sensorOnceManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY)
+    private val stepSensorOnce: Sensor? = sensorOnceManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY) // TODO: 센서 변경 -> TYPE_STEP_COUNTER
 
     suspend fun getWalkingCount(): Int {
         return suspendCancellableCoroutine { cont ->
@@ -86,7 +84,7 @@ class StepSensorManager @Inject constructor(
                     event?.let {
                         sensorOnceManager.unregisterListener(this)
 //                    val totalWalkingCount = event.values[0].toInt()
-                        val totalWalkingCount = SystemClock.elapsedRealtime().toInt()      // TODO: 센서 값 변경
+                        val totalWalkingCount = SystemClock.elapsedRealtime().toInt()   // TODO: 센서 값 변경
                         cont.resume(totalWalkingCount)
                     }
                 }

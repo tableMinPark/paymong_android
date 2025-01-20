@@ -3,6 +3,7 @@ package com.mongs.wear.data.device.datastore
 import android.content.Context
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
@@ -48,6 +49,8 @@ class DeviceDataStore @Inject constructor(
         private val NETWORK = booleanPreferencesKey("NETWORK")
         // 알림 flag
         private val NOTIFICATION = booleanPreferencesKey("NOTIFICATION")
+        // 음량
+        private val SOUND_VOLUME = floatPreferencesKey("SOUND_VOLUME")
     }
 
     private val Context.store by preferencesDataStore(name = DEVICE_DATA_STORE_NAME)
@@ -78,6 +81,14 @@ class DeviceDataStore @Inject constructor(
 
                 if (!preferences.contains(BG_MAP_TYPE_CODE)) {
                     preferences[BG_MAP_TYPE_CODE] = DEFAULT_BACKGROUND_MAP_CODE
+                }
+
+                if (!preferences.contains(NOTIFICATION)) {
+                    preferences[NOTIFICATION] = true
+                }
+
+                if (!preferences.contains(SOUND_VOLUME)) {
+                    preferences[SOUND_VOLUME] = 0.5f
                 }
 
                 preferences[NETWORK] = true
@@ -180,6 +191,26 @@ class DeviceDataStore @Inject constructor(
         return runBlocking {
             context.store.data.map { preferences ->
                 preferences[NOTIFICATION]!!
+            }.first()
+        }
+    }
+
+    fun getNotificationLive() : LiveData<Boolean> {
+        return context.store.data.map { preferences ->
+            preferences[NOTIFICATION]!!
+        }.asLiveData()
+    }
+
+    suspend fun setSoundVolume(soundVolume: Float) {
+        context.store.edit { preferences ->
+            preferences[SOUND_VOLUME] = soundVolume
+        }
+    }
+
+    fun getSoundVolume() : Float {
+        return runBlocking {
+            context.store.data.map { preferences ->
+                preferences[SOUND_VOLUME]!!
             }.first()
         }
     }

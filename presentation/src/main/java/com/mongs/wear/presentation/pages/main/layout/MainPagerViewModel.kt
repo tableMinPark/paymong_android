@@ -45,8 +45,7 @@ class MainPagerViewModel @Inject constructor(
 
     val uiState = UiState()
 
-    class UiState : BaseUiState() {
-    }
+    class UiState : BaseUiState() {}
 
     override fun exceptionHandler(exception: Throwable) {
 

@@ -1,6 +1,7 @@
 package com.mongs.wear.presentation.pages.battle.menu
 
 import android.content.Context
+import android.util.Log
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
@@ -20,6 +21,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,6 +41,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.wear.compose.material.Text
+import com.mongs.wear.core.enums.MatchStateCode
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsPink200
@@ -59,7 +62,7 @@ fun BattleMenuView(
     DisposableEffect(currentBackStackEntry) {
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_DESTROY) {
-                battleMenuViewModel.matchWaitCancel()
+                battleMenuViewModel.matchExit()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -69,11 +72,15 @@ fun BattleMenuView(
     }
 
     Box {
+        val matchVo = battleMenuViewModel.matchVo.observeAsState()
+
         if (battleMenuViewModel.uiState.loadingBar) {
             BattleMenuBackground()
             BattleMenuLoadingBar(
-                isMatchWait = battleMenuViewModel.uiState.isMatchWait,
-                matchWaitCancel = { battleMenuViewModel.matchWaitCancel() },
+                matchStateCode = matchVo.value?.stateCode,
+                matchWaitCancel = {
+                    battleMenuViewModel.matchWaitCancel()
+                },
                 modifier = Modifier.zIndex(1f)
             )
         } else {
@@ -85,18 +92,26 @@ fun BattleMenuView(
                 modifier = Modifier.zIndex(1f),
             )
         }
-    }
 
-    LaunchedEffect(battleMenuViewModel.uiState.navBattleMatchEvent) {
-        battleMenuViewModel.uiState.navBattleMatchEvent.collect {
-            navController.navigate(NavItem.BattleMatch.route)
+        LaunchedEffect(matchVo.value?.stateCode) {
+            matchVo.value?.let {
+                if (it.stateCode == MatchStateCode.MATCH_MATCHING) {
+                    battleMenuViewModel.matchEnter(roomId = it.roomId)
+                }
+
+                if (it.stateCode == MatchStateCode.MATCH_ENTER) {
+                    navController.navigate(NavItem.BattleMatch.route) {
+                        popUpTo(NavItem.BattleNested.route)
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
 private fun BattleMenuLoadingBar(
-    isMatchWait: Boolean,
+    matchStateCode: MatchStateCode?,
     matchWaitCancel: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
     context: Context = LocalContext.current,
@@ -133,28 +148,29 @@ private fun BattleMenuLoadingBar(
                     .fillMaxWidth()
                     .weight(0.3f)
             ) {
-                if (isMatchWait) {
-                    BlueButton(
-                        text = "매칭 취소",
-                        width = 100,
-                        onClick = matchWaitCancel,
-                    )
-                } else {
-                    Text(
-                        text = "입장 대기중..",
-                        textAlign = TextAlign.Center,
-                        fontFamily = DAL_MU_RI,
-                        fontWeight = FontWeight.Light,
-                        fontSize = 16.sp,
-                        color = MongsWhite,
-                        maxLines = 1,
-                    )
+                matchStateCode?.let {
+                    if (matchStateCode == MatchStateCode.NONE) {
+                        BlueButton(
+                            text = "매칭 취소",
+                            width = 100,
+                            onClick = matchWaitCancel,
+                        )
+                    } else if (matchStateCode == MatchStateCode.MATCH_MATCHING) {
+                        Text(
+                            text = "입장 대기중..",
+                            textAlign = TextAlign.Center,
+                            fontFamily = DAL_MU_RI,
+                            fontWeight = FontWeight.Light,
+                            fontSize = 16.sp,
+                            color = MongsWhite,
+                            maxLines = 1,
+                        )
+                    }
                 }
             }
         }
     }
 }
-
 
 @Composable
 private fun BattleMenuContent(

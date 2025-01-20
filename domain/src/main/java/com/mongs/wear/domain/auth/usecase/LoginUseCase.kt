@@ -24,6 +24,14 @@ class LoginUseCase @Inject constructor(
     private val authRepository: AuthRepository,
 ) : BaseParamUseCase<LoginUseCase.Param, Unit>() {
 
+    /**
+     * 로그인 UseCase
+     * 1. 기기 등록
+     * 2. 로그인
+     * 3. 브로커 연결
+     * 4. 플레이어 정보 등록
+     * 5. 네트워크 플래그 true
+     */
     override suspend fun execute(param: Param) {
 
         withContext(Dispatchers.IO) {
@@ -52,14 +60,12 @@ class LoginUseCase @Inject constructor(
             if (mqttClient.isConnected()) {
                 // 플레이어 정보 등록
                 playerRepository.createPlayer()
-
                 // 플레이어 정보 구독
                 mqttClient.subPlayer(accountId = accountId)
-
+                // 네트워크 flag 설정
                 deviceRepository.setNetwork(network = true)
             } else {
                 throw LoginException()
-//                deviceRepository.setNetwork(network = false)
             }
         }
     }

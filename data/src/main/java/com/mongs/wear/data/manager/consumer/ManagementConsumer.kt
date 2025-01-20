@@ -15,7 +15,7 @@ class ManagementConsumer  @Inject constructor(
 ) {
 
     companion object {
-        private const val MANAGER_MANAGEMENT_OBSERVE_MONG = "MANAGER-MANAGEMENT-200"
+        private const val MANAGER_MANAGEMENT_OBSERVE_MONG_BASIC = "MANAGER-MANAGEMENT-200"
         private const val MANAGER_MANAGEMENT_OBSERVE_MONG_STATE = "MANAGER-MANAGEMENT-201"
         private const val MANAGER_MANAGEMENT_OBSERVE_MONG_STATUS = "MANAGER-MANAGEMENT-202"
     }
@@ -23,7 +23,7 @@ class ManagementConsumer  @Inject constructor(
     fun messageArrived(code: String, resultJson: String) {
 
         when (code) {
-            MANAGER_MANAGEMENT_OBSERVE_MONG ->
+            MANAGER_MANAGEMENT_OBSERVE_MONG_BASIC ->
                 observeResolver.updateMongBasic(
                     mongBasicDto = gson.fromJson(
                         resultJson,

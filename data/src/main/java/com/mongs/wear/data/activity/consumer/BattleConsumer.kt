@@ -17,10 +17,10 @@ class BattleConsumer @Inject constructor(
     companion object {
         private const val TAG = "BattleConsumer"
 
-        private const val ACTIVITY_BATTLE_FIND_MATCHING = "ACTIVITY-BATTLE-002"
-        private const val ACTIVITY_BATTLE_ENTER_ALL_BATTLE_PLAYER = "ACTIVITY-BATTLE-003"
-        private const val ACTIVITY_BATTLE_OVER_BATTLE = "ACTIVITY-BATTLE-004"
-        private const val ACTIVITY_BATTLE_FIGHT_BATTLE = "ACTIVITY-BATTLE-005"
+        private const val ACTIVITY_BATTLE_FIND_MATCHING = "ACTIVITY-BATTLE-200"
+        private const val ACTIVITY_BATTLE_ENTER_ALL_BATTLE_PLAYER = "ACTIVITY-BATTLE-201"
+        private const val ACTIVITY_BATTLE_OVER_BATTLE = "ACTIVITY-BATTLE-202"
+        private const val ACTIVITY_BATTLE_FIGHT_BATTLE = "ACTIVITY-BATTLE-203"
     }
 
     fun messageArrived(code: String, resultJson: String) {

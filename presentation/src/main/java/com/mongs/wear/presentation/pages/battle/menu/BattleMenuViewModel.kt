@@ -1,72 +1,108 @@
 package com.mongs.wear.presentation.pages.battle.menu
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-import com.mongs.wear.core.exception.ErrorException
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import com.mongs.wear.domain.battle.exception.MatchWaitException
+import com.mongs.wear.domain.battle.usecase.MatchEnterUseCase
+import com.mongs.wear.domain.battle.usecase.MatchExitUseCase
 import com.mongs.wear.domain.battle.usecase.MatchWaitCancelUseCase
 import com.mongs.wear.domain.battle.usecase.MatchWaitUseCase
+import com.mongs.wear.domain.battle.vo.MatchVo
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class BattleMenuViewModel @Inject constructor(
     private val matchWaitUseCase: MatchWaitUseCase,
     private val matchWaitCancelUseCase: MatchWaitCancelUseCase,
+    private val matchEnterUseCase: MatchEnterUseCase,
 ): BaseViewModel() {
 
+    private val _matchVo = MediatorLiveData<MatchVo?>(null)
+    val matchVo: LiveData<MatchVo?> get() = _matchVo
+
+    init {
+        viewModelScopeWithHandler.launch(Dispatchers.Main) {
+            uiState.loadingBar = false
+        }
+    }
+
+    /**
+     * 매칭 대기열 등록
+     */
     fun createMatchWait() {
-        viewModelScopeWithHandler.launch (Dispatchers.IO) {
+        viewModelScopeWithHandler.launch (Dispatchers.Main) {
 
             uiState.loadingBar = true
 
-            matchWaitUseCase(
-                MatchWaitUseCase.Param (
-                    matchFindCallback = {
-                        uiState.isMatchWait = false
-                    },
-                    matchEnterCallback = {
-                        uiState.navBattleMatchEvent.emit(System.currentTimeMillis())
-                    }
+            _matchVo.addSource(withContext(Dispatchers.IO) { matchWaitUseCase() }) { matchVo ->
+                _matchVo.value = matchVo
+            }
+        }
+    }
+
+    /**
+     * 매칭 대기열 취소
+     */
+    fun matchWaitCancel() {
+        viewModelScopeWithHandler.launch (Dispatchers.IO) {
+            _matchVo.postValue(null)
+            matchWaitCancelUseCase()
+            uiState.loadingBar = false
+        }
+    }
+
+    /**
+     * 매칭 입장
+     */
+    fun matchEnter(roomId: Long) {
+        viewModelScopeWithHandler.launch (Dispatchers.IO) {
+            matchEnterUseCase(
+                MatchEnterUseCase.Param(
+                    roomId = roomId,
                 )
             )
         }
     }
 
-    fun matchWaitCancel() {
+    /**
+     * 매칭 퇴장
+     */
+    fun matchExit() {
         CoroutineScope(Dispatchers.IO).launch {
-            try {
-                matchWaitCancelUseCase()
-                uiState.loadingBar = false
-            } catch (_: ErrorException) {
-                uiState.loadingBar = false
-            }
+            _matchVo.postValue(null)
+            matchWaitCancelUseCase()
+            uiState.loadingBar = false
         }
     }
 
     val uiState: UiState = UiState()
 
-    class UiState : BaseUiState() {
-        var navBattleMatchEvent = MutableSharedFlow<Long>()
-        var isMatchWait by mutableStateOf(false)
-    }
+    class UiState : BaseUiState()
 
     override fun exceptionHandler(exception: Throwable) {
 
         when (exception) {
 
             is MatchWaitException -> {
-                uiState.loadingBar = false
+                CoroutineScope(Dispatchers.IO).launch {
+                    _matchVo.postValue(null)
+                    matchWaitCancelUseCase()
+                    uiState.loadingBar = false
+                }
             }
 
             else -> {
-                uiState.loadingBar = false
+                CoroutineScope(Dispatchers.IO).launch {
+                    _matchVo.postValue(null)
+                    matchWaitCancelUseCase()
+                    uiState.loadingBar = false
+                }
             }
         }
     }

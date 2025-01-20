@@ -17,7 +17,8 @@ object NotificationModule {
 
     private const val TAG = "ServiceModule"
 
-    const val CHANNEL_ID = "fcm_default_channel"
+    const val CHANNEL_ID = "mongs_default_channel"
+    const val CHANNEL_NAME = "Mongs Default Channel"
 
     @Provides
     @Singleton
@@ -31,11 +32,10 @@ object NotificationModule {
 
         val notificationManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
-        val channel = NotificationChannel(
+        notificationManager.createNotificationChannel(NotificationChannel(
             CHANNEL_ID,
-            "Channel human readable title",
-            NotificationManager.IMPORTANCE_DEFAULT)
-        notificationManager.createNotificationChannel(channel)
+            CHANNEL_NAME,
+            NotificationManager.IMPORTANCE_DEFAULT))
 
         return notificationManager
     }

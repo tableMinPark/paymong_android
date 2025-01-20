@@ -19,7 +19,6 @@ class GetMyMatchPlayerUseCase @Inject constructor(
 
         return withContext(Dispatchers.IO) {
             battleRepository.getMyMatchPlayerLive().map { matchPlayerModel ->
-
                 MatchPlayerVo(
                     playerId = matchPlayerModel.playerId,
                     mongTypeCode = matchPlayerModel.mongTypeCode,

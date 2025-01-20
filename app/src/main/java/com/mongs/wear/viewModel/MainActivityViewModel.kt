@@ -27,17 +27,19 @@ class MainActivityViewModel @Inject constructor(
 
     /**
      * 브로커 일시 중지
+     * 사용 안함
      */
-//    fun resumeConnectMqtt() = CoroutineScope(Dispatchers.IO).launch {
-//        mqttClient.resumeConnect()
-//    }
+    fun resumeConnectMqtt() = CoroutineScope(Dispatchers.IO).launch {
+        // mqttClient.resumeConnect()
+    }
 
     /**
      * 브로커 재연결
+     * 사용 안함
      */
-//    fun pauseConnectMqtt() = CoroutineScope(Dispatchers.IO).launch {
-//        mqttClient.pauseConnect()
-//    }
+    fun pauseConnectMqtt() = CoroutineScope(Dispatchers.IO).launch {
+        // mqttClient.pauseConnect()
+    }
 
     fun disconnectMqtt() = CoroutineScope(Dispatchers.IO).launch {
         mqttClient.disconnect()

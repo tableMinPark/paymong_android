@@ -10,7 +10,7 @@ import com.mongs.wear.data.activity.entity.MatchRoomEntity
 import com.mongs.wear.data.manager.dao.MongDao
 import com.mongs.wear.data.manager.entity.MongEntity
 
-@Database(entities = [MongEntity::class, MatchPlayerEntity::class, MatchRoomEntity::class], version = 105)
+@Database(entities = [MongEntity::class, MatchPlayerEntity::class, MatchRoomEntity::class], version = 108)
 @TypeConverters(RoomConverters::class)
 abstract class RoomDB : RoomDatabase() {
 

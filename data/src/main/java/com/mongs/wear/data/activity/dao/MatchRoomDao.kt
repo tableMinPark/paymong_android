@@ -21,6 +21,8 @@ interface MatchRoomDao {
     @Query("SELECT * FROM mongs_match_room WHERE roomId = :roomId")
     fun findByRoomId(roomId: Long) : MatchRoomEntity?
 
+    @Query("DELETE FROM mongs_match_room")
+    fun deleteAll()
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(matchRoomEntity: MatchRoomEntity) : Long

@@ -66,6 +66,7 @@ class DefaultConsumer @Inject constructor(
                         }
                     }
                 } catch (e: Exception) {
+                    e.printStackTrace()
                     Log.e(TAG, "[Consume] mqtt message 파싱 실패")
                 }
             }

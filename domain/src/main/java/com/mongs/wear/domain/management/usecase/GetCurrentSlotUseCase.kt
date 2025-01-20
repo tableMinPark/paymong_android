@@ -21,7 +21,7 @@ class GetCurrentSlotUseCase @Inject constructor(
 
         return withContext(Dispatchers.IO) {
 
-            slotRepository.updateCurrentSlot()
+//            slotRepository.updateCurrentSlot()
 
             slotRepository.getCurrentSlot()?.let { mongModel ->
                 mqttClient.subManager(mongId = mongModel.mongId)
