@@ -12,6 +12,7 @@ import com.mongs.wear.domain.auth.repository.AuthRepository
 import com.mongs.wear.domain.device.repository.DeviceRepository
 import com.mongs.wear.domain.global.client.MqttClient
 import com.mongs.wear.domain.global.usecase.BaseParamUseCase
+import com.mongs.wear.domain.management.repository.ManagementRepository
 import com.mongs.wear.domain.player.repository.PlayerRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -20,6 +21,7 @@ import javax.inject.Inject
 class LoginUseCase @Inject constructor(
     private val mqttClient: MqttClient,
     private val deviceRepository: DeviceRepository,
+    private val managementRepository: ManagementRepository,
     private val playerRepository: PlayerRepository,
     private val authRepository: AuthRepository,
 ) : BaseParamUseCase<LoginUseCase.Param, Unit>() {
@@ -64,6 +66,8 @@ class LoginUseCase @Inject constructor(
                 mqttClient.subPlayer(accountId = accountId)
                 // 네트워크 flag 설정
                 deviceRepository.setNetwork(network = true)
+                // 몽 정보 전체 동기화
+                managementRepository.updateMongs()
             } else {
                 throw LoginException()
             }

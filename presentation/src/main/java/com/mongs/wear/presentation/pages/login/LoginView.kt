@@ -48,15 +48,6 @@ fun LoginView(
     loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
 
-//    DisposableEffect(Unit) {
-//        val window = (context as ComponentActivity).window
-//        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-//
-//        onDispose {
-//            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-//        }
-//    }
-
     /**
      * 구글 로그인
      */

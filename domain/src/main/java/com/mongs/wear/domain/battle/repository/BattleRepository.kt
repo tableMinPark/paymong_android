@@ -52,11 +52,18 @@ interface BattleRepository {
      */
     suspend fun startMatch(roomId: Long)
 
+    /**
+     * 매치 퇴장
+     */
+    suspend fun exitMatch(roomId: Long)
 
-
-    suspend fun updateOverMatch(roomId: Long)
-
+    /**
+     * 매치 선택
+     */
     suspend fun pickMatch(roomId: Long, targetPlayerId: String, pickCode: MatchRoundCode)
 
-    suspend fun exitMatch(roomId: Long)
+    /**
+     * 매치 결과 정보 업데이트
+     */
+    suspend fun updateOverMatch(roomId: Long)
 }

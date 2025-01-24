@@ -97,7 +97,7 @@ class MqttApi @Inject constructor(
 
                 val payload = gson.toJson(requestDto).toByteArray()
 
-                mqttAndroidClient.publish(topic = topic, payload = payload, qos = 1, retained = true).await()
+                mqttAndroidClient.publish(topic = topic, payload = payload, qos = 2, retained = false).await()
 
                 Log.i(TAG, "[Mqtt] 메시지 전송 성공 : $topic => $payload")
             } else {

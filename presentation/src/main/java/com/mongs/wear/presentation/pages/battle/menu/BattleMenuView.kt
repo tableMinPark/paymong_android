@@ -57,22 +57,9 @@ fun BattleMenuView(
     battleMenuViewModel: BattleMenuViewModel = hiltViewModel(),
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
 ) {
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-
-    DisposableEffect(currentBackStackEntry) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_DESTROY) {
-                battleMenuViewModel.matchExit()
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
+    val matchVo = battleMenuViewModel.matchVo.observeAsState()
 
     Box {
-        val matchVo = battleMenuViewModel.matchVo.observeAsState()
 
         if (battleMenuViewModel.uiState.loadingBar) {
             BattleMenuBackground()
@@ -105,6 +92,22 @@ fun BattleMenuView(
                     }
                 }
             }
+        }
+    }
+
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+
+    DisposableEffect(currentBackStackEntry) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_DESTROY) {
+                if (matchVo.value == null || matchVo.value?.stateCode == MatchStateCode.NONE) {
+                    battleMenuViewModel.matchExit()
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 }

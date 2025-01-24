@@ -26,7 +26,7 @@ abstract class BaseNoParamUseCase<R> {
                 is UseCaseException -> throw exception
 
                 is ErrorException -> {
-                    Log.i(TAG, "[Exception] ${exception.javaClass.name} ${exception.message} ${exception.result}")
+                    Log.e(TAG, "[Exception] ${exception.javaClass.name} ${exception.message} ${exception.result}")
 
                     handleException(exception = exception)
 
@@ -38,7 +38,7 @@ abstract class BaseNoParamUseCase<R> {
                 }
 
                 else -> {
-                    Log.i(TAG, "[Exception] ${exception.javaClass.name} ${exception.message ?: ""}")
+                    Log.e(TAG, "[Exception] ${exception.javaClass.name} ${exception.message ?: ""}")
 
                     throw UseCaseException(
                         code = DomainErrorCode.DOMAIN_GLOBAL_UNKNOWN_ERROR,

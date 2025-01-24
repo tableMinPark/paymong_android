@@ -43,8 +43,6 @@ import com.mongs.wear.presentation.component.common.textbox.PayPoint
 import com.mongs.wear.presentation.dialog.training.TrainingEndDialog
 import com.mongs.wear.presentation.dialog.training.TrainingStartDialog
 
-private val REWARD_PAY_POINT = 5
-
 @Composable
 fun TrainingRunnerView(
     navController: NavController,
@@ -66,6 +64,7 @@ fun TrainingRunnerView(
             TrainingRunnerLoadingBar()
         } else {
 
+            val runnerPayPoint = trainingRunnerViewModel.trainingPayPoint.observeAsState(0)
             val mongVo = trainingRunnerViewModel.mongVo.observeAsState()
             val isStartGame = remember { trainingRunnerViewModel.runnerEngine.isStartGame }
             val score = remember { trainingRunnerViewModel.runnerEngine.score }
@@ -84,7 +83,7 @@ fun TrainingRunnerView(
                     )
 
                     TrainingRunnerInfoContent(
-                        payPoint = score.value * REWARD_PAY_POINT,
+                        payPoint = score.value * runnerPayPoint.value,
                         modifier = Modifier.zIndex(2f),
                     )
                 }
@@ -96,7 +95,7 @@ fun TrainingRunnerView(
                     TrainingStartDialog(
                         firstText = "화면을 클릭하여",
                         secondText = "장애물을 뛰어넘기!",
-                        rewardPayPoint = REWARD_PAY_POINT,
+                        rewardPayPoint = runnerPayPoint.value,
                         trainingStart = { trainingRunnerViewModel.runnerStart() },
                         modifier = Modifier.zIndex(3f),
                     )
@@ -105,10 +104,10 @@ fun TrainingRunnerView(
                         trainingEnd = {
                             trainingRunnerViewModel.runnerEnd(
                                 mongId = it.mongId,
-                                score = score.value * REWARD_PAY_POINT,
+                                score = score.value,
                             )
                         },
-                        rewardPayPoint = score.value * REWARD_PAY_POINT,
+                        rewardPayPoint = score.value * runnerPayPoint.value,
                         modifier = Modifier.zIndex(3f),
                     )
                 }

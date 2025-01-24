@@ -28,13 +28,15 @@ enum class DomainErrorCode(
     DOMAIN_BATTLE_MATCH_START_FAILED("매치 시작 실패", false),
     DOMAIN_BATTLE_MATCH_ENTER_FAILED("매치 시작 실패", false),
     DOMAIN_BATTLE_MATCH_WAIT_CANCEL_FAILED("매치 대기 취소 실패", false),
-    DOMAIN_BATTLE_MATCH_WAIT_FAILED("매치 대기 실패", false),
+    DOMAIN_BATTLE_MATCH_WAIT_FAILED("잠시후 다시시도", true),
     DOMAIN_BATTLE_OVER_MATCH_FAILED("매치 종료 실패", false),
     DOMAIN_BATTLE_PICK_MATCH_FAILED("매치 선택 실패", false),
+    DOMAIN_BATTLE_NOT_EXISTS_PLAYER_ID_FAILED("매치 선택 실패", false),
+    DOMAIN_BATTLE_NOT_EXISTS_TARGET_PLAYER_ID_FAILED("매치 선택 실패", false),
 
     // TRAINING
-    DOMAIN_TRAINING_RUNNER_FAILED("훈련 완료 실패", true),
-    DOMAIN_TRAINING_BASKETBALL_FAILED("훈련 완료 실패", false),
+    DOMAIN_GET_TRAINING_PAY_POINT_FAILED("잠시후 재시도", true),
+    DOMAIN_TRAINING_MONG_FAILED("훈련 완료 실패", true),
 
     // COLLECTION
     DOMAIN_COLLECTION_GET_MAP_COLLECTIONS_FAILED("맵 도감 조회 실패", false),

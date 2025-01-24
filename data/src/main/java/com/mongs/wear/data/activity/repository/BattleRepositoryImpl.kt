@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
 import com.mongs.wear.core.enums.MatchRoundCode
 import com.mongs.wear.core.enums.MatchStateCode
-import com.mongs.wear.core.enums.MongStateCode
 import com.mongs.wear.data.activity.api.BattleApi
 import com.mongs.wear.data.activity.entity.MatchRoomEntity
 import com.mongs.wear.data.activity.exception.CreateMatchException
@@ -66,8 +65,8 @@ class BattleRepositoryImpl @Inject constructor(
             dao.save(
                 MatchRoomEntity(
                     deviceId = deviceId,
-                    roomId = 0,
-                    round = 0,
+                    roomId = -1,
+                    round = -1,
                     isLastRound = false,
                     stateCode = MatchStateCode.NONE,
                 )
@@ -175,44 +174,25 @@ class BattleRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun updateOverMatch(roomId: Long) {
+    /**
+     * 매치 퇴장
+     */
+    override suspend fun exitMatch(roomId: Long) {
 
-        mqttClient.disSubBattleMatch()
+        roomDB.matchPlayerDao().findPlayerIdByIsMeTrue()?.let { playerId ->
+            try {
+                mqttClient.pubBattleMatchExit(roomId = roomId, playerId = playerId)
 
-        val response = battleApi.overBattle(roomId = roomId)
+            } catch (e: PubMqttException) {
 
-        if (response.isSuccessful) {
-
-            response.body()?.let { body ->
-
-                roomDB.matchRoomDao().let { dao ->
-                    dao.findByRoomId(roomId = roomId)?.let { matchRoomEntity ->
-                        dao.save(
-                            matchRoomEntity.update(
-                                isLastRound = true,
-                                stateCode = MatchStateCode.MATCH_OVER,
-                            )
-                        )
-                    }
-                }
-
-                roomDB.matchPlayerDao().let { dao ->
-
-                    dao.findByPlayerId(playerId = body.result.winPlayerId)?.let { matchPlayerEntity ->
-                        dao.save(
-                            matchPlayerEntity.update(
-                                isWin = true,
-                            )
-                        )
-                    }
-                }
+                throw ExitMatchException()
             }
-
-        } else {
-            throw UpdateOverMatchException(result = httpUtil.getErrorResult(response.errorBody()))
         }
     }
 
+    /**
+     * 매치 선택
+     */
     override suspend fun pickMatch(roomId: Long, targetPlayerId: String, pickCode: MatchRoundCode) {
 
         roomDB.matchPlayerDao().findPlayerIdByIsMeTrue()?.let { playerId ->
@@ -230,21 +210,51 @@ class BattleRepositoryImpl @Inject constructor(
                 throw PickMatchException()
             }
         }
+
+        roomDB.matchRoomDao().let { dao ->
+            dao.findByRoomId(roomId = roomId)?.let { matchRoomEntity ->
+                dao.save(
+                    matchRoomEntity.update(
+                        stateCode = MatchStateCode.MATCH_PICK_WAIT
+                    )
+                )
+            }
+        }
     }
 
-    override suspend fun exitMatch(roomId: Long) {
+    /**
+     * 매치 결과 정보 업데이트
+     */
+    override suspend fun updateOverMatch(roomId: Long) {
 
-        roomDB.matchPlayerDao().findPlayerIdByIsMeTrue()?.let { playerId ->
+        val response = battleApi.overBattle(roomId = roomId)
 
-            try {
-                mqttClient.pubBattleMatchExit(roomId = roomId, playerId = playerId)
+        if (response.isSuccessful) {
+            response.body()?.let { body ->
+                roomDB.matchRoomDao().let { dao ->
+                    dao.findByRoomId(roomId = roomId)?.let { matchRoomEntity ->
+                        dao.save(
+                            matchRoomEntity.update(
+                                isLastRound = true,
+                                stateCode = MatchStateCode.MATCH_OVER,
+                            )
+                        )
+                    }
+                }
 
-                mqttClient.disSubBattleMatch()
-
-            } catch (e: PubMqttException) {
-
-                throw ExitMatchException()
+                roomDB.matchPlayerDao().let { dao ->
+                    dao.findByPlayerId(playerId = body.result.winPlayerId)?.let { matchPlayerEntity ->
+                        dao.save(
+                            matchPlayerEntity.update(
+                                isWin = true,
+                            )
+                        )
+                    }
+                }
             }
+
+        } else {
+            throw UpdateOverMatchException(result = httpUtil.getErrorResult(response.errorBody()))
         }
     }
 }

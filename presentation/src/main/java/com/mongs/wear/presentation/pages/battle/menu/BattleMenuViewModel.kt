@@ -1,10 +1,10 @@
 package com.mongs.wear.presentation.pages.battle.menu
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.mongs.wear.domain.battle.exception.MatchWaitException
 import com.mongs.wear.domain.battle.usecase.MatchEnterUseCase
-import com.mongs.wear.domain.battle.usecase.MatchExitUseCase
 import com.mongs.wear.domain.battle.usecase.MatchWaitCancelUseCase
 import com.mongs.wear.domain.battle.usecase.MatchWaitUseCase
 import com.mongs.wear.domain.battle.vo.MatchVo
@@ -22,6 +22,10 @@ class BattleMenuViewModel @Inject constructor(
     private val matchWaitCancelUseCase: MatchWaitCancelUseCase,
     private val matchEnterUseCase: MatchEnterUseCase,
 ): BaseViewModel() {
+
+    companion object {
+        private const val TAG = "BattleMenuViewModel"
+    }
 
     private val _matchVo = MediatorLiveData<MatchVo?>(null)
     val matchVo: LiveData<MatchVo?> get() = _matchVo
@@ -75,9 +79,14 @@ class BattleMenuViewModel @Inject constructor(
      */
     fun matchExit() {
         CoroutineScope(Dispatchers.IO).launch {
-            _matchVo.postValue(null)
-            matchWaitCancelUseCase()
-            uiState.loadingBar = false
+            try {
+                _matchVo.postValue(null)
+                matchWaitCancelUseCase()
+            } catch (exception: Exception) {
+                Log.w(TAG, "[WARN] ${exception.javaClass.simpleName} ${exception.message}")
+            } finally {
+                uiState.loadingBar = false
+            }
         }
     }
 
@@ -90,19 +99,11 @@ class BattleMenuViewModel @Inject constructor(
         when (exception) {
 
             is MatchWaitException -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    _matchVo.postValue(null)
-                    matchWaitCancelUseCase()
-                    uiState.loadingBar = false
-                }
+                matchExit()
             }
 
             else -> {
-                CoroutineScope(Dispatchers.IO).launch {
-                    _matchVo.postValue(null)
-                    matchWaitCancelUseCase()
-                    uiState.loadingBar = false
-                }
+                matchExit()
             }
         }
     }

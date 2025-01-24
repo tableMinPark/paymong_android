@@ -15,5 +15,4 @@ enum class MatchStateCode(
     MATCH_PICK_WAIT("배틀 라운드 선택 후 대기중"),
     MATCH_FIGHT("배틀 라운드 종료"),
     MATCH_OVER("배틀 종료"),
-    MATCH_DELETE("매치 취소"),
 }

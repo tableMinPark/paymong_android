@@ -1,5 +1,7 @@
 package com.mongs.wear.presentation.pages.battle.match
 
+import android.os.SystemClock
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -9,6 +11,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mongs.wear.core.enums.MatchRoundCode
 import com.mongs.wear.core.exception.ErrorException
+import com.mongs.wear.domain.battle.exception.NotExistsPlayerIdException
+import com.mongs.wear.domain.battle.exception.NotExistsTargetPlayerIdException
 import com.mongs.wear.domain.battle.usecase.GetMatchUseCase
 import com.mongs.wear.domain.battle.usecase.GetMyMatchPlayerUseCase
 import com.mongs.wear.domain.battle.usecase.GetRiverMatchPlayerUseCase
@@ -19,13 +23,17 @@ import com.mongs.wear.domain.battle.usecase.MatchStartUseCase
 import com.mongs.wear.domain.battle.vo.MatchPlayerVo
 import com.mongs.wear.domain.battle.vo.MatchVo
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
+import com.mongs.wear.presentation.pages.battle.menu.BattleMenuViewModel
+import com.mongs.wear.presentation.pages.battle.menu.BattleMenuViewModel.Companion
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
+import kotlin.math.round
 
 @HiltViewModel
 class BattleMatchViewModel @Inject constructor(
@@ -37,6 +45,10 @@ class BattleMatchViewModel @Inject constructor(
     private val overMatchUseCase: OverMatchUseCase,
     private val matchExitUseCase: MatchExitUseCase,
 ): BaseViewModel() {
+
+    companion object {
+        private const val TAG = "BattleMatchViewModel"
+    }
 
     private val _matchVo = MediatorLiveData<MatchVo?>()
     val matchVo: LiveData<MatchVo?> get() = _matchVo
@@ -88,30 +100,74 @@ class BattleMatchViewModel @Inject constructor(
         }
     }
 
-    fun matchPick(pickCode: MatchRoundCode) {
+    fun nextRound() {
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
+
+            delay(3000)
+
+            uiState.matchPickDialog = true
+        }
+    }
+
+    /**
+     * 배틀 매치 선택
+     */
+    fun matchPick(roomId: Long, playerId: String?, targetPlayerId: String?, pickCode: MatchRoundCode) {
+        viewModelScopeWithHandler.launch(Dispatchers.IO) {
+
+            pickMatchUseCase(
+                PickMatchUseCase.Param(
+                    roomId = roomId,
+                    playerId = playerId,
+                    targetPlayerId = targetPlayerId,
+                    pickCode = pickCode,
+                )
+            )
 
             uiState.matchPickDialog = false
-
-
         }
     }
 
-    fun matchOver() {
+    /**
+     * 매치 종료
+     */
+    fun matchOver(roomId: Long) {
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
-            try {
-//                overMatchUseCase()
-                uiState.matchPickDialog = false
-            } catch (_: ErrorException) {
-            }
+
+            uiState.loadingBar = true
+
+            // 매치 결과 정보 업데이트
+            overMatchUseCase(
+                OverMatchUseCase.Param(
+                    roomId = roomId,
+                )
+            )
+
+            uiState.loadingBar = false
+
+            // 매치 확인 창
+            uiState.matchPickDialog = true
         }
     }
 
-    fun matchExit() {
+    /**
+     * 매치 퇴장
+     */
+    fun matchExit(roomId: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-//                exitMatchUseCase()
-            } catch (_: ErrorException) {
+                _matchVo.postValue(null)
+                matchExitUseCase(
+                    MatchExitUseCase.Param(
+                        roomId = roomId
+                    )
+                )
+            } catch (exception: Exception) {
+                Log.w(TAG, "[WARN] ${exception.javaClass.simpleName} ${exception.message}")
+            } finally {
+                uiState.matchPickDialog = false
+                uiState.loadingBar = false
+                uiState.navMainEvent.emit(System.currentTimeMillis())
             }
         }
     }
@@ -119,6 +175,7 @@ class BattleMatchViewModel @Inject constructor(
     val uiState: UiState = UiState()
 
     class UiState : BaseUiState() {
+        var navMainEvent = MutableSharedFlow<Long>()
         var matchPickDialog by mutableStateOf(false)
     }
 
@@ -126,8 +183,14 @@ class BattleMatchViewModel @Inject constructor(
 
         when (exception) {
 
+            is NotExistsPlayerIdException -> {}
+
+            is NotExistsTargetPlayerIdException -> {}
+
             else -> {
-                uiState.loadingBar = false
+                _matchVo.value?.let {
+                    matchExit(roomId = it.roomId)
+                }
             }
         }
     }

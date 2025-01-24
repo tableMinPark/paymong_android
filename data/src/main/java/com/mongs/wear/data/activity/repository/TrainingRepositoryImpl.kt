@@ -15,6 +15,20 @@ class TrainingRepositoryImpl @Inject constructor(
 ) : TrainingRepository {
 
     /**
+     * 훈련 달리기 보상 정보 조회
+     */
+    override suspend fun getTrainingRunner() : Int {
+
+        val response = trainingApi.getTrainingRunner()
+
+        if (response.isSuccessful) {
+            return response.body()?.result?.payPoint ?: 0
+        } else {
+            throw TrainingRunnerException(result = httpUtil.getErrorResult(response.errorBody()))
+        }
+    }
+
+    /**
      * 훈련 달리기 완료
      */
     override suspend fun trainingRunner(mongId: Long, score: Int) {

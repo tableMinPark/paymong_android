@@ -30,9 +30,9 @@ class ManagementRepositoryImpl @Inject constructor(
 ): ManagementRepository {
 
     /**
-     * 몽 정보 동기화
+     * 몽 정보 전체 동기화
      */
-    override suspend fun getMongs(): List<MongModel> {
+    override suspend fun updateMongs() {
 
         val response = managementApi.getMongs()
 
@@ -69,8 +69,47 @@ class ManagementRepositoryImpl @Inject constructor(
                 }
             }
         }
+    }
 
+    /**
+     * 몽 정보 전체 조회
+     */
+    override suspend fun getMongs(): List<MongModel> {
         return roomDB.mongDao().findAll().map { mongEntity -> mongEntity.toMongModel() }
+    }
+
+    /**
+     * 몽 정보 동기화
+     */
+    override suspend fun updateMong(mongId: Long) {
+
+        val response = managementApi.getMong(mongId = mongId)
+
+        if (response.isSuccessful) {
+            response.body()?.let { body ->
+                roomDB.mongDao().let { dao ->
+                    dao.findByMongId(mongId = mongId)?.let { mongEntity ->
+                        dao.save(
+                            mongEntity.update(
+                                mongBasicDto = body.result.basic,
+                                mongStateDto = body.result.state,
+                                mongStatusDto = body.result.status,
+                            )
+                        ).toMongModel()
+                    } ?: run {
+                        dao.save(
+                            MongEntity.of(
+                                mongBasicDto = body.result.basic,
+                                mongStateDto = body.result.state,
+                                mongStatusDto = body.result.status,
+                            )
+                        ).toMongModel()
+                    }
+                }
+            }
+        } else {
+            roomDB.mongDao().deleteByMongId(mongId = mongId)
+        }
     }
 
     /**

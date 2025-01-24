@@ -6,11 +6,6 @@ import com.mongs.wear.domain.management.model.MongModel
 interface SlotRepository {
 
     /**
-     * 현재 몽 정보 갱신
-     */
-//    suspend fun updateCurrentSlot()
-
-    /**
      * 현재 몽 설정 (슬롯 설정)
      */
     suspend fun setCurrentSlot(mongId: Long)

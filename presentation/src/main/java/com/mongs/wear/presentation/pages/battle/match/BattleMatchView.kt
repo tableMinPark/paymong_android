@@ -56,7 +56,6 @@ import com.mongs.wear.presentation.component.common.button.BlueButton
 import com.mongs.wear.presentation.component.common.charactor.Mong
 import com.mongs.wear.presentation.dialog.battle.MatchPickDialog
 import com.mongs.wear.presentation.pages.battle.enums.BattleConst
-import kotlinx.coroutines.delay
 import kotlin.math.max
 
 
@@ -67,20 +66,6 @@ fun BattleMatchView(
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
     context: Context = LocalContext.current,
 ) {
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-
-    DisposableEffect(currentBackStackEntry) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_DESTROY) {
-                battleMatchViewModel.matchExit()
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
-
     DisposableEffect(Unit) {
         val window = (context as ComponentActivity).window
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -104,17 +89,33 @@ fun BattleMatchView(
                 if (battleMatchViewModel.uiState.matchPickDialog) {
                     MatchPickDialog(
                         maxSeconds = BattleConst.MAX_SECONDS,
-                        attack = { battleMatchViewModel.matchPick(MatchRoundCode.MATCH_PICK_ATTACK) },
-                        defence = { battleMatchViewModel.matchPick(MatchRoundCode.MATCH_PICK_DEFENCE) },
-                        heal = { battleMatchViewModel.matchPick(MatchRoundCode.MATCH_PICK_HEAL) },
+                        attack = {
+                            battleMatchViewModel.matchPick(
+                                roomId = matchVo.roomId,
+                                playerId = myMatchPlayerVo.value?.playerId,
+                                targetPlayerId = otherMatchPlayerVo.value?.playerId,
+                                pickCode = MatchRoundCode.MATCH_PICK_ATTACK,
+                            )
+                        },
+                        defence = {
+                            battleMatchViewModel.matchPick(
+                                roomId = matchVo.roomId,
+                                playerId = myMatchPlayerVo.value?.playerId,
+                                targetPlayerId = myMatchPlayerVo.value?.playerId,
+                                pickCode = MatchRoundCode.MATCH_PICK_DEFENCE,
+                            )
+                        },
+                        heal = {
+                            battleMatchViewModel.matchPick(
+                                roomId = matchVo.roomId,
+                                playerId = myMatchPlayerVo.value?.playerId,
+                                targetPlayerId = myMatchPlayerVo.value?.playerId,
+                                pickCode = MatchRoundCode.MATCH_PICK_HEAL,
+                            )
+                        },
                         modifier = Modifier.zIndex(1f),
                     )
                 } else if (matchVo.stateCode == MatchStateCode.MATCH_ENTER) {
-
-                    LaunchedEffect(Unit) {
-                        battleMatchViewModel.matchStart(roomId = matchVo.roomId)
-                    }
-
                     BattleMatchEnterContent(
                         myMatchPlayerVo = myMatchPlayerVo.value,
                         otherMatchPlayerVo = otherMatchPlayerVo.value,
@@ -128,8 +129,6 @@ fun BattleMatchView(
                     )
                 } else {
                     BattleMatchContent(
-                        nextRound = { battleMatchViewModel.uiState.matchPickDialog = true },
-                        matchOver = { battleMatchViewModel.matchOver() },
                         matchVo = matchVo,
                         myMatchPlayerVo = myMatchPlayerVo.value,
                         otherMatchPlayerVo = otherMatchPlayerVo.value,
@@ -137,6 +136,46 @@ fun BattleMatchView(
                     )
                 }
             }
+        }
+    }
+
+    matchVo.value?.let {
+        LaunchedEffect(it.isLastRound) {
+            if (it.isLastRound) {
+                battleMatchViewModel.matchOver(roomId = it.roomId)
+            }
+        }
+
+        LaunchedEffect(it.stateCode) {
+            when(it.stateCode) {
+                MatchStateCode.MATCH_ENTER -> battleMatchViewModel.matchStart(roomId = it.roomId)
+                MatchStateCode.MATCH_WAIT -> battleMatchViewModel.nextRound()       // 입장 후 매치 준비중
+                MatchStateCode.MATCH_FIGHT -> battleMatchViewModel.nextRound()      //
+                MatchStateCode.MATCH_OVER -> battleMatchViewModel.matchOver(roomId = it.roomId)       // 매치 끝
+                else -> {}
+            }
+        }
+    }
+
+    LaunchedEffect(battleMatchViewModel.uiState.navMainEvent) {
+        battleMatchViewModel.uiState.navMainEvent.collect {
+            navController.popBackStack(route = NavItem.BattleNested.route, inclusive = true)
+        }
+    }
+
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
+
+    DisposableEffect(currentBackStackEntry) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_DESTROY) {
+                matchVo.value?.let {
+                    battleMatchViewModel.matchExit(roomId = it.roomId)
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 }
@@ -224,24 +263,11 @@ private fun BattleMatchEnterContent(
 
 @Composable
 private fun BattleMatchContent(
-    nextRound: () -> Unit,
-    matchOver: () -> Unit,
     matchVo: MatchVo,
     myMatchPlayerVo: MatchPlayerVo?,
     otherMatchPlayerVo: MatchPlayerVo?,
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
-    if (matchVo.stateCode == MatchStateCode.MATCH_MATCHING) {
-        LaunchedEffect(matchVo.stateCode) {
-            delay(3000)
-            if (matchVo.isLastRound) {
-                matchOver()
-            } else {
-                nextRound()
-            }
-        }
-    }
-
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier.fillMaxSize()

@@ -3,30 +3,28 @@ package com.mongs.wear.domain.training.usecase
 import com.mongs.wear.core.enums.TrainingCode
 import com.mongs.wear.core.exception.ErrorException
 import com.mongs.wear.domain.global.usecase.BaseParamUseCase
-import com.mongs.wear.domain.training.exception.TrainingMongException
+import com.mongs.wear.domain.training.exception.GetTrainingPayPointException
 import com.mongs.wear.domain.training.repository.TrainingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class TrainingMongUseCase @Inject constructor(
+class GetTrainingPayPointUseCase @Inject constructor(
     private val trainingRepository: TrainingRepository,
-) : BaseParamUseCase<TrainingMongUseCase.Param, Unit>() {
+) : BaseParamUseCase<GetTrainingPayPointUseCase.Param, Int>() {
 
-    override suspend fun execute(param: Param) {
-        withContext(Dispatchers.IO) {
+    override suspend fun execute(param: Param): Int {
+
+        return withContext(Dispatchers.IO) {
+
             when(param.trainingCode) {
-                // 훈련 달리기
                 TrainingCode.RUNNER -> {
-                    trainingRepository.trainingRunner(
-                        mongId = param.mongId,
-                        score = param.score,
-                    )
+                    trainingRepository.getTrainingRunner()
                 }
 
                 // 훈련 농구
                 TrainingCode.BASKETBALL -> {
-
+                    0
                 }
             }
         }
@@ -34,18 +32,14 @@ class TrainingMongUseCase @Inject constructor(
 
     data class Param(
 
-        val mongId: Long,
-
         val trainingCode: TrainingCode,
-
-        val score: Int,
     )
 
     override fun handleException(exception: ErrorException) {
         super.handleException(exception)
 
         when(exception.code) {
-            else -> throw TrainingMongException()
+            else -> throw GetTrainingPayPointException()
         }
     }
 }

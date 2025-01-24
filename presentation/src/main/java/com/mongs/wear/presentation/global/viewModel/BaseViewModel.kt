@@ -47,7 +47,7 @@ abstract class BaseViewModel : ViewModel() {
 
             if (exception is UseCaseException) {
                 exceptionHandler(exception = exception)
-                Log.e(TAG, "[${exception.javaClass.simpleName}] ${exception.code} -> ${exception.message} ===> ${exception.result}")
+                Log.e(TAG, "[Exception] ${exception.javaClass.simpleName} ${exception.message} ===> ${exception.result}")
 
                 if (exception.code.isMessageShow()) {
                     _errorEvent.emit(exception.message)
@@ -55,7 +55,7 @@ abstract class BaseViewModel : ViewModel() {
 
             } else {
                 exceptionHandler(exception = exception)
-                Log.e(TAG, "[${exception.javaClass.simpleName}] ${exception.message}")
+                Log.e(TAG, "[Exception] ${exception.javaClass.name} ${exception.message ?: ""}")
             }
         }
     }

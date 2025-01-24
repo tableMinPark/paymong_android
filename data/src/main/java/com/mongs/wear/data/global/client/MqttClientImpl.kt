@@ -14,12 +14,10 @@ import com.mongs.wear.data.global.exception.PauseMqttException
 import com.mongs.wear.data.global.exception.PubMqttException
 import com.mongs.wear.data.global.exception.ResumeMqttException
 import com.mongs.wear.data.global.exception.SubMqttException
-import com.mongs.wear.data.global.room.RoomDB
-import com.mongs.wear.data.manager.api.ManagementApi
-import com.mongs.wear.data.manager.entity.MongEntity
-import com.mongs.wear.data.user.api.PlayerApi
-import com.mongs.wear.data.user.datastore.PlayerDataStore
 import com.mongs.wear.domain.global.client.MqttClient
+import com.mongs.wear.domain.management.repository.ManagementRepository
+import com.mongs.wear.domain.management.repository.SlotRepository
+import com.mongs.wear.domain.player.repository.PlayerRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -30,11 +28,10 @@ import javax.inject.Singleton
 @Singleton
 class MqttClientImpl @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val roomDB: RoomDB,
     private val mqttApi: MqttApi,
-    private val playerApi: PlayerApi,
-    private val managementApi: ManagementApi,
-    private val playerDataStore: PlayerDataStore,
+    private val slotRepository: SlotRepository,
+    private val managementRepository: ManagementRepository,
+    private val playerRepository: PlayerRepository,
 ) : MqttClient {
 
     class MqttState {
@@ -160,40 +157,6 @@ class MqttClientImpl @Inject constructor(
         }
     }
 
-    /**
-     * 매니저
-     */
-    private suspend fun updateMong(mongId: Long) {
-
-        val response = managementApi.getMong(mongId = mongId)
-
-        if (response.isSuccessful) {
-            response.body()?.let { body ->
-                roomDB.mongDao().let { dao ->
-                    dao.findByMongId(mongId = mongId)?.let { mongEntity ->
-                        dao.save(
-                            mongEntity.update(
-                                mongBasicDto = body.result.basic,
-                                mongStateDto = body.result.state,
-                                mongStatusDto = body.result.status,
-                            )
-                        ).toMongModel()
-                    } ?: run {
-                        dao.save(
-                            MongEntity.of(
-                                mongBasicDto = body.result.basic,
-                                mongStateDto = body.result.state,
-                                mongStatusDto = body.result.status,
-                            )
-                        ).toMongModel()
-                    }
-                }
-            }
-        } else {
-            roomDB.mongDao().deleteByMongId(mongId = mongId)
-        }
-    }
-
     override suspend fun subManager(mongId: Long) {
 
         if (mqttState.broker == MqttState.MqttStateCode.DISCONNECT) return
@@ -216,8 +179,8 @@ class MqttClientImpl @Inject constructor(
         try {
             if (mqttState.manager == MqttState.MqttStateCode.PAUSE) {
                 // 현재 슬롯 동기화
-                roomDB.mongDao().findByIsCurrentTrue()?.let { mongEntity ->
-                    this.updateMong(mongId = mongEntity.mongId)
+                slotRepository.getCurrentSlot()?.let { mongModel ->
+                    managementRepository.updateMong(mongId = mongModel.mongId)
                 }
                 mqttApi.subscribe(mqttState.managerTopic)
                 mqttState.manager = MqttState.MqttStateCode.SUB
@@ -256,27 +219,12 @@ class MqttClientImpl @Inject constructor(
         }
     }
 
-    /**
-     * 플레이어
-     */
-    private suspend fun updatePlayer() {
-        // 플레이어 정보 동기화
-        val response = playerApi.getPlayer()
-
-        if (response.isSuccessful) {
-            response.body()?.let { body ->
-                playerDataStore.setStarPoint(starPoint = body.result.starPoint)
-            }
-        }
-    }
-
     override suspend fun subPlayer(accountId: Long) {
 
         if (mqttState.broker == MqttState.MqttStateCode.DISCONNECT) return
 
         try {
             if (mqttState.player == MqttState.MqttStateCode.DIS_SUB) {
-                this.updatePlayer()
                 mqttState.playerTopic = "${context.getString(R.string.mqtt_player_topic)}/$accountId"
                 mqttApi.subscribe(mqttState.playerTopic)
                 mqttState.player = MqttState.MqttStateCode.SUB
@@ -292,7 +240,7 @@ class MqttClientImpl @Inject constructor(
 
         try {
             if (mqttState.player == MqttState.MqttStateCode.PAUSE) {
-                this.updatePlayer()
+                playerRepository.updatePlayer()
                 mqttApi.subscribe(mqttState.playerTopic)
                 mqttState.player = MqttState.MqttStateCode.SUB
             }
@@ -445,7 +393,7 @@ class MqttClientImpl @Inject constructor(
 
         try {
 
-            val topic = "${context.getString(R.string.mqtt_battle_match_topic)}/$roomId/enter"
+            val topic = "${context.getString(R.string.mqtt_battle_match_topic)}/$roomId/exit"
 
             mqttApi.produce(topic = topic, requestDto = ExitBattleRequestDto(playerId = playerId))
 

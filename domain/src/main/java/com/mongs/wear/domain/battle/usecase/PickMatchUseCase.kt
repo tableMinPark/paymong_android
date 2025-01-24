@@ -2,6 +2,10 @@ package com.mongs.wear.domain.battle.usecase
 
 import com.mongs.wear.core.enums.MatchRoundCode
 import com.mongs.wear.core.exception.ErrorException
+import com.mongs.wear.domain.auth.exception.NotExistsEmailException
+import com.mongs.wear.domain.auth.exception.NotExistsGoogleAccountIdException
+import com.mongs.wear.domain.battle.exception.NotExistsPlayerIdException
+import com.mongs.wear.domain.battle.exception.NotExistsTargetPlayerIdException
 import com.mongs.wear.domain.battle.exception.PickMatchException
 import com.mongs.wear.domain.battle.repository.BattleRepository
 import com.mongs.wear.domain.global.usecase.BaseParamUseCase
@@ -16,8 +20,12 @@ class PickMatchUseCase @Inject constructor(
     override suspend fun execute(param: Param) {
 
         withContext(Dispatchers.IO) {
-            when (param.pickCode) {
 
+            if (param.playerId.isNullOrEmpty()) throw NotExistsPlayerIdException()
+
+            if (param.targetPlayerId.isNullOrEmpty()) throw NotExistsTargetPlayerIdException()
+
+            when (param.pickCode) {
                 MatchRoundCode.MATCH_PICK_ATTACK ->
                     battleRepository.pickMatch(roomId = param.roomId, targetPlayerId = param.targetPlayerId, pickCode = param.pickCode)
 
@@ -36,9 +44,9 @@ class PickMatchUseCase @Inject constructor(
 
         val roomId: Long,
 
-        val playerId: String,
+        val playerId: String?,
 
-        val targetPlayerId: String,
+        val targetPlayerId: String?,
 
         val pickCode: MatchRoundCode,
     )

@@ -6,9 +6,19 @@ import com.mongs.wear.domain.management.model.MongModel
 interface ManagementRepository {
 
     /**
+     * 몽 정보 전체 동기화
+     */
+    suspend fun updateMongs()
+
+    /**
      * 몽 목록 조회
      */
     suspend fun getMongs(): List<MongModel>
+
+    /**
+     * 몽 정보 동기화
+     */
+    suspend fun updateMong(mongId: Long)
 
     /**
      * 몽 생성

@@ -92,6 +92,9 @@ class BattleObserveResolver @Inject constructor(
         }
     }
 
+    /**
+     * 매치 종료
+     */
     @Transaction
     fun updateBattleMatchOver(overBattleResponseDto: OverBattleResponseDto) {
 
@@ -117,19 +120,20 @@ class BattleObserveResolver @Inject constructor(
         }
     }
 
+    /**
+     * 라운드 종료
+     */
     @Transaction
     fun updateBattleMatchFight(fightBattleResponseDto: FightBattleResponseDto) {
 
         // 배틀 룸 정보 업데이트
         roomDB.matchRoomDao().let { dao ->
-
             dao.findByRoomId(roomId = fightBattleResponseDto.roomId)?.let { matchRoomEntity ->
-
                 dao.save(
                     matchRoomEntity = matchRoomEntity.update(
                         round = fightBattleResponseDto.round,
                         isLastRound = fightBattleResponseDto.isLastRound,
-                        stateCode = MatchStateCode.MATCH_FIGHT,
+                        stateCode = if(fightBattleResponseDto.isLastRound) MatchStateCode.MATCH_OVER else MatchStateCode.MATCH_FIGHT,
                     )
                 )
             }

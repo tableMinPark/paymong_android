@@ -33,6 +33,12 @@ class MatchWaitUseCase @Inject constructor(
 
                     val deviceId = deviceRepository.getDeviceId()
 
+                    // 매칭 결과 구독 해제
+                    mqttClient.disSubSearchMatch()
+
+                    // 매치 구독 해제
+                    mqttClient.disSubBattleMatch()
+
                     // 배틀룸 삭제
                     battleRepository.deleteMatch()
 

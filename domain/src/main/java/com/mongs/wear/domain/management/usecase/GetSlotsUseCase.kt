@@ -16,13 +16,16 @@ class GetSlotsUseCase @Inject constructor(
     override suspend fun execute(): List<SlotVo> {
 
         return withContext(Dispatchers.IO) {
-            managementRepository.getMongs()
-                .map { mongModel ->
-                    SlotVo(
-                        code = SlotVo.SlotCode.EXISTS,
-                        mongVo = mongModel.toMongVo()
-                    )
-                }
+            // 몽 정보 전체 동기화
+            managementRepository.updateMongs()
+
+            // 몽 정보 전체 조회
+            managementRepository.getMongs().map { mongModel ->
+                SlotVo(
+                    code = SlotVo.SlotCode.EXISTS,
+                    mongVo = mongModel.toMongVo()
+                )
+            }
         }
     }
 

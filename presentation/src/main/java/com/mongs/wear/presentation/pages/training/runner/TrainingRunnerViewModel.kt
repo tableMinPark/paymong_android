@@ -7,10 +7,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.mongs.wear.core.enums.TrainingCode
 import com.mongs.wear.domain.management.usecase.GetCurrentSlotUseCase
-import com.mongs.wear.domain.training.usecase.TrainingMongUseCase
 import com.mongs.wear.domain.management.vo.MongVo
+import com.mongs.wear.domain.training.exception.GetTrainingPayPointException
+import com.mongs.wear.domain.training.usecase.GetTrainingPayPointUseCase
+import com.mongs.wear.domain.training.usecase.TrainingMongUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -19,6 +22,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class TrainingRunnerViewModel @Inject constructor(
+    private val getTrainingPayPointUseCase: GetTrainingPayPointUseCase,
     private val getCurrentSlotUseCase: GetCurrentSlotUseCase,
     private val trainingMongUseCase: TrainingMongUseCase,
 ) : BaseViewModel() {
@@ -35,10 +39,21 @@ class TrainingRunnerViewModel @Inject constructor(
     private val _mongVo = MediatorLiveData<MongVo?>(null)
     val mongVo: LiveData<MongVo?> get() = _mongVo
 
+    private val _trainingPayPoint = MediatorLiveData<Int>(0)
+    val trainingPayPoint: LiveData<Int> get() = _trainingPayPoint
+
     init {
         viewModelScopeWithHandler.launch(Dispatchers.Main) {
 
             uiState.loadingBar = true
+
+            _trainingPayPoint.postValue(
+                getTrainingPayPointUseCase(
+                    GetTrainingPayPointUseCase.Param(
+                        trainingCode = TrainingCode.RUNNER,
+                    )
+                )
+            )
 
             _mongVo.addSource(withContext(Dispatchers.IO) { getCurrentSlotUseCase() }) { mongVo ->
                 _mongVo.value = mongVo
@@ -93,9 +108,16 @@ class TrainingRunnerViewModel @Inject constructor(
 
     override fun exceptionHandler(exception: Throwable) {
 
-        when(exception) {
-            else -> {
-                uiState.loadingBar = false
+        CoroutineScope(Dispatchers.IO).launch {
+            when (exception) {
+
+                is GetTrainingPayPointException -> {
+                    uiState.navMainEvent.emit(System.currentTimeMillis())
+                }
+
+                else -> {
+                    uiState.loadingBar = false
+                }
             }
         }
     }
