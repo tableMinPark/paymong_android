@@ -52,8 +52,8 @@ import com.mongs.wear.presentation.assets.NavItem
 import com.mongs.wear.presentation.component.common.background.BattleMatchBackground
 import com.mongs.wear.presentation.component.common.bar.HpBar
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
-import com.mongs.wear.presentation.component.common.button.BlueButton
 import com.mongs.wear.presentation.component.common.charactor.Mong
+import com.mongs.wear.presentation.dialog.battle.MatchOverDialog
 import com.mongs.wear.presentation.dialog.battle.MatchPickDialog
 import com.mongs.wear.presentation.pages.battle.enums.BattleConst
 import kotlin.math.max
@@ -80,13 +80,15 @@ fun BattleMatchView(
     val otherMatchPlayerVo = battleMatchViewModel.otherMatchPlayerVo.observeAsState()
 
     Box {
+        BattleMatchBackground()
+
         if (battleMatchViewModel.uiState.loadingBar) {
-            BattleMatchBackground()
-            BattleMatchLoadingBar()
+            BattleMatchEnterLoadingBar()
         } else {
             matchVo.value?.let { matchVo ->
-                BattleMatchBackground()
-                if (battleMatchViewModel.uiState.matchPickDialog) {
+                if (battleMatchViewModel.uiState.matchOverLoadingBar) {
+                    BattleMatchLoadingBar()
+                } else if (battleMatchViewModel.uiState.matchPickDialog) {
                     MatchPickDialog(
                         maxSeconds = BattleConst.MAX_SECONDS,
                         attack = {
@@ -115,16 +117,16 @@ fun BattleMatchView(
                         },
                         modifier = Modifier.zIndex(1f),
                     )
+                } else if (battleMatchViewModel.uiState.matchOverDialog) {
+                    MatchOverDialog(
+                        navBattleMenu = { navController.popBackStack(route = NavItem.BattleNested.route, inclusive = true) },
+                        myMatchPlayerVo = myMatchPlayerVo.value,
+                        modifier = Modifier.zIndex(1f),
+                    )
                 } else if (matchVo.stateCode == MatchStateCode.MATCH_ENTER) {
                     BattleMatchEnterContent(
                         myMatchPlayerVo = myMatchPlayerVo.value,
                         otherMatchPlayerVo = otherMatchPlayerVo.value,
-                        modifier = Modifier.zIndex(1f),
-                    )
-                } else if (matchVo.stateCode == MatchStateCode.MATCH_OVER) {
-                    BattleMatchOverContent(
-                        navBattleMenu = { navController.popBackStack(route = NavItem.BattleNested.route, inclusive = true) },
-                        myMatchPlayerVo = myMatchPlayerVo.value,
                         modifier = Modifier.zIndex(1f),
                     )
                 } else {
@@ -140,18 +142,12 @@ fun BattleMatchView(
     }
 
     matchVo.value?.let {
-        LaunchedEffect(it.isLastRound) {
-            if (it.isLastRound) {
-                battleMatchViewModel.matchOver(roomId = it.roomId)
-            }
-        }
-
         LaunchedEffect(it.stateCode) {
             when(it.stateCode) {
                 MatchStateCode.MATCH_ENTER -> battleMatchViewModel.matchStart(roomId = it.roomId)
-                MatchStateCode.MATCH_WAIT -> battleMatchViewModel.nextRound()       // 입장 후 매치 준비중
-                MatchStateCode.MATCH_FIGHT -> battleMatchViewModel.nextRound()      //
-                MatchStateCode.MATCH_OVER -> battleMatchViewModel.matchOver(roomId = it.roomId)       // 매치 끝
+                MatchStateCode.MATCH_WAIT -> battleMatchViewModel.nextRound()
+                MatchStateCode.MATCH_FIGHT -> battleMatchViewModel.nextRound()
+                MatchStateCode.MATCH_OVER -> battleMatchViewModel.matchOver(roomId = it.roomId)
                 else -> {}
             }
         }
@@ -169,7 +165,9 @@ fun BattleMatchView(
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_DESTROY) {
                 matchVo.value?.let {
-                    battleMatchViewModel.matchExit(roomId = it.roomId)
+                    if (it.stateCode != MatchStateCode.MATCH_OVER) {
+                        battleMatchViewModel.matchExit(roomId = it.roomId)
+                    }
                 }
             }
         }
@@ -349,104 +347,6 @@ private fun BattleMatchContent(
 }
 
 @Composable
-private fun BattleMatchOverContent(
-    navBattleMenu: () -> Unit,
-    myMatchPlayerVo: MatchPlayerVo?,
-    modifier: Modifier = Modifier.zIndex(0f),
-) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxSize()
-    ) {
-        Column(
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxHeight()
-        ) {
-            Row(
-                verticalAlignment = Alignment.Bottom,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(0.5f)
-            ) {
-                myMatchPlayerVo?.let {
-                    if (myMatchPlayerVo.isWinner) {
-                        Image(
-                            painter = painterResource(R.drawable.win),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .zIndex(2f)
-                                .height(35.dp)
-                                .width(90.dp),
-                            contentScale = ContentScale.FillBounds
-                        )
-                    } else {
-                        Image(
-                            painter = painterResource(R.drawable.lose),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .zIndex(2f)
-                                .height(35.dp)
-                                .width(90.dp),
-                            contentScale = ContentScale.FillBounds
-                        )
-                    }
-                }
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(0.3f)
-            ) {
-                myMatchPlayerVo?.let {
-                    if (myMatchPlayerVo.isWinner) {
-                        Image(
-                            painter = painterResource(R.drawable.pointlogo),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .height(20.dp)
-                                .width(20.dp),
-                            contentScale = ContentScale.FillBounds,
-                        )
-
-                        Spacer(modifier = Modifier.width(10.dp))
-
-                        Text(
-                            text = "+ 100",
-                            textAlign = TextAlign.Center,
-                            fontFamily = DAL_MU_RI,
-                            fontWeight = FontWeight.Light,
-                            fontSize = 16.sp,
-                            color = MongsWhite,
-                            maxLines = 1,
-                        )
-                    }
-                }
-            }
-
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(0.2f)
-            ) {
-                BlueButton(
-                    text = "배틀종료",
-                    width = 100,
-                    onClick = navBattleMenu
-                )
-            }
-
-            Spacer(modifier = Modifier.height(20.dp))
-        }
-    }
-}
-
-@Composable
 private fun MatchPlayer(
     matchPlayerVo: MatchPlayerVo,
     effectAlignment: Alignment,
@@ -549,6 +449,18 @@ private fun MatchPlayer(
 
 @Composable
 private fun BattleMatchLoadingBar(
+    modifier: Modifier = Modifier.zIndex(0f),
+) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = modifier.fillMaxSize(),
+    ) {
+        LoadingBar()
+    }
+}
+
+@Composable
+private fun BattleMatchEnterLoadingBar(
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
     Box(

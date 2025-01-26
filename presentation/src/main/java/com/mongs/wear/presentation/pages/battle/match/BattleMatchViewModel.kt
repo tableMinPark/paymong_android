@@ -1,16 +1,12 @@
 package com.mongs.wear.presentation.pages.battle.match
 
-import android.os.SystemClock
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.mongs.wear.core.enums.MatchRoundCode
-import com.mongs.wear.core.exception.ErrorException
 import com.mongs.wear.domain.battle.exception.NotExistsPlayerIdException
 import com.mongs.wear.domain.battle.exception.NotExistsTargetPlayerIdException
 import com.mongs.wear.domain.battle.usecase.GetMatchUseCase
@@ -23,8 +19,6 @@ import com.mongs.wear.domain.battle.usecase.MatchStartUseCase
 import com.mongs.wear.domain.battle.vo.MatchPlayerVo
 import com.mongs.wear.domain.battle.vo.MatchVo
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
-import com.mongs.wear.presentation.pages.battle.menu.BattleMenuViewModel
-import com.mongs.wear.presentation.pages.battle.menu.BattleMenuViewModel.Companion
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -33,7 +27,6 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
-import kotlin.math.round
 
 @HiltViewModel
 class BattleMatchViewModel @Inject constructor(
@@ -100,6 +93,9 @@ class BattleMatchViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 다음 라운드 진행
+     */
     fun nextRound() {
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
 
@@ -134,7 +130,7 @@ class BattleMatchViewModel @Inject constructor(
     fun matchOver(roomId: Long) {
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
 
-            uiState.loadingBar = true
+            uiState.matchOverLoadingBar = true
 
             // 매치 결과 정보 업데이트
             overMatchUseCase(
@@ -143,10 +139,8 @@ class BattleMatchViewModel @Inject constructor(
                 )
             )
 
-            uiState.loadingBar = false
-
-            // 매치 확인 창
-            uiState.matchPickDialog = true
+            uiState.matchOverLoadingBar = false
+            uiState.matchOverDialog = true
         }
     }
 
@@ -165,8 +159,9 @@ class BattleMatchViewModel @Inject constructor(
             } catch (exception: Exception) {
                 Log.w(TAG, "[WARN] ${exception.javaClass.simpleName} ${exception.message}")
             } finally {
-                uiState.matchPickDialog = false
                 uiState.loadingBar = false
+                uiState.matchOverLoadingBar = false
+                uiState.matchPickDialog = false
                 uiState.navMainEvent.emit(System.currentTimeMillis())
             }
         }
@@ -176,7 +171,9 @@ class BattleMatchViewModel @Inject constructor(
 
     class UiState : BaseUiState() {
         var navMainEvent = MutableSharedFlow<Long>()
+        var matchOverLoadingBar by mutableStateOf(false)
         var matchPickDialog by mutableStateOf(false)
+        var matchOverDialog by mutableStateOf(false)
     }
 
     override fun exceptionHandler(exception: Throwable) {

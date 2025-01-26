@@ -100,9 +100,7 @@ class BattleObserveResolver @Inject constructor(
 
         // 배틀 룸 정보 업데이트
         roomDB.matchRoomDao().let { dao ->
-
             dao.findByRoomId(roomId = overBattleResponseDto.roomId)?.let { matchRoomEntity ->
-
                 dao.save(
                     matchRoomEntity = matchRoomEntity.update(
                         isLastRound = true,

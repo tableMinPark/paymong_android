@@ -20,7 +20,6 @@ import com.mongs.wear.presentation.assets.MongsRed
 @Composable
 fun HpBar(
     hp: Float,
-    maxHp: Float = 500f,
     height: Int = 20,
     width: Int = 65,
     modifier: Modifier = Modifier,
@@ -36,8 +35,7 @@ fun HpBar(
         Row(
             modifier = Modifier
                 .height(height.dp)
-                .fillMaxWidth(fraction = hp / maxHp)
-                .clip(CircleShape)
+                .fillMaxWidth(fraction = hp / 100f)
                 .background(color = MongsRed)
         ) {}
     }
@@ -47,5 +45,5 @@ fun HpBar(
 @Preview(device = Devices.WEAR_OS_SMALL_ROUND)
 @Composable
 private fun PayPointPreview() {
-    HpBar(hp = 250f)
+    HpBar(hp = 100f)
 }
