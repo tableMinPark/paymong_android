@@ -216,8 +216,9 @@ data class MongEntity(
     /**
      * 졸업 상태 확인 여부 체크
      */
-    fun graduateCheck() {
+    fun graduateCheck(): MongEntity {
         this.graduateCheck = true
+        return this
     }
 
     /**

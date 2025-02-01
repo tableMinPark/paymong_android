@@ -4,20 +4,24 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.mongs.wear.domain.battle.exception.MatchWaitException
+import com.mongs.wear.domain.battle.usecase.GetBattlePayPointUseCase
 import com.mongs.wear.domain.battle.usecase.MatchEnterUseCase
 import com.mongs.wear.domain.battle.usecase.MatchWaitCancelUseCase
 import com.mongs.wear.domain.battle.usecase.MatchWaitUseCase
 import com.mongs.wear.domain.battle.vo.MatchVo
+import com.mongs.wear.domain.training.exception.GetBattlePayPointException
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class BattleMenuViewModel @Inject constructor(
+    private val getBattlePayPointUseCase: GetBattlePayPointUseCase,
     private val matchWaitUseCase: MatchWaitUseCase,
     private val matchWaitCancelUseCase: MatchWaitCancelUseCase,
     private val matchEnterUseCase: MatchEnterUseCase,
@@ -30,8 +34,16 @@ class BattleMenuViewModel @Inject constructor(
     private val _matchVo = MediatorLiveData<MatchVo?>(null)
     val matchVo: LiveData<MatchVo?> get() = _matchVo
 
+    private val _battlePayPoint = MediatorLiveData<Int>(0)
+    val battlePayPoint: LiveData<Int> get() = _battlePayPoint
+
     init {
         viewModelScopeWithHandler.launch(Dispatchers.Main) {
+
+            uiState.loadingBar = true
+
+            _battlePayPoint.postValue(getBattlePayPointUseCase())
+
             uiState.loadingBar = false
         }
     }
@@ -92,18 +104,26 @@ class BattleMenuViewModel @Inject constructor(
 
     val uiState: UiState = UiState()
 
-    class UiState : BaseUiState()
+    class UiState : BaseUiState() {
+        var navMainEvent = MutableSharedFlow<Long>()
+    }
 
     override fun exceptionHandler(exception: Throwable) {
 
-        when (exception) {
+        CoroutineScope(Dispatchers.IO).launch {
+            when (exception) {
 
-            is MatchWaitException -> {
-                matchExit()
-            }
+                is GetBattlePayPointException -> {
+                    uiState.navMainEvent.emit(System.currentTimeMillis())
+                }
 
-            else -> {
-                matchExit()
+                is MatchWaitException -> {
+                    matchExit()
+                }
+
+                else -> {
+                    matchExit()
+                }
             }
         }
     }

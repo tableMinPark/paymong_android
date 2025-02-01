@@ -1,25 +1,23 @@
-package com.mongs.wear.domain.auth.usecase
+package com.mongs.wear.domain.device.usecase
 
 import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.auth.exception.JoinException
-import com.mongs.wear.domain.auth.exception.LogoutException
-import com.mongs.wear.domain.auth.repository.AuthRepository
+import com.mongs.wear.domain.device.exception.ConnectMqttException
+import com.mongs.wear.domain.device.exception.DisConnectMqttException
+import com.mongs.wear.domain.device.repository.DeviceRepository
 import com.mongs.wear.domain.global.client.MqttClient
 import com.mongs.wear.domain.global.usecase.BaseNoParamUseCase
+import com.mongs.wear.domain.management.repository.SlotRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class LogoutUseCase @Inject constructor(
+class DisConnectMqttUseCase @Inject constructor(
     private val mqttClient: MqttClient,
-    private val authRepository: AuthRepository,
 ) : BaseNoParamUseCase<Unit>() {
 
     override suspend fun execute() {
 
-        withContext(Dispatchers.IO) {
-
-            authRepository.logout()
+        return withContext(Dispatchers.IO) {
 
             mqttClient.disSubManager()
             mqttClient.disSubPlayer()
@@ -33,7 +31,7 @@ class LogoutUseCase @Inject constructor(
         super.handleException(exception)
 
         when(exception.code) {
-            else -> throw LogoutException()
+            else -> throw DisConnectMqttException()
         }
     }
 }

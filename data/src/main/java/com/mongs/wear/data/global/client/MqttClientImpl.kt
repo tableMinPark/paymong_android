@@ -15,9 +15,6 @@ import com.mongs.wear.data.global.exception.PubMqttException
 import com.mongs.wear.data.global.exception.ResumeMqttException
 import com.mongs.wear.data.global.exception.SubMqttException
 import com.mongs.wear.domain.global.client.MqttClient
-import com.mongs.wear.domain.management.repository.ManagementRepository
-import com.mongs.wear.domain.management.repository.SlotRepository
-import com.mongs.wear.domain.player.repository.PlayerRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -29,9 +26,6 @@ import javax.inject.Singleton
 class MqttClientImpl @Inject constructor(
     @ApplicationContext private val context: Context,
     private val mqttApi: MqttApi,
-    private val slotRepository: SlotRepository,
-    private val managementRepository: ManagementRepository,
-    private val playerRepository: PlayerRepository,
 ) : MqttClient {
 
     class MqttState {
@@ -58,14 +52,22 @@ class MqttClientImpl @Inject constructor(
 
     companion object {
         val mqttState = MqttState()
+
+        fun resetState() {
+            mqttState.broker = MqttState.MqttStateCode.DISCONNECT
+            mqttState.manager = MqttState.MqttStateCode.DIS_SUB
+            mqttState.managerTopic = ""
+            mqttState.player = MqttState.MqttStateCode.DIS_SUB
+            mqttState.playerTopic = ""
+            mqttState.searchMatch = MqttState.MqttStateCode.DIS_SUB
+            mqttState.searchMatchTopic = ""
+            mqttState.battleMatch = MqttState.MqttStateCode.DIS_SUB
+            mqttState.battleMatchTopic = ""
+        }
     }
 
     override suspend fun isConnected(): Boolean {
         return mqttApi.isConnected()
-    }
-
-    override suspend fun isConnectPending(): Boolean {
-        return mqttApi.isConnectPending()
     }
 
     /**
@@ -136,7 +138,7 @@ class MqttClientImpl @Inject constructor(
         }
     }
 
-    override suspend fun disconnect() {
+    override suspend fun disConnect() {
 
         if (mqttState.broker == MqttState.MqttStateCode.CONNECT) {
 
@@ -178,10 +180,6 @@ class MqttClientImpl @Inject constructor(
 
         try {
             if (mqttState.manager == MqttState.MqttStateCode.PAUSE) {
-                // 현재 슬롯 동기화
-                slotRepository.getCurrentSlot()?.let { mongModel ->
-                    managementRepository.updateMong(mongId = mongModel.mongId)
-                }
                 mqttApi.subscribe(mqttState.managerTopic)
                 mqttState.manager = MqttState.MqttStateCode.SUB
             }
@@ -240,7 +238,6 @@ class MqttClientImpl @Inject constructor(
 
         try {
             if (mqttState.player == MqttState.MqttStateCode.PAUSE) {
-                playerRepository.updatePlayer()
                 mqttApi.subscribe(mqttState.playerTopic)
                 mqttState.player = MqttState.MqttStateCode.SUB
             }
@@ -287,7 +284,7 @@ class MqttClientImpl @Inject constructor(
 
         try {
             if (mqttState.searchMatch == MqttState.MqttStateCode.DIS_SUB) {
-                mqttState.searchMatchTopic = "${context.getString(R.string.mqtt_battle_search_topic)}/$deviceId"
+                mqttState.searchMatchTopic = "${context.getString(R.string.mqtt_battle_base_topic)}/search/$deviceId"
                 mqttApi.subscribe(mqttState.searchMatchTopic)
                 mqttState.searchMatch = MqttState.MqttStateCode.SUB
             }
@@ -348,7 +345,7 @@ class MqttClientImpl @Inject constructor(
 
         try {
             if (mqttState.battleMatch == MqttState.MqttStateCode.DIS_SUB) {
-                mqttState.battleMatchTopic = "${context.getString(R.string.mqtt_battle_match_topic)}/$roomId"
+                mqttState.battleMatchTopic = "${context.getString(R.string.mqtt_battle_base_topic)}/match/$roomId"
                 mqttApi.subscribe(mqttState.battleMatchTopic)
                 mqttState.battleMatch = MqttState.MqttStateCode.SUB
             }
@@ -363,7 +360,7 @@ class MqttClientImpl @Inject constructor(
 
         try {
 
-            val topic = "${context.getString(R.string.mqtt_battle_match_topic)}/$roomId/enter"
+            val topic = "${context.getString(R.string.mqtt_battle_base_topic)}/enter/$roomId"
 
             mqttApi.produce(topic = topic, requestDto = EnterBattleRequestDto(playerId = playerId))
 
@@ -378,7 +375,7 @@ class MqttClientImpl @Inject constructor(
 
         try {
 
-            val topic = "${context.getString(R.string.mqtt_battle_match_topic)}/$roomId/pick"
+            val topic = "${context.getString(R.string.mqtt_battle_base_topic)}/pick/$roomId"
 
             mqttApi.produce(topic = topic, requestDto = PickBattleRequestDto(playerId = playerId, targetPlayerId = targetPlayerId, pickCode = pickCode))
 
@@ -393,7 +390,7 @@ class MqttClientImpl @Inject constructor(
 
         try {
 
-            val topic = "${context.getString(R.string.mqtt_battle_match_topic)}/$roomId/exit"
+            val topic = "${context.getString(R.string.mqtt_battle_base_topic)}/exit/$roomId"
 
             mqttApi.produce(topic = topic, requestDto = ExitBattleRequestDto(playerId = playerId))
 

@@ -52,15 +52,17 @@ interface MongDao {
             , mongTypeCode = :mongTypeCode
             , payPoint = :payPoint
             , basicUpdatedAt = :updatedAt
+         WHERE mongId = :mongId
     """)
-    fun updateMongBasic(mongName: String, mongTypeCode: String, payPoint: Int, updatedAt: LocalDateTime)
+    fun updateMongBasic(mongId: Long, mongName: String, mongTypeCode: String, payPoint: Int, updatedAt: LocalDateTime)
 
     @Query("""
         UPDATE mongs_mong SET stateCode = :stateCode
             , isSleeping = :isSleeping
             , stateUpdatedAt = :updatedAt
+         WHERE mongId = :mongId
     """)
-    fun updateMongState(stateCode: MongStateCode, isSleeping: Boolean, updatedAt: LocalDateTime)
+    fun updateMongState(mongId: Long, stateCode: MongStateCode, isSleeping: Boolean, updatedAt: LocalDateTime)
 
     @Query("""
         UPDATE mongs_mong SET statusCode = :statusCode
@@ -72,14 +74,16 @@ interface MongDao {
             , fatigueRatio = :fatigueRatio
             , poopCount = :poopCount
             , statusUpdatedAt = :updatedAt
+         WHERE mongId = :mongId
     """)
-    fun updateMongStatus(statusCode: MongStatusCode, weight: Double, expRatio: Double, healthyRatio: Double, satietyRatio: Double, strengthRatio: Double, fatigueRatio: Double, poopCount: Int, updatedAt: LocalDateTime)
+    fun updateMongStatus(mongId: Long, statusCode: MongStatusCode, weight: Double, expRatio: Double, healthyRatio: Double, satietyRatio: Double, strengthRatio: Double, fatigueRatio: Double, poopCount: Int, updatedAt: LocalDateTime)
 
     @Query("""
         UPDATE mongs_mong SET isCurrent = :isCurrent
             , graduateCheck = :graduateCheck
+         WHERE mongId = :mongId
     """)
-    fun updateMongLocal(isCurrent: Boolean, graduateCheck: Boolean)
+    fun updateMongLocal(mongId: Long, isCurrent: Boolean, graduateCheck: Boolean)
 
     /**
      * INSERT
@@ -98,16 +102,18 @@ interface MongDao {
                 // 몽 기본 정보 업데이트
                 if (mongEntity.basicUpdatedAt.isAfter(nowMongEntity.basicUpdatedAt)) {
                     this.updateMongBasic(
+                        mongId = mongEntity.mongId,
                         mongName = mongEntity.mongName,
                         mongTypeCode = mongEntity.mongTypeCode,
                         payPoint = mongEntity.payPoint,
-                        updatedAt = mongEntity.basicUpdatedAt
+                        updatedAt = mongEntity.basicUpdatedAt,
                     )
                 }
 
                 // 몽 상태 정보 업데이트
                 if (mongEntity.stateUpdatedAt.isAfter(nowMongEntity.stateUpdatedAt)) {
                     this.updateMongState(
+                        mongId = mongEntity.mongId,
                         stateCode = mongEntity.stateCode,
                         isSleeping = mongEntity.isSleeping,
                         updatedAt = mongEntity.stateUpdatedAt
@@ -117,6 +123,7 @@ interface MongDao {
                 // 몽 지수 정보 업데이트
                 if (mongEntity.statusUpdatedAt.isAfter(nowMongEntity.statusUpdatedAt)) {
                     this.updateMongStatus(
+                        mongId = mongEntity.mongId,
                         statusCode = mongEntity.statusCode,
                         weight = mongEntity.weight,
                         expRatio = mongEntity.expRatio,
@@ -131,6 +138,7 @@ interface MongDao {
 
                 // 로컬 필드 업데이트
                 this.updateMongLocal(
+                    mongId = mongEntity.mongId,
                     isCurrent = mongEntity.isCurrent,
                     graduateCheck = mongEntity.graduateCheck
                 )

@@ -45,6 +45,7 @@ import kotlin.random.Random
 
 @Composable
 fun MatchOverDialog(
+    battlePayPoint: Int,
     navBattleMenu: () -> Unit,
     myMatchPlayerVo: MatchPlayerVo?,
     modifier: Modifier = Modifier,
@@ -110,7 +111,7 @@ fun MatchOverDialog(
                         Spacer(modifier = Modifier.width(10.dp))
 
                         Text(
-                            text = "+ 100",
+                            text = "+ $battlePayPoint",
                             textAlign = TextAlign.Center,
                             fontFamily = DAL_MU_RI,
                             fontWeight = FontWeight.Light,
@@ -147,6 +148,7 @@ private fun BattlePickDialogPreview() {
     Box{
         BattleMatchBackground()
         MatchOverDialog(
+            battlePayPoint = 150,
             navBattleMenu = {},
             myMatchPlayerVo = MatchPlayerVo(isWinner = true)
         )

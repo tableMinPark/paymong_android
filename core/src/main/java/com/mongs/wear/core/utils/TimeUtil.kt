@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter
 
 object TimeUtil {
 
-    private val dateFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss")
+    private val dateFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm")
 
     fun getBootedDt() : LocalDateTime {
 

@@ -10,6 +10,7 @@ import com.mongs.wear.data.activity.exception.CreateMatchException
 import com.mongs.wear.data.activity.exception.DeleteMatchException
 import com.mongs.wear.data.activity.exception.EnterMatchException
 import com.mongs.wear.data.activity.exception.ExitMatchException
+import com.mongs.wear.data.activity.exception.GetBattleException
 import com.mongs.wear.data.activity.exception.NotExistsMatchException
 import com.mongs.wear.data.activity.exception.NotExistsMatchPlayerException
 import com.mongs.wear.data.activity.exception.PickMatchException
@@ -17,6 +18,7 @@ import com.mongs.wear.data.activity.exception.UpdateOverMatchException
 import com.mongs.wear.data.global.exception.PubMqttException
 import com.mongs.wear.data.global.room.RoomDB
 import com.mongs.wear.data.global.utils.HttpUtil
+import com.mongs.wear.domain.battle.model.BattleModel
 import com.mongs.wear.domain.battle.model.MatchModel
 import com.mongs.wear.domain.battle.model.MatchPlayerModel
 import com.mongs.wear.domain.battle.repository.BattleRepository
@@ -31,6 +33,24 @@ class BattleRepositoryImpl @Inject constructor(
     private val battleApi: BattleApi,
     private val mqttClient: MqttClient,
 ): BattleRepository {
+
+    /**
+     * 배틀 정보 조회
+     */
+    override suspend fun getBattle(): BattleModel {
+
+        val response = battleApi.getBattle()
+
+        if (response.isSuccessful) {
+            response.body()?.let { body ->
+                return BattleModel(
+                    payPoint = body.result.payPoint
+                )
+            }
+        }
+
+        throw GetBattleException(result = httpUtil.getErrorResult(response.errorBody()))
+    }
 
     /**
      * 매칭 대기열 등록
@@ -102,6 +122,13 @@ class BattleRepositoryImpl @Inject constructor(
                 throw EnterMatchException()
             }
         }
+    }
+
+    /**
+     * 매치 조회
+     */
+    override suspend fun getMatch(deviceId: String): MatchModel? {
+        return roomDB.matchRoomDao().findByDeviceId(deviceId = deviceId)?.toMatchModel() ?: run { null }
     }
 
     /**

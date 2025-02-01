@@ -21,7 +21,7 @@ class SlotRepositoryImpl @Inject constructor(
 
         roomDB.mongDao().let { dao ->
             // 전체 선택 해제 (오류 값 보정)
-            dao.findAllByIsCurrentTrue().map { mongEntity ->
+            dao.findAllByIsCurrentTrue().forEach { mongEntity ->
                 dao.save(mongEntity.unPick())
             }
 

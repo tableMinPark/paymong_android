@@ -13,6 +13,7 @@ import com.mongs.wear.data.auth.exception.LoginException
 import com.mongs.wear.data.auth.exception.LogoutException
 import com.mongs.wear.data.auth.exception.NeedJoinException
 import com.mongs.wear.data.auth.exception.NeedUpdateAppException
+import com.mongs.wear.data.device.datastore.DeviceDataStore
 import com.mongs.wear.data.global.utils.HttpUtil
 import com.mongs.wear.domain.auth.repository.AuthRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -25,6 +26,7 @@ class AuthRepositoryImpl @Inject constructor(
     private val httpUtil: HttpUtil,
     private val authApi: AuthApi,
     private val tokenDataStore: TokenDataStore,
+    private val deviceDataStore: DeviceDataStore,
 ) : AuthRepository {
 
     /**
@@ -68,7 +70,7 @@ class AuthRepositoryImpl @Inject constructor(
 
         if (response.isSuccessful) {
             response.body()?.let { body ->
-
+                deviceDataStore.setAccountId(accountId = body.result.accountId)
                 tokenDataStore.setAccessToken(accessToken = body.result.accessToken)
                 tokenDataStore.setRefreshToken(refreshToken = body.result.refreshToken)
 
@@ -99,6 +101,7 @@ class AuthRepositoryImpl @Inject constructor(
 
         if (response.isSuccessful) {
             response.body()?.let {
+                deviceDataStore.setAccountId(accountId = 0)
                 tokenDataStore.setAccessToken(accessToken = "")
                 tokenDataStore.setRefreshToken(refreshToken = "")
             }

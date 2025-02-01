@@ -2,20 +2,18 @@ package com.mongs.wear.domain.battle.usecase
 
 import com.mongs.wear.core.enums.MatchRoundCode
 import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.auth.exception.NotExistsEmailException
-import com.mongs.wear.domain.auth.exception.NotExistsGoogleAccountIdException
 import com.mongs.wear.domain.battle.exception.NotExistsPlayerIdException
 import com.mongs.wear.domain.battle.exception.NotExistsTargetPlayerIdException
-import com.mongs.wear.domain.battle.exception.PickMatchException
+import com.mongs.wear.domain.battle.exception.MatchPickException
 import com.mongs.wear.domain.battle.repository.BattleRepository
 import com.mongs.wear.domain.global.usecase.BaseParamUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class PickMatchUseCase @Inject constructor(
+class MatchPickUseCase @Inject constructor(
     private val battleRepository: BattleRepository,
-) : BaseParamUseCase<PickMatchUseCase.Param, Unit>() {
+) : BaseParamUseCase<MatchPickUseCase.Param, Unit>() {
 
     override suspend fun execute(param: Param) {
 
@@ -55,7 +53,7 @@ class PickMatchUseCase @Inject constructor(
         super.handleException(exception)
 
         when(exception.code) {
-            else -> throw PickMatchException()
+            else -> throw MatchPickException()
         }
     }
 }

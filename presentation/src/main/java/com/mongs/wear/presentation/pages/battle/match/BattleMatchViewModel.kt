@@ -9,13 +9,14 @@ import androidx.lifecycle.MediatorLiveData
 import com.mongs.wear.core.enums.MatchRoundCode
 import com.mongs.wear.domain.battle.exception.NotExistsPlayerIdException
 import com.mongs.wear.domain.battle.exception.NotExistsTargetPlayerIdException
+import com.mongs.wear.domain.battle.usecase.GetBattlePayPointUseCase
 import com.mongs.wear.domain.battle.usecase.GetMatchUseCase
 import com.mongs.wear.domain.battle.usecase.GetMyMatchPlayerUseCase
 import com.mongs.wear.domain.battle.usecase.GetRiverMatchPlayerUseCase
 import com.mongs.wear.domain.battle.usecase.MatchExitUseCase
-import com.mongs.wear.domain.battle.usecase.OverMatchUseCase
-import com.mongs.wear.domain.battle.usecase.PickMatchUseCase
 import com.mongs.wear.domain.battle.usecase.MatchStartUseCase
+import com.mongs.wear.domain.battle.usecase.MatchOverUseCase
+import com.mongs.wear.domain.battle.usecase.MatchPickUseCase
 import com.mongs.wear.domain.battle.vo.MatchPlayerVo
 import com.mongs.wear.domain.battle.vo.MatchVo
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
@@ -30,18 +31,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BattleMatchViewModel @Inject constructor(
+    private val getBattlePayPointUseCase: GetBattlePayPointUseCase,
     private val getMatchUseCase: GetMatchUseCase,
     private val getMyMatchPlayerUseCase: GetMyMatchPlayerUseCase,
     private val getRiverMatchPlayerUseCase: GetRiverMatchPlayerUseCase,
     private val matchStartUseCase: MatchStartUseCase,
-    private val pickMatchUseCase: PickMatchUseCase,
-    private val overMatchUseCase: OverMatchUseCase,
+    private val matchPickUseCase: MatchPickUseCase,
+    private val matchOverUseCase: MatchOverUseCase,
     private val matchExitUseCase: MatchExitUseCase,
 ): BaseViewModel() {
 
     companion object {
         private const val TAG = "BattleMatchViewModel"
     }
+
+    private val _battlePayPoint = MediatorLiveData<Int>(0)
+    val battlePayPoint: LiveData<Int> get() = _battlePayPoint
 
     private val _matchVo = MediatorLiveData<MatchVo?>()
     val matchVo: LiveData<MatchVo?> get() = _matchVo
@@ -56,6 +61,8 @@ class BattleMatchViewModel @Inject constructor(
         viewModelScopeWithHandler.launch(Dispatchers.Main) {
 
             uiState.loadingBar = true
+
+            _battlePayPoint.postValue(getBattlePayPointUseCase())
 
             _matchVo.addSource(withContext(Dispatchers.IO) { getMatchUseCase() }) { matchVo ->
                 _matchVo.value = matchVo
@@ -86,10 +93,6 @@ class BattleMatchViewModel @Inject constructor(
                     roomId = roomId,
                 )
             )
-
-            delay(3000)
-
-            uiState.matchPickDialog = true
         }
     }
 
@@ -111,8 +114,8 @@ class BattleMatchViewModel @Inject constructor(
     fun matchPick(roomId: Long, playerId: String?, targetPlayerId: String?, pickCode: MatchRoundCode) {
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
 
-            pickMatchUseCase(
-                PickMatchUseCase.Param(
+            matchPickUseCase(
+                MatchPickUseCase.Param(
                     roomId = roomId,
                     playerId = playerId,
                     targetPlayerId = targetPlayerId,
@@ -130,11 +133,16 @@ class BattleMatchViewModel @Inject constructor(
     fun matchOver(roomId: Long) {
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
 
+            delay(3000)
+
+            uiState.matchPickDialog = false
             uiState.matchOverLoadingBar = true
 
+            delay(1000)
+
             // 매치 결과 정보 업데이트
-            overMatchUseCase(
-                OverMatchUseCase.Param(
+            matchOverUseCase(
+                MatchOverUseCase.Param(
                     roomId = roomId,
                 )
             )

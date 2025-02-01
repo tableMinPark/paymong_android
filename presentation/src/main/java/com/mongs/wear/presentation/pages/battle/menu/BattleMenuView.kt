@@ -57,10 +57,10 @@ fun BattleMenuView(
     battleMenuViewModel: BattleMenuViewModel = hiltViewModel(),
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
 ) {
+    val battlePayPoint = battleMenuViewModel.battlePayPoint.observeAsState(0)
     val matchVo = battleMenuViewModel.matchVo.observeAsState()
 
     Box {
-
         if (battleMenuViewModel.uiState.loadingBar) {
             BattleMenuBackground()
             BattleMenuLoadingBar(
@@ -76,6 +76,7 @@ fun BattleMenuView(
                 battle = {
                     battleMenuViewModel.createMatchWait()
                 },
+                battlePayPoint = battlePayPoint.value,
                 modifier = Modifier.zIndex(1f),
             )
         }
@@ -92,6 +93,12 @@ fun BattleMenuView(
                     }
                 }
             }
+        }
+    }
+
+    LaunchedEffect(battleMenuViewModel.uiState.navMainEvent) {
+        battleMenuViewModel.uiState.navMainEvent.collect {
+            navController.popBackStack(route = NavItem.BattleNested.route, inclusive = true)
         }
     }
 
@@ -117,17 +124,7 @@ private fun BattleMenuLoadingBar(
     matchStateCode: MatchStateCode?,
     matchWaitCancel: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
-    context: Context = LocalContext.current,
 ) {
-    DisposableEffect(Unit) {
-        val window = (context as ComponentActivity).window
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
-        onDispose {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        }
-    }
-
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier.fillMaxSize(),
@@ -177,6 +174,7 @@ private fun BattleMenuLoadingBar(
 
 @Composable
 private fun BattleMenuContent(
+    battlePayPoint: Int,
     battle: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
@@ -265,7 +263,7 @@ private fun BattleMenuContent(
                 Spacer(modifier = Modifier.width(10.dp))
 
                 Text(
-                    text = "+ 100",
+                    text = "+ $battlePayPoint",
                     textAlign = TextAlign.Center,
                     fontFamily = DAL_MU_RI,
                     fontWeight = FontWeight.Light,

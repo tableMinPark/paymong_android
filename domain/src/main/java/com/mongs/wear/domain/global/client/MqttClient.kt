@@ -10,11 +10,6 @@ interface MqttClient {
     suspend fun isConnected(): Boolean
 
     /**
-     * 연결 진행 중 플래그 조회
-     */
-    suspend fun isConnectPending(): Boolean
-
-    /**
      * 구독 준비 (콜백 클래스 등록 및 MqttClient 객체 생성)
      */
     suspend fun connect()
@@ -34,7 +29,7 @@ interface MqttClient {
      * 구독중인 topic 전체 구독 해제
      * 구독 정보 삭제 (mongId, accountId, roomId)
      */
-    suspend fun disconnect()
+    suspend fun disConnect()
 
     /**
      * Manager 구독

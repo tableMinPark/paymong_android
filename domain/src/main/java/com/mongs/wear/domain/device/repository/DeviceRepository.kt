@@ -6,6 +6,11 @@ import java.time.LocalDateTime
 interface DeviceRepository {
 
     /**
+     * 계정 ID 조회
+     */
+    suspend fun getAccountId(): Long
+
+    /**
      * 플레이어 걸음 수 환전
      */
     suspend fun exchangeWalkingCount(mongId: Long, walkingCount: Int, deviceBootedDt: LocalDateTime)

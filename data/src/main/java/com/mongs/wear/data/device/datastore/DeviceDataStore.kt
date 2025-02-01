@@ -5,6 +5,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.floatPreferencesKey
 import androidx.datastore.preferences.core.intPreferencesKey
+import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.LiveData
@@ -31,6 +32,9 @@ class DeviceDataStore @Inject constructor(
         private const val DEVICE_DATA_STORE_NAME = "DEVICE"
 
         private const val DEFAULT_BACKGROUND_MAP_CODE = "MP000"
+
+        // 계정 ID
+        private val ACCOUNT_ID = longPreferencesKey("ACCOUNT_ID")
 
         // 보유 총 걸음 수
         private val STEPS = intPreferencesKey("STEPS")
@@ -59,6 +63,10 @@ class DeviceDataStore @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             context.store.edit { preferences ->
 
+                if (!preferences.contains(ACCOUNT_ID)) {
+                    preferences[ACCOUNT_ID] = 0
+                }
+
                 if (!preferences.contains(STEPS)) {
                     preferences[STEPS] = 0
                 }
@@ -83,6 +91,10 @@ class DeviceDataStore @Inject constructor(
                     preferences[BG_MAP_TYPE_CODE] = DEFAULT_BACKGROUND_MAP_CODE
                 }
 
+                if (!preferences.contains(NETWORK)) {
+                    preferences[NETWORK] = true
+                }
+
                 if (!preferences.contains(NOTIFICATION)) {
                     preferences[NOTIFICATION] = true
                 }
@@ -90,9 +102,21 @@ class DeviceDataStore @Inject constructor(
                 if (!preferences.contains(SOUND_VOLUME)) {
                     preferences[SOUND_VOLUME] = 0.5f
                 }
-
-                preferences[NETWORK] = true
             }
+        }
+    }
+
+    fun getAccountId() : Long {
+        return runBlocking {
+            context.store.data.map { preferences ->
+                preferences[ACCOUNT_ID]!!
+            }.first()
+        }
+    }
+
+    suspend fun setAccountId(accountId: Long) {
+        context.store.edit { preferences ->
+            preferences[ACCOUNT_ID] = accountId
         }
     }
 

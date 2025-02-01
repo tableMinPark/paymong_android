@@ -2,10 +2,16 @@ package com.mongs.wear.domain.battle.repository
 
 import androidx.lifecycle.LiveData
 import com.mongs.wear.core.enums.MatchRoundCode
+import com.mongs.wear.domain.battle.model.BattleModel
 import com.mongs.wear.domain.battle.model.MatchModel
 import com.mongs.wear.domain.battle.model.MatchPlayerModel
 
 interface BattleRepository {
+
+    /**
+     * 배틀 보상 정보 조회
+     */
+    suspend fun getBattle(): BattleModel
 
     /**
      * 매칭 대기열 등록
@@ -31,6 +37,11 @@ interface BattleRepository {
      * 매칭 입장
      */
     suspend fun enterMatch(roomId: Long)
+
+    /**
+     * 매치 조회
+     */
+    suspend fun getMatch(deviceId: String): MatchModel?
 
     /**
      * 매치 라이브 객체 조회

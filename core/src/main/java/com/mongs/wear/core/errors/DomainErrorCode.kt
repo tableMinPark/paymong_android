@@ -35,6 +35,7 @@ enum class DomainErrorCode(
     DOMAIN_BATTLE_NOT_EXISTS_TARGET_PLAYER_ID_FAILED("매치 선택 실패", false),
 
     // TRAINING
+    DOMAIN_GET_BATTLE_PAY_POINT_FAILED("잠시후 재시도", true),
     DOMAIN_GET_TRAINING_PAY_POINT_FAILED("잠시후 재시도", true),
     DOMAIN_TRAINING_MONG_FAILED("훈련 완료 실패", true),
 
@@ -46,6 +47,7 @@ enum class DomainErrorCode(
     DOMAIN_FEEDBACK_CREATE_FEEDBACK_FAILED("오류 신고 실패", true),
 
     // MANAGEMENT
+    DOMAIN_MANAGEMENT_UPDATE_CURRENT_SLOT_FAILED("현재 몽 정보 갱신 실패", false),
     DOMAIN_MANAGEMENT_CREATE_MONG_FAILED("몽 생성 실패", true),
     DOMAIN_MANAGEMENT_DELETE_MONG_FAILED("몽 삭제 실패", true),
     DOMAIN_MANAGEMENT_EVOLUTION_MONG_FAILED("몽 진화 실패", false),
@@ -64,12 +66,15 @@ enum class DomainErrorCode(
     DOMAIN_MANAGEMENT_STROKE_MONG_FAILED("%d초 뒤 가능", true),
 
     // PLAYER
+    DOMAIN_PLAYER_UPDATE_PLAYER_FAILED("현재 플레이어 정보 갱신 실패", false),
     DOMAIN_PLAYER_EXCHANGE_STAR_POINT_FAILED("스타 포인트 환전 실패", true),
     DOMAIN_PLAYER_BUY_SLOT_FAILED("슬롯 구매 실패", true),
     DOMAIN_PLAYER_GET_SLOT_COUNT_FAILED("슬롯 수 조회 실패", false),
     DOMAIN_PLAYER_GET_STAR_POINT_FAILED("스타 포인트 조회 실패", false),
 
     // DEVICE
+    DOMAIN_DEVICE_CONNECT_MQTT_FAILED("네트워크 재연결 실패", true),
+    DOMAIN_DEVICE_DISCONNECT_MQTT_FAILED("네트워크 연결 해제 실패", true),
     DOMAIN_DEVICE_GET_BACKGROUND_MAP_CODE_FAILED("배경 조회 실패", false),
     DOMAIN_DEVICE_SET_BACKGROUND_MAP_CODE_FAILED("배경 변경 실패", false),
     DOMAIN_DEVICE_GET_NETWORK_FAILED("네트워크 FLAG 조회 실패", false),
@@ -81,7 +86,8 @@ enum class DomainErrorCode(
     DOMAIN_DEVICE_SET_DEVICE_ID_FAILED("기기 ID 변경 실패", false),
     DOMAIN_PLAYER_GET_STEPS_FAILED("걸음 수 조회 실패", false),
     DOMAIN_PLAYER_EXCHANGE_WALKING_COUNT_FAILED("걸음 수 환전 실패", true),
-    DOMAIN_PLAYER_SET_TOTAL_WALKING_COUNT_FAILED("총 걸음 수 조회 실패", false),
+    DOMAIN_PLAYER_SET_LOCAL_TOTAL_WALKING_COUNT_FAILED("로컬 총 걸음 수 갱신 실패", false),
+    DOMAIN_PLAYER_SET_SERVER_TOTAL_WALKING_COUNT_FAILED("서버 총 걸음 수 갱신 실패", false),
 
     // STORE
     DOMAIN_STORE_CONSUME_PRODUCT_ORDER_FAILED("상품 주문 소비 실패", false),

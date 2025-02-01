@@ -1,7 +1,7 @@
 package com.mongs.wear.domain.battle.usecase
 
 import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.battle.exception.OverMatchException
+import com.mongs.wear.domain.battle.exception.MatchOverException
 import com.mongs.wear.domain.battle.repository.BattleRepository
 import com.mongs.wear.domain.global.client.MqttClient
 import com.mongs.wear.domain.global.usecase.BaseParamUseCase
@@ -9,10 +9,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class OverMatchUseCase @Inject constructor(
+class MatchOverUseCase @Inject constructor(
     private val mqttClient: MqttClient,
     private val battleRepository: BattleRepository,
-) : BaseParamUseCase<OverMatchUseCase.Param, Unit>() {
+) : BaseParamUseCase<MatchOverUseCase.Param, Unit>() {
 
     override suspend fun execute(param: Param) {
 
@@ -32,7 +32,7 @@ class OverMatchUseCase @Inject constructor(
         super.handleException(exception)
 
         when(exception.code) {
-            else -> throw OverMatchException()
+            else -> throw MatchOverException()
         }
     }
 }

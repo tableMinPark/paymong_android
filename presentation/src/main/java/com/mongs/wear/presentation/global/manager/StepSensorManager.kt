@@ -5,10 +5,9 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.os.SystemClock
 import android.util.Log
 import com.mongs.wear.core.exception.UseCaseException
-import com.mongs.wear.domain.device.usecase.SetTotalWalkingCountUseCase
+import com.mongs.wear.domain.device.usecase.SetLocalTotalWalkingCountUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,7 +18,7 @@ import kotlin.coroutines.resume
 
 class StepSensorManager @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val setTotalWalkingCountUseCase: SetTotalWalkingCountUseCase,
+    private val setLocalTotalWalkingCountUseCase: SetLocalTotalWalkingCountUseCase,
 ) {
 
     companion object {
@@ -27,7 +26,7 @@ class StepSensorManager @Inject constructor(
     }
 
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    private val stepSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY) // TODO: 센서 변경 -> TYPE_STEP_COUNTER
+    private val stepSensor: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
 
     /**
      * 지속적 걸음 수 센서 값 조회
@@ -37,14 +36,13 @@ class StepSensorManager @Inject constructor(
         override fun onSensorChanged(event: SensorEvent?) {
             event?.let {
                 CoroutineScope(Dispatchers.IO).launch {
-//                    val totalWalkingCount = event.values[0].toInt()
-                    val totalWalkingCount = SystemClock.elapsedRealtime().toInt()   // TODO: 센서 값 변경
+                    val totalWalkingCount = event.values[0].toInt()
 
                     Log.i(TAG, "[Manager] 총 걸음 수 : $totalWalkingCount")
 
                     try {
-                        setTotalWalkingCountUseCase(
-                            SetTotalWalkingCountUseCase.Param(
+                        setLocalTotalWalkingCountUseCase(
+                            SetLocalTotalWalkingCountUseCase.Param(
                                 totalWalkingCount = totalWalkingCount
                             )
                         )
@@ -66,25 +64,29 @@ class StepSensorManager @Inject constructor(
     }
 
     fun stop() {
-        sensorManager.unregisterListener(stepListener)
-        Log.i(TAG, "[Manager] 스텝 센서 수신 중지")
+        stepSensor?.let {
+            sensorManager.unregisterListener(stepListener)
+            Log.i(TAG, "[Manager] 스텝 센서 수신 중지")
+        }
     }
-
 
     /**
      * 일발성 조회
      */
     private val sensorOnceManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
-    private val stepSensorOnce: Sensor? = sensorOnceManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY) // TODO: 센서 변경 -> TYPE_STEP_COUNTER
+    private val stepSensorOnce: Sensor? = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER)
 
     suspend fun getWalkingCount(): Int {
         return suspendCancellableCoroutine { cont ->
             sensorOnceManager.registerListener(object : SensorEventListener {
                 override fun onSensorChanged(event: SensorEvent?) {
                     event?.let {
+                        val totalWalkingCount = event.values[0].toInt()
+
+                        Log.i(TAG, "[Manager] 총 걸음 수 : $totalWalkingCount")
+
                         sensorOnceManager.unregisterListener(this)
-//                    val totalWalkingCount = event.values[0].toInt()
-                        val totalWalkingCount = SystemClock.elapsedRealtime().toInt()   // TODO: 센서 값 변경
+
                         cont.resume(totalWalkingCount)
                     }
                 }

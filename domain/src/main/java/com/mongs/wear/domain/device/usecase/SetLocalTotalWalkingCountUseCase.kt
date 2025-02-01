@@ -1,16 +1,16 @@
 package com.mongs.wear.domain.device.usecase
 
 import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.device.exception.SetTotalWalkingCountException
+import com.mongs.wear.domain.device.exception.SetLocalTotalWalkingCountException
 import com.mongs.wear.domain.device.repository.DeviceRepository
 import com.mongs.wear.domain.global.usecase.BaseParamUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-class SetTotalWalkingCountUseCase @Inject constructor(
+class SetLocalTotalWalkingCountUseCase @Inject constructor(
     private val deviceRepository: DeviceRepository,
-) : BaseParamUseCase<SetTotalWalkingCountUseCase.Param, Unit>() {
+) : BaseParamUseCase<SetLocalTotalWalkingCountUseCase.Param, Unit>() {
 
     override suspend fun execute(param: Param) {
 
@@ -27,7 +27,7 @@ class SetTotalWalkingCountUseCase @Inject constructor(
         super.handleException(exception)
 
         when(exception.code) {
-            else -> throw SetTotalWalkingCountException()
+            else -> throw SetLocalTotalWalkingCountException()
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.mongs.wear.domain.auth.usecase
 
+import android.util.Log
 import com.mongs.wear.core.errors.DataErrorCode
 import com.mongs.wear.core.exception.ErrorException
 import com.mongs.wear.domain.auth.exception.CreateDeviceException
@@ -14,7 +15,9 @@ import com.mongs.wear.domain.global.client.MqttClient
 import com.mongs.wear.domain.global.usecase.BaseParamUseCase
 import com.mongs.wear.domain.management.repository.ManagementRepository
 import com.mongs.wear.domain.player.repository.PlayerRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -58,6 +61,8 @@ class LoginUseCase @Inject constructor(
             // 브로커 연결
             mqttClient.connect()
 
+            Log.i("TEST", "연결 시도 다음")
+
             // 브로커 연결 여부 확인
             if (mqttClient.isConnected()) {
                 // 플레이어 정보 등록
@@ -69,6 +74,7 @@ class LoginUseCase @Inject constructor(
                 // 몽 정보 전체 동기화
                 managementRepository.updateMongs()
             } else {
+                Log.i("TEST", "연결 시도 실패")
                 throw LoginException()
             }
         }
@@ -86,7 +92,7 @@ class LoginUseCase @Inject constructor(
     override fun handleException(exception: ErrorException) {
         super.handleException(exception)
 
-        when(exception.code) {
+        when (exception.code) {
 
             DataErrorCode.DATA_AUTH_NEED_JOIN -> throw NeedJoinException()
 

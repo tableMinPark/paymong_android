@@ -8,6 +8,7 @@ import com.mongs.wear.data.device.datastore.DeviceDataStore
 import com.mongs.wear.data.global.client.MqttClientImpl
 import com.mongs.wear.data.manager.consumer.ManagementConsumer
 import com.mongs.wear.data.user.consumer.PlayerConsumer
+import com.mongs.wear.domain.auth.repository.AuthRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,6 +24,7 @@ class DefaultConsumer @Inject constructor(
     private val playerConsumer: PlayerConsumer,
     private val battleConsumer: BattleConsumer,
     private val deviceDataStore: DeviceDataStore,
+    private val authRepository: AuthRepository,
     private val gson: Gson,
 ) : MqttCallback {
 
@@ -66,7 +68,6 @@ class DefaultConsumer @Inject constructor(
                         }
                     }
                 } catch (e: Exception) {
-                    e.printStackTrace()
                     Log.e(TAG, "[Consume] mqtt message 파싱 실패")
                 }
             }
@@ -75,8 +76,8 @@ class DefaultConsumer @Inject constructor(
 
     override fun connectionLost(cause: Throwable?) {
         CoroutineScope(Dispatchers.IO).launch {
-            if (MqttClientImpl.mqttState.broker != MqttClientImpl.MqttState.MqttStateCode.PAUSE_DISCONNECT) {
-                MqttClientImpl.mqttState.broker = MqttClientImpl.MqttState.MqttStateCode.DISCONNECT
+            if (MqttClientImpl.mqttState.broker != MqttClientImpl.MqttState.MqttStateCode.PAUSE_DISCONNECT && authRepository.isLogin()) {
+                MqttClientImpl.resetState()
                 deviceDataStore.setNetwork(network = false)
             }
         }

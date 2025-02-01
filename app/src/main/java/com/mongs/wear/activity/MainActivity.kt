@@ -9,8 +9,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.LifecycleObserver
-import com.google.android.gms.common.api.internal.LifecycleActivity
 import com.mongs.wear.presentation.assets.MongsTheme
 import com.mongs.wear.presentation.layout.MainView
 import com.mongs.wear.viewModel.MainActivityViewModel
@@ -34,13 +32,13 @@ class MainActivity : ComponentActivity() {
             }
         } else {
             if (
-//            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
-//            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED
             ) {
                 val permissions = arrayOf(
-//                Manifest.permission.ACCESS_FINE_LOCATION,
-//                Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION,
                     Manifest.permission.ACTIVITY_RECOGNITION,
                 )
                 ActivityCompat.requestPermissions(this, permissions, 100)
@@ -59,18 +57,20 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
-        mainActivityViewModel.connectSensor()
-        mainActivityViewModel.resumeConnectMqtt()
+        mainActivityViewModel.initNetwork()
+        mainActivityViewModel.connectMqtt()
+        mainActivityViewModel.updatePlayer()
+        mainActivityViewModel.updateCurrentMong()
+        mainActivityViewModel.updateTotalWalkingCount()
     }
 
     override fun onPause() {
-        mainActivityViewModel.disconnectSensor()
-        mainActivityViewModel.pauseConnectMqtt()
+        mainActivityViewModel.disConnectMqtt()
         super.onPause()
     }
 
-    override fun onDestroy() {
-        mainActivityViewModel.disconnectMqtt()
-        super.onDestroy()
-    }
+//    override fun onDestroy() {
+//        mainActivityViewModel.disconnectMqtt()
+//        super.onDestroy()
+//    }
 }

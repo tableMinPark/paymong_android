@@ -45,7 +45,7 @@ class ManagementRepositoryImpl @Inject constructor(
                     }
 
                     // 현재 몽 목록 동기화
-                    body.result.forEach({ getMongResponseDto ->
+                    body.result.forEach { getMongResponseDto ->
                         // 수정
                         dao.findByMongId(getMongResponseDto.basic.mongId)?.let { mongEntity ->
                             dao.save(
@@ -65,7 +65,7 @@ class ManagementRepositoryImpl @Inject constructor(
                                 )
                             )
                         }
-                    })
+                    }
                 }
             }
         }
@@ -202,10 +202,7 @@ class ManagementRepositoryImpl @Inject constructor(
     override suspend fun graduateCheckMong(mongId: Long) {
 
         roomDB.mongDao().findByMongId(mongId = mongId)?.let { mongEntity ->
-
-            mongEntity.graduateCheck()
-
-            roomDB.mongDao().save(mongEntity)
+            roomDB.mongDao().save(mongEntity.graduateCheck())
         }
     }
 

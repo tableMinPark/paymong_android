@@ -7,8 +7,10 @@ import com.mongs.wear.domain.device.usecase.GetBackgroundMapCodeUseCase
 import com.mongs.wear.domain.management.exception.GetCurrentSlotException
 import com.mongs.wear.domain.management.usecase.GetCurrentSlotUseCase
 import com.mongs.wear.domain.management.vo.MongVo
+import com.mongs.wear.presentation.global.manager.StepSensorManager
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -16,6 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainPagerViewModel @Inject constructor(
+    private val stepSensorManager: StepSensorManager,
     private val getCurrentSlotUseCase: GetCurrentSlotUseCase,
     private val getBackgroundMapCodeUseCase: GetBackgroundMapCodeUseCase,
 ): BaseViewModel() {
@@ -41,6 +44,20 @@ class MainPagerViewModel @Inject constructor(
 
             uiState.loadingBar = false
         }
+    }
+
+    /**
+     * 걸음 센서 연결
+     */
+    fun connectSensor() = CoroutineScope(Dispatchers.IO).launch {
+        stepSensorManager.listen()
+    }
+
+    /**
+     * 걸음 센서 연결 해제
+     */
+    fun disconnectSensor() = CoroutineScope(Dispatchers.IO).launch {
+        stepSensorManager.stop()
     }
 
     val uiState = UiState()

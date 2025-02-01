@@ -19,7 +19,7 @@ class GetTrainingPayPointUseCase @Inject constructor(
 
             when(param.trainingCode) {
                 TrainingCode.RUNNER -> {
-                    trainingRepository.getTrainingRunner()
+                    trainingRepository.getTrainingRunner().payPoint
                 }
 
                 // 훈련 농구

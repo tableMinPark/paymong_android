@@ -1,44 +1,29 @@
 package com.mongs.wear.presentation.layout
 
 import android.content.Context
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.navigation
-import androidx.wear.compose.material.Text
 import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
-import com.mongs.wear.presentation.R
-import com.mongs.wear.presentation.assets.DAL_MU_RI
-import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.assets.NavItem
 import com.mongs.wear.presentation.component.common.background.MainBackground
-import com.mongs.wear.presentation.component.common.background.ServerErrorBackground
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
-import com.mongs.wear.presentation.component.common.button.BlueButton
+import com.mongs.wear.presentation.dialog.error.NetworkErrorDialog
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import com.mongs.wear.presentation.pages.battle.match.BattleMatchView
 import com.mongs.wear.presentation.pages.battle.menu.BattleMenuView
@@ -65,17 +50,23 @@ fun MainView (
     context: Context = LocalContext.current,
     mainViewModel: MainViewModel = hiltViewModel(),
 ) {
-    val networkFlag = mainViewModel.network.observeAsState(true)
 
-    if (mainViewModel.uiState.loadingBar) {
-        MainBackground()
-        MainLoadingBar()
-    } else {
-        if (!networkFlag.value) {
-            ServerErrorBackground()
-            NetworkErrorContent(modifier = Modifier.zIndex(1f))
+    Box {
+        if (mainViewModel.uiState.loadingBar) {
+            MainBackground()
+            MainLoadingBar()
         } else {
-            NavContent()
+            NavContent(modifier = Modifier.zIndex(0f))
+        }
+
+        val networkFlag = mainViewModel.network.observeAsState(true)
+
+        if (!networkFlag.value) {
+            NetworkErrorDialog(
+                errorDialogLoadingBar = mainViewModel.uiState.errorDialogLoadingBar,
+                networkRetry = mainViewModel::networkRetry,
+                modifier = Modifier.zIndex(1f),
+            )
         }
     }
 
@@ -106,52 +97,14 @@ fun MainView (
     }
 }
 
-@Composable
-fun NetworkErrorContent (
-    context: Context = LocalContext.current,
-    modifier: Modifier = Modifier.zIndex(0f)
-) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxSize()
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxHeight()
-        ) {
-            Image(
-                painter = painterResource(R.drawable.logo_not_open),
-                contentDescription = null,
-                modifier = Modifier.size(55.dp)
-            )
-
-            Spacer(modifier = Modifier.height(15.dp))
-
-            Text(
-                text = "서버연결실패\n재실행 해주세요",
-                textAlign = TextAlign.Center,
-                fontFamily = DAL_MU_RI,
-                fontWeight = FontWeight.Light,
-                fontSize = 16.sp,
-                color = MongsWhite,
-            )
-
-            Spacer(modifier = Modifier.height(25.dp))
-
-            BlueButton(
-                text =  "앱종료",
-                onClick = { (context as ComponentActivity).finish() },
-            )
-        }
-    }
-}
-
 /**
  * 라우터
  */
 @Composable
-fun NavContent() {
+fun NavContent(
+    context: Context = LocalContext.current,
+    modifier: Modifier = Modifier.zIndex(0f)
+) {
     val navController = rememberSwipeDismissableNavController()
 
     val emptyPagerState = rememberPagerState(0, 0f) { 3 }
@@ -169,13 +122,24 @@ fun NavContent() {
 
     SwipeDismissableNavHost(
         navController = navController,
-        startDestination = NavItem.Login.route
+        startDestination = NavItem.Login.route,
+        modifier = modifier
     ) {
         composable(route = NavItem.Login.route) {
             LoginView(navController = navController)
         }
 
         composable(route = NavItem.MainPager.route) {
+
+            DisposableEffect(Unit) {
+                val window = (context as ComponentActivity).window
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+                onDispose {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+            }
+
             MainPagerView(
                 navController = navController,
                 emptyPagerState = emptyPagerState,
@@ -225,9 +189,29 @@ fun NavContent() {
                 StoreMenuView(navController = navController)
             }
             composable(route = NavItem.StoreChargeStarPoint.route) {
+
+                DisposableEffect(Unit) {
+                    val window = (context as ComponentActivity).window
+                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+                    onDispose {
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    }
+                }
+
                 StoreChargeStarPointView(navController = navController)
             }
             composable(route = NavItem.StoreExchangePayPoint.route) {
+
+                DisposableEffect(Unit) {
+                    val window = (context as ComponentActivity).window
+                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+                    onDispose {
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    }
+                }
+
                 StoreExchangePayPointView(navController = navController)
             }
         }
@@ -244,6 +228,16 @@ fun NavContent() {
                 TrainingMenuView(navController = navController)
             }
             composable(route = NavItem.TrainingJumping.route) {
+
+                DisposableEffect(Unit) {
+                    val window = (context as ComponentActivity).window
+                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+                    onDispose {
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    }
+                }
+
                 TrainingRunnerView(navController = navController)
             }
         }
@@ -253,9 +247,29 @@ fun NavContent() {
             route = NavItem.BattleNested.route
         ) {
             composable(route = NavItem.BattleMenu.route) {
+
+                DisposableEffect(Unit) {
+                    val window = (context as ComponentActivity).window
+                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+                    onDispose {
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    }
+                }
+
                 BattleMenuView(navController = navController)
             }
             composable(route = NavItem.BattleMatch.route) {
+
+                DisposableEffect(Unit) {
+                    val window = (context as ComponentActivity).window
+                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+                    onDispose {
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                    }
+                }
+
                 BattleMatchView(navController = navController)
             }
         }

@@ -11,6 +11,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+/**
+ * 회원 가입 UseCase
+ */
 class JoinUseCase @Inject constructor(
     private val authRepository: AuthRepository,
 ) : BaseParamUseCase<JoinUseCase.Param, Unit>() {

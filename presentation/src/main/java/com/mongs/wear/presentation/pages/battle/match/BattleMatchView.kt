@@ -1,8 +1,5 @@
 package com.mongs.wear.presentation.pages.battle.match
 
-import android.content.Context
-import android.view.WindowManager
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -64,17 +61,8 @@ fun BattleMatchView(
     navController: NavController,
     battleMatchViewModel: BattleMatchViewModel = hiltViewModel(),
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
-    context: Context = LocalContext.current,
 ) {
-    DisposableEffect(Unit) {
-        val window = (context as ComponentActivity).window
-        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
-        onDispose {
-            window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-        }
-    }
-
+    val battlePayPoint = battleMatchViewModel.battlePayPoint.observeAsState(0)
     val matchVo = battleMatchViewModel.matchVo.observeAsState()
     val myMatchPlayerVo = battleMatchViewModel.myMatchPlayerVo.observeAsState()
     val otherMatchPlayerVo = battleMatchViewModel.otherMatchPlayerVo.observeAsState()
@@ -119,6 +107,7 @@ fun BattleMatchView(
                     )
                 } else if (battleMatchViewModel.uiState.matchOverDialog) {
                     MatchOverDialog(
+                        battlePayPoint = battlePayPoint.value,
                         navBattleMenu = { navController.popBackStack(route = NavItem.BattleNested.route, inclusive = true) },
                         myMatchPlayerVo = myMatchPlayerVo.value,
                         modifier = Modifier.zIndex(1f),
@@ -281,10 +270,18 @@ private fun BattleMatchContent(
                     .fillMaxWidth()
                     .weight(0.4f)
             ) {
+
+                if (matchVo.stateCode == MatchStateCode.MATCH_PICK_WAIT) {
+                    Box(modifier = Modifier) {
+                        LoadingBar()
+                    }
+                }
+
                 Spacer(modifier = Modifier.width(15.dp))
 
                 otherMatchPlayerVo?.let {
                     MatchPlayer(
+                        matchEffect = matchVo.stateCode == MatchStateCode.MATCH_FIGHT,
                         matchPlayerVo = otherMatchPlayerVo,
                         effectAlignment = Alignment.BottomStart,
                     )
@@ -326,6 +323,7 @@ private fun BattleMatchContent(
 
                 myMatchPlayerVo?.let {
                     MatchPlayer(
+                        matchEffect = matchVo.stateCode == MatchStateCode.MATCH_FIGHT,
                         matchPlayerVo = myMatchPlayerVo,
                         effectAlignment = Alignment.TopEnd,
                     )
@@ -349,6 +347,7 @@ private fun BattleMatchContent(
 @Composable
 private fun MatchPlayer(
     matchPlayerVo: MatchPlayerVo,
+    matchEffect: Boolean = true,
     effectAlignment: Alignment,
 ) {
     val imageLoader = ImageLoader.Builder(LocalContext.current)
@@ -362,86 +361,88 @@ private fun MatchPlayer(
             modifier = Modifier.zIndex(1f)
         )
 
-        Box(
-            modifier = Modifier
-                .align(effectAlignment)
-                .zIndex(2f)
-        ) {
-            when (matchPlayerVo.roundCode) {
-                MatchRoundCode.NONE -> {}
-                MatchRoundCode.MATCH_HEAL -> {
-                    Image(
-                        painter = rememberAsyncImagePainter(
-                            model = R.drawable.health,
-                            imageLoader = imageLoader
-                        ),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .zIndex(2f)
-                            .height(40.dp)
-                            .width(40.dp),
-                        contentScale = ContentScale.FillBounds
-                    )
-                }
+        if (matchEffect) {
+            Box(
+                modifier = Modifier
+                    .align(effectAlignment)
+                    .zIndex(2f)
+            ) {
+                when (matchPlayerVo.roundCode) {
+                    MatchRoundCode.NONE -> {}
+                    MatchRoundCode.MATCH_HEAL -> {
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                model = R.drawable.health,
+                                imageLoader = imageLoader
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .zIndex(2f)
+                                .height(40.dp)
+                                .width(40.dp),
+                            contentScale = ContentScale.FillBounds
+                        )
+                    }
 
-                MatchRoundCode.MATCH_ATTACKED_HEAL -> {
-                    Image(
-                        painter = rememberAsyncImagePainter(
-                            model = R.drawable.health,
-                            imageLoader = imageLoader
-                        ),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .zIndex(2f)
-                            .height(40.dp)
-                            .width(40.dp),
-                        contentScale = ContentScale.FillBounds
-                    )
-                    Image(
-                        painter = rememberAsyncImagePainter(
-                            model = R.drawable.attack_motion,
-                            imageLoader = imageLoader
-                        ),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .zIndex(3f)
-                            .height(40.dp)
-                            .width(40.dp),
-                        contentScale = ContentScale.FillBounds
-                    )
-                }
+                    MatchRoundCode.MATCH_ATTACKED_HEAL -> {
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                model = R.drawable.health,
+                                imageLoader = imageLoader
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .zIndex(2f)
+                                .height(40.dp)
+                                .width(40.dp),
+                            contentScale = ContentScale.FillBounds
+                        )
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                model = R.drawable.attack_motion,
+                                imageLoader = imageLoader
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .zIndex(3f)
+                                .height(40.dp)
+                                .width(40.dp),
+                            contentScale = ContentScale.FillBounds
+                        )
+                    }
 
-                MatchRoundCode.MATCH_ATTACKED -> {
-                    Image(
-                        painter = rememberAsyncImagePainter(
-                            model = R.drawable.attack_motion,
-                            imageLoader = imageLoader
-                        ),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .zIndex(2f)
-                            .height(40.dp)
-                            .width(40.dp),
-                        contentScale = ContentScale.FillBounds
-                    )
-                }
+                    MatchRoundCode.MATCH_ATTACKED -> {
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                model = R.drawable.attack_motion,
+                                imageLoader = imageLoader
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .zIndex(2f)
+                                .height(40.dp)
+                                .width(40.dp),
+                            contentScale = ContentScale.FillBounds
+                        )
+                    }
 
-                MatchRoundCode.MATCH_DEFENCE -> {
-                    Image(
-                        painter = rememberAsyncImagePainter(
-                            model = R.drawable.defence_motion,
-                            imageLoader = imageLoader
-                        ),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .zIndex(2f)
-                            .height(40.dp)
-                            .width(40.dp),
-                        contentScale = ContentScale.FillBounds
-                    )
-                }
+                    MatchRoundCode.MATCH_DEFENCE -> {
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                model = R.drawable.defence_motion,
+                                imageLoader = imageLoader
+                            ),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .zIndex(2f)
+                                .height(40.dp)
+                                .width(40.dp),
+                            contentScale = ContentScale.FillBounds
+                        )
+                    }
 
-                else -> {}
+                    else -> {}
+                }
             }
         }
     }

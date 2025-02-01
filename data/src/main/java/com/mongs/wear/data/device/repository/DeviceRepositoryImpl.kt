@@ -21,6 +21,13 @@ class DeviceRepositoryImpl @Inject constructor(
 ) : DeviceRepository {
 
     /**
+     * 계정 ID 조회
+     */
+    override suspend fun getAccountId(): Long {
+        return deviceDataStore.getAccountId()
+    }
+
+    /**
      * 걸음 수 환전
      */
     override suspend fun exchangeWalkingCount(mongId: Long, walkingCount: Int, deviceBootedDt: LocalDateTime) {

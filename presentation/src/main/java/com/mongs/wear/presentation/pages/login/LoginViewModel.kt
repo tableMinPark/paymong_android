@@ -18,9 +18,11 @@ import com.mongs.wear.domain.auth.exception.NeedJoinException
 import com.mongs.wear.domain.auth.exception.NeedUpdateAppException
 import com.mongs.wear.domain.auth.usecase.JoinUseCase
 import com.mongs.wear.domain.auth.usecase.LoginUseCase
+import com.mongs.wear.domain.auth.usecase.LogoutUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -33,6 +35,7 @@ class LoginViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val joinUseCase: JoinUseCase,
     private val loginUseCase: LoginUseCase,
+    private val logoutUseCase: LogoutUseCase,
     private val firebaseMessaging: FirebaseMessaging,
 ): BaseViewModel() {
 
@@ -165,25 +168,30 @@ class LoginViewModel @Inject constructor(
 
     override fun exceptionHandler(exception: Throwable) {
 
-        when (exception) {
+        CoroutineScope(Dispatchers.IO).launch {
 
-            is NeedJoinException -> {
-                joinAndLogin()
-            }
+            logoutUseCase()
 
-            is NeedUpdateAppException -> {
-                uiState.loadingBar = false
-                uiState.needAppUpdate = true
-            }
+            when (exception) {
 
-            is LoginException -> {
-                uiState.loadingBar = false
-                uiState.signInButton = true
-            }
+                is NeedJoinException -> {
+                    joinAndLogin()
+                }
 
-            else -> {
-                uiState.loadingBar = false
-                uiState.signInButton = true
+                is NeedUpdateAppException -> {
+                    uiState.loadingBar = false
+                    uiState.needAppUpdate = true
+                }
+
+                is LoginException -> {
+                    uiState.loadingBar = false
+                    uiState.signInButton = true
+                }
+
+                else -> {
+                    uiState.loadingBar = false
+                    uiState.signInButton = true
+                }
             }
         }
     }

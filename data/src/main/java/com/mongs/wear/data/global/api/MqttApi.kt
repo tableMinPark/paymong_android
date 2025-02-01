@@ -28,18 +28,12 @@ class MqttApi @Inject constructor(
 
     companion object {
         private const val TAG = "MqttClientApi"
-
-        private var connectPending = false
     }
 
     fun isConnected(): Boolean = mqttAndroidClient.isConnected
 
-    fun isConnectPending(): Boolean = connectPending
-
     suspend fun connect() {
         withContext(Dispatchers.IO) {
-            connectPending = true
-
             val options = MqttConnectOptions().apply {
                 this.userName = context.getString(R.string.mqtt_username)
                 this.password = context.getString(R.string.mqtt_password).toCharArray()
@@ -49,8 +43,6 @@ class MqttApi @Inject constructor(
             mqttAndroidClient.setCallback(defaultConsumer)
 
             mqttAndroidClient.connect(options).await()
-
-            connectPending = false
 
             if (mqttAndroidClient.isConnected) {
                 Log.i(TAG, "[Mqtt] 브로커 연결 성공")

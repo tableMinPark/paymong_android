@@ -18,7 +18,7 @@ object NotificationModule {
     private const val TAG = "ServiceModule"
 
     const val CHANNEL_ID = "mongs_default_channel"
-    const val CHANNEL_NAME = "Mongs Default Channel"
+    private const val CHANNEL_NAME = "Mongs Default Channel"
 
     @Provides
     @Singleton

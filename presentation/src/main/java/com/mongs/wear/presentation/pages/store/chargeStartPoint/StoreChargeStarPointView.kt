@@ -52,7 +52,6 @@ fun StoreChargeStarPointView(
     storeChargeStarPointViewModel: StoreChargeStarPointViewModel = hiltViewModel(),
     context: Context = LocalContext.current
 ) {
-
     val starPoint = storeChargeStarPointViewModel.starPoint.observeAsState(0)
     val productVoList = storeChargeStarPointViewModel.productVoList.observeAsState(ArrayList())
     val productVoListIndex = remember { mutableIntStateOf(0) }
