@@ -58,20 +58,18 @@ dependencies {
 //    implementation "com.google.android.libraries.identity.googleid:googleid:1.1.1"
 
     // coil (gif)
-    implementation 'io.coil-kt:coil-compose:2.5.0'
-    implementation 'io.coil-kt:coil-gif:2.5.0'
+    api 'io.coil-kt:coil-compose:2.5.0'
+    api 'io.coil-kt:coil-gif:2.5.0'
 
     // compose
-    implementation 'androidx.wear.compose:compose-material:1.4.0'
-    implementation 'androidx.compose.material:material-icons-extended:1.7.6'
+    api 'androidx.wear.compose:compose-material:1.4.0'
+    api 'androidx.compose.material:material-icons-extended:1.7.6'
+    api 'androidx.wear.compose:compose-foundation:1.4.0'
+    api 'androidx.hilt:hilt-navigation-compose:1.2.0'
+    api "androidx.compose.runtime:runtime-livedata:1.7.6"
     implementation 'androidx.wear.compose:compose-navigation:1.4.0'
-    implementation 'androidx.wear.compose:compose-foundation:1.4.0'
-    implementation 'androidx.hilt:hilt-navigation-compose:1.2.0'
     implementation 'androidx.compose.ui:ui-tooling-preview:1.7.6'
     debugImplementation 'androidx.compose.ui:ui-tooling:1.7.6'
-
-    // liveData
-    implementation "androidx.compose.runtime:runtime-livedata:1.7.6"
 
     // worker
     implementation "androidx.work:work-runtime-ktx:2.8.1"

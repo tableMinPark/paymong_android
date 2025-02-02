@@ -2,7 +2,7 @@ package com.mongs.wear.data.activity.consumer
 
 import com.google.gson.Gson
 import com.mongs.wear.data.activity.dto.response.CreateBattleResponseDto
-import com.mongs.wear.data.activity.dto.response.FightBattleResponseDto
+import com.mongs.wear.data.activity.dto.response.GetBattleResponseDto
 import com.mongs.wear.data.activity.dto.response.OverBattleResponseDto
 import com.mongs.wear.data.activity.resolver.BattleObserveResolver
 import javax.inject.Inject
@@ -35,9 +35,9 @@ class BattleConsumer @Inject constructor(
 
             ACTIVITY_BATTLE_ENTER_ALL_BATTLE_PLAYER ->
                 observeResolver.updateBattleMatchEnter(
-                    fightBattleResponseDto = gson.fromJson(
+                    getBattleResponseDto = gson.fromJson(
                         resultJson,
-                        FightBattleResponseDto::class.java
+                        GetBattleResponseDto::class.java
                     )
                 )
 
@@ -51,9 +51,9 @@ class BattleConsumer @Inject constructor(
 
             ACTIVITY_BATTLE_FIGHT_BATTLE ->
                 observeResolver.updateBattleMatchFight(
-                    fightBattleResponseDto = gson.fromJson(
+                    getBattleResponseDto = gson.fromJson(
                         resultJson,
-                        FightBattleResponseDto::class.java
+                        GetBattleResponseDto::class.java
                     )
                 )
 

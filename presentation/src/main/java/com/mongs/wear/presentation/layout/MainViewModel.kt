@@ -11,10 +11,12 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.mongs.wear.domain.device.exception.ConnectMqttException
-import com.mongs.wear.domain.device.usecase.ConnectMqttUseCase
+import com.mongs.wear.domain.global.exception.ConnectMqttException
+import com.mongs.wear.domain.global.usecase.ConnectMqttUseCase
 import com.mongs.wear.domain.device.usecase.GetNetworkUseCase
 import com.mongs.wear.domain.device.usecase.SetDeviceIdUseCase
+import com.mongs.wear.domain.management.usecase.UpdateCurrentSlotUseCase
+import com.mongs.wear.domain.player.usecase.UpdatePlayerUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import com.mongs.wear.presentation.global.worker.StepSensorWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +36,8 @@ class MainViewModel @Inject constructor(
     private val setDeviceIdUseCase: SetDeviceIdUseCase,
     private val getNetworkUseCase: GetNetworkUseCase,
     private val connectMqttUseCase: ConnectMqttUseCase,
+    private val updateCurrentSlotUseCase: UpdateCurrentSlotUseCase,
+    private val updatePlayerUseCase: UpdatePlayerUseCase,
 ) : BaseViewModel() {
 
     val network: LiveData<Boolean> get() = _network
@@ -75,9 +79,13 @@ class MainViewModel @Inject constructor(
 
             uiState.errorDialogLoadingBar = true
 
-            delay(1000)
+            delay(700)
 
             connectMqttUseCase()
+
+            updatePlayerUseCase()
+
+            updateCurrentSlotUseCase()
 
             uiState.errorDialogLoadingBar = false
         }

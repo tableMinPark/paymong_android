@@ -1,9 +1,5 @@
 package com.mongs.wear.presentation.pages.battle.menu
 
-import android.content.Context
-import android.util.Log
-import android.view.WindowManager
-import androidx.activity.ComponentActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -26,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -115,6 +110,14 @@ fun BattleMenuView(
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    val network = battleMenuViewModel.network.observeAsState(true)
+
+    LaunchedEffect(network.value) {
+        if (!network.value) {
+            battleMenuViewModel.matchWaitStopAndReset()
         }
     }
 }

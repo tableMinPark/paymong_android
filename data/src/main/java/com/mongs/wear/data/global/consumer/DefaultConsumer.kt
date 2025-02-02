@@ -24,7 +24,6 @@ class DefaultConsumer @Inject constructor(
     private val playerConsumer: PlayerConsumer,
     private val battleConsumer: BattleConsumer,
     private val deviceDataStore: DeviceDataStore,
-    private val authRepository: AuthRepository,
     private val gson: Gson,
 ) : MqttCallback {
 
@@ -76,8 +75,10 @@ class DefaultConsumer @Inject constructor(
 
     override fun connectionLost(cause: Throwable?) {
         CoroutineScope(Dispatchers.IO).launch {
-            if (MqttClientImpl.mqttState.broker != MqttClientImpl.MqttState.MqttStateCode.PAUSE_DISCONNECT && authRepository.isLogin()) {
-                MqttClientImpl.resetState()
+            if (!MqttClientImpl.mqttState.isPauseDisConnect()) {
+
+                MqttClientImpl.mqttState.reset()
+
                 deviceDataStore.setNetwork(network = false)
             }
         }

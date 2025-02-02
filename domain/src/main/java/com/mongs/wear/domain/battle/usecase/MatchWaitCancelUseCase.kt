@@ -29,6 +29,9 @@ class MatchWaitCancelUseCase @Inject constructor(
 
                 // 배틀 매치 구독 해제
                 mqttClient.disSubBattleMatch()
+
+                // 배틀 매치 삭제
+                battleRepository.deleteMatch()
             }
         }
     }

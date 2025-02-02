@@ -35,11 +35,11 @@ class BattleRepositoryImpl @Inject constructor(
 ): BattleRepository {
 
     /**
-     * 배틀 정보 조회
+     * 배틀 보상 정보 조회
      */
-    override suspend fun getBattle(): BattleModel {
+    override suspend fun getBattleReward(): BattleModel {
 
-        val response = battleApi.getBattle()
+        val response = battleApi.getBattleReward()
 
         if (response.isSuccessful) {
             response.body()?.let { body ->

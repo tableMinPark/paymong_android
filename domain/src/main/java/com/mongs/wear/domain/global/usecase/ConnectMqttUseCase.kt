@@ -1,13 +1,12 @@
-package com.mongs.wear.domain.device.usecase
+package com.mongs.wear.domain.global.usecase
 
 import com.mongs.wear.core.enums.MatchStateCode
 import com.mongs.wear.core.exception.ErrorException
 import com.mongs.wear.domain.auth.repository.AuthRepository
 import com.mongs.wear.domain.battle.repository.BattleRepository
-import com.mongs.wear.domain.device.exception.ConnectMqttException
+import com.mongs.wear.domain.global.exception.ConnectMqttException
 import com.mongs.wear.domain.device.repository.DeviceRepository
 import com.mongs.wear.domain.global.client.MqttClient
-import com.mongs.wear.domain.global.usecase.BaseNoParamUseCase
 import com.mongs.wear.domain.management.repository.SlotRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -25,11 +24,11 @@ class ConnectMqttUseCase @Inject constructor(
 
         return withContext(Dispatchers.IO) {
 
-            if (authRepository.isLogin()) {
+            mqttClient.connect()
 
-                mqttClient.connect()
+            if (mqttClient.isConnected()) {
 
-                if (mqttClient.isConnected()) {
+                if (authRepository.isLogin()) {
 
                     // 현재 플레이어 정보 구독
                     deviceRepository.getAccountId().let { accountId ->
@@ -51,10 +50,12 @@ class ConnectMqttUseCase @Inject constructor(
                             mqttClient.subBattleMatch(roomId = matchModel.roomId)
                         }
                     }
-
-                    // 네트워크 플래그 변경
-                    deviceRepository.setNetwork(network = true)
                 }
+
+                // 네트워크 플래그 변경
+                deviceRepository.setNetwork(network = true)
+            } else {
+                throw ConnectMqttException()
             }
         }
     }

@@ -15,11 +15,6 @@ interface MqttClient {
     suspend fun connect()
 
     /**
-     * 유지된 구독 정보로 전체 구독
-     */
-    suspend fun resumeConnect()
-
-    /**
      * 구독중인 topic 전체 구독 해제
      * 구독 정보 유지 (mongId, accountId, roomId)
      */
@@ -37,16 +32,6 @@ interface MqttClient {
     suspend fun subManager(mongId :Long)
 
     /**
-     * Manager 재구독
-     */
-    suspend fun resumeManager()
-
-    /**
-     * Manager 구독 일시 중지
-     */
-    suspend fun pauseManager()
-
-    /**
      * Manager 구독 해제
      * 구독 정보 삭제 (mongId)
      */
@@ -56,16 +41,6 @@ interface MqttClient {
      * SearchMatch 구독
      */
     suspend fun subSearchMatch(deviceId: String)
-
-    /**
-     * SearchMatch 재구독
-     */
-    suspend fun resumeSearchMatch()
-
-    /**
-     * SearchMatch 구독 일시 중지
-     */
-    suspend fun pauseSearchMatch()
 
     /**
      * SearchMatch 구독 해제
@@ -94,16 +69,6 @@ interface MqttClient {
     suspend fun pubBattleMatchExit(roomId: Long, playerId: String)
 
     /**
-     * BattleMatch 재구독
-     */
-    suspend fun resumeBattleMatch()
-
-    /**
-     * BattleMatch 구독 일시 중지
-     */
-    suspend fun pauseBattleMatch()
-
-    /**
      * BattleMatch 구독 해제
      * 구독 정보 삭제 (roomId)
      */
@@ -113,16 +78,6 @@ interface MqttClient {
      * Player 구독
      */
     suspend fun subPlayer(accountId: Long)
-
-    /**
-     * Player 재구독
-     */
-    suspend fun resumePlayer()
-
-    /**
-     * Player 구독 일시 중지
-     */
-    suspend fun pausePlayer()
 
     /**
      * Player 구독 해제

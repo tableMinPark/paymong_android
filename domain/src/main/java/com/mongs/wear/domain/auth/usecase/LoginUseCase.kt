@@ -58,11 +58,6 @@ class LoginUseCase @Inject constructor(
                 googleAccountId = param.googleAccountId
             )
 
-            // 브로커 연결
-            mqttClient.connect()
-
-            Log.i("TEST", "연결 시도 다음")
-
             // 브로커 연결 여부 확인
             if (mqttClient.isConnected()) {
                 // 플레이어 정보 등록
@@ -74,7 +69,6 @@ class LoginUseCase @Inject constructor(
                 // 몽 정보 전체 동기화
                 managementRepository.updateMongs()
             } else {
-                Log.i("TEST", "연결 시도 실패")
                 throw LoginException()
             }
         }

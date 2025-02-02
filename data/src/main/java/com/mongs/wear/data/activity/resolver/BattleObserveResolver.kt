@@ -3,7 +3,7 @@ package com.mongs.wear.data.activity.resolver
 import androidx.room.Transaction
 import com.mongs.wear.core.enums.MatchStateCode
 import com.mongs.wear.data.activity.dto.response.CreateBattleResponseDto
-import com.mongs.wear.data.activity.dto.response.FightBattleResponseDto
+import com.mongs.wear.data.activity.dto.response.GetBattleResponseDto
 import com.mongs.wear.data.activity.dto.response.OverBattleResponseDto
 import com.mongs.wear.data.activity.entity.MatchPlayerEntity
 import com.mongs.wear.data.device.datastore.DeviceDataStore
@@ -62,15 +62,15 @@ class BattleObserveResolver @Inject constructor(
      * 모든 플레이어 입장 완료
      */
     @Transaction
-    fun updateBattleMatchEnter(fightBattleResponseDto: FightBattleResponseDto) {
+    fun updateBattleMatchEnter(getBattleResponseDto: GetBattleResponseDto) {
 
         // 배틀 룸 정보 업데이트
         roomDB.matchRoomDao().let { dao ->
-            dao.findByRoomId(roomId = fightBattleResponseDto.roomId)?.let { matchRoomEntity ->
+            dao.findByRoomId(roomId = getBattleResponseDto.roomId)?.let { matchRoomEntity ->
                 dao.save(
                     matchRoomEntity = matchRoomEntity.update(
-                        round = fightBattleResponseDto.round,
-                        isLastRound = fightBattleResponseDto.isLastRound,
+                        round = getBattleResponseDto.round,
+                        isLastRound = getBattleResponseDto.isLastRound,
                         stateCode = MatchStateCode.MATCH_ENTER,
                     )
                 )
@@ -79,7 +79,7 @@ class BattleObserveResolver @Inject constructor(
 
         // 배틀 플레이어 정보 업데이트
         roomDB.matchPlayerDao().let { dao ->
-            fightBattleResponseDto.battlePlayers.forEach({ battlePlayer ->
+            getBattleResponseDto.battlePlayers.forEach({ battlePlayer ->
                 dao.findByPlayerId(playerId = battlePlayer.playerId)?.let { matchPlayerEntity ->
                     dao.save(
                         matchPlayerEntity = matchPlayerEntity.update(
@@ -122,16 +122,16 @@ class BattleObserveResolver @Inject constructor(
      * 라운드 종료
      */
     @Transaction
-    fun updateBattleMatchFight(fightBattleResponseDto: FightBattleResponseDto) {
+    fun updateBattleMatchFight(getBattleResponseDto: GetBattleResponseDto) {
 
         // 배틀 룸 정보 업데이트
         roomDB.matchRoomDao().let { dao ->
-            dao.findByRoomId(roomId = fightBattleResponseDto.roomId)?.let { matchRoomEntity ->
+            dao.findByRoomId(roomId = getBattleResponseDto.roomId)?.let { matchRoomEntity ->
                 dao.save(
                     matchRoomEntity = matchRoomEntity.update(
-                        round = fightBattleResponseDto.round,
-                        isLastRound = fightBattleResponseDto.isLastRound,
-                        stateCode = if(fightBattleResponseDto.isLastRound) MatchStateCode.MATCH_OVER else MatchStateCode.MATCH_FIGHT,
+                        round = getBattleResponseDto.round,
+                        isLastRound = getBattleResponseDto.isLastRound,
+                        stateCode = if(getBattleResponseDto.isLastRound) MatchStateCode.MATCH_OVER else MatchStateCode.MATCH_FIGHT,
                     )
                 )
             }
@@ -140,7 +140,7 @@ class BattleObserveResolver @Inject constructor(
         // 배틀 플레이어 정보 업데이트
         roomDB.matchPlayerDao().let { dao ->
 
-            fightBattleResponseDto.battlePlayers.forEach({ battlePlayer ->
+            getBattleResponseDto.battlePlayers.forEach({ battlePlayer ->
 
                 dao.findByPlayerId(playerId = battlePlayer.playerId)?.let { matchPlayerEntity ->
 

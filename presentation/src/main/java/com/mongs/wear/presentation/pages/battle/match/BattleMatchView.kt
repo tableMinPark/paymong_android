@@ -108,7 +108,7 @@ fun BattleMatchView(
                 } else if (battleMatchViewModel.uiState.matchOverDialog) {
                     MatchOverDialog(
                         battlePayPoint = battlePayPoint.value,
-                        navBattleMenu = { navController.popBackStack(route = NavItem.BattleNested.route, inclusive = true) },
+                        matchEnd = battleMatchViewModel::matchEnd,
                         myMatchPlayerVo = myMatchPlayerVo.value,
                         modifier = Modifier.zIndex(1f),
                     )
@@ -154,7 +154,9 @@ fun BattleMatchView(
         val observer = LifecycleEventObserver { _, event ->
             if (event == Lifecycle.Event.ON_DESTROY) {
                 matchVo.value?.let {
-                    if (it.stateCode != MatchStateCode.MATCH_OVER) {
+                    if (it.stateCode == MatchStateCode.MATCH_OVER) {
+                        battleMatchViewModel.matchEnd()
+                    } else {
                         battleMatchViewModel.matchExit(roomId = it.roomId)
                     }
                 }
@@ -163,6 +165,22 @@ fun BattleMatchView(
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    val network = battleMatchViewModel.network.observeAsState(true)
+
+    LaunchedEffect(network.value) {
+        if (!network.value) {
+            matchVo.value?.let {
+                if (it.stateCode != MatchStateCode.MATCH_OVER) {
+                    battleMatchViewModel.matchEnd()
+                } else {
+                    battleMatchViewModel.matchExit(roomId = it.roomId)
+                }
+            } ?: run {
+                battleMatchViewModel.matchEnd()
+            }
         }
     }
 }
@@ -281,7 +299,7 @@ private fun BattleMatchContent(
 
                 otherMatchPlayerVo?.let {
                     MatchPlayer(
-                        matchEffect = matchVo.stateCode == MatchStateCode.MATCH_FIGHT,
+                        matchEffect = matchVo.stateCode in listOf(MatchStateCode.MATCH_FIGHT, MatchStateCode.MATCH_OVER) ,
                         matchPlayerVo = otherMatchPlayerVo,
                         effectAlignment = Alignment.BottomStart,
                     )
@@ -323,7 +341,7 @@ private fun BattleMatchContent(
 
                 myMatchPlayerVo?.let {
                     MatchPlayer(
-                        matchEffect = matchVo.stateCode == MatchStateCode.MATCH_FIGHT,
+                        matchEffect = matchVo.stateCode in listOf(MatchStateCode.MATCH_FIGHT, MatchStateCode.MATCH_OVER) ,
                         matchPlayerVo = myMatchPlayerVo,
                         effectAlignment = Alignment.TopEnd,
                     )

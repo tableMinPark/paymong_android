@@ -11,7 +11,7 @@ interface BattleRepository {
     /**
      * 배틀 보상 정보 조회
      */
-    suspend fun getBattle(): BattleModel
+    suspend fun getBattleReward(): BattleModel
 
     /**
      * 매칭 대기열 등록

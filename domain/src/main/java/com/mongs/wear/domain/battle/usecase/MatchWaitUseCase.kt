@@ -25,9 +25,6 @@ class MatchWaitUseCase @Inject constructor(
 
         return withContext(Dispatchers.IO) {
 
-            // 브로커 연결
-            mqttClient.connect()
-
             if (mqttClient.isConnected()) {
                 slotRepository.getCurrentSlot()?.let { mongModel ->
 

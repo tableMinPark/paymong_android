@@ -7,9 +7,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.mongs.wear.presentation.assets.MongsTheme
+import com.mongs.wear.presentation.component.common.background.MainBackground
+import com.mongs.wear.presentation.component.common.bar.LoadingBar
 import com.mongs.wear.presentation.layout.MainView
 import com.mongs.wear.viewModel.MainActivityViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,20 +63,27 @@ class MainActivity : ComponentActivity() {
 
     override fun onResume() {
         super.onResume()
+        // 네트워크 플래그 초기화
         mainActivityViewModel.initNetwork()
-        mainActivityViewModel.connectMqtt()
+        // 플레이어 정보 동기화
         mainActivityViewModel.updatePlayer()
-        mainActivityViewModel.updateCurrentMong()
+        // 현재 몽 정보 동기화
+        mainActivityViewModel.updateCurrentSlot()
+        // 총 걸음 수 서버 동기화
         mainActivityViewModel.updateTotalWalkingCount()
+        // 브로커 연결 + 재구독
+        mainActivityViewModel.connectMqtt()
     }
 
     override fun onPause() {
-        mainActivityViewModel.disConnectMqtt()
+        // 브로커 연결 해제 + 구독 해제
+        mainActivityViewModel.pauseMqtt()
         super.onPause()
     }
 
-//    override fun onDestroy() {
-//        mainActivityViewModel.disconnectMqtt()
-//        super.onDestroy()
-//    }
+    override fun onDestroy() {
+        // 브로커 연결 해제 + 구독 해제
+        mainActivityViewModel.disConnectMqtt()
+        super.onDestroy()
+    }
 }

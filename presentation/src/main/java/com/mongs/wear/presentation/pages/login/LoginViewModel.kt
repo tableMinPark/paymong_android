@@ -1,10 +1,8 @@
 package com.mongs.wear.presentation.pages.login
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.provider.Settings
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
 import androidx.compose.runtime.getValue
@@ -18,7 +16,6 @@ import com.mongs.wear.domain.auth.exception.NeedJoinException
 import com.mongs.wear.domain.auth.exception.NeedUpdateAppException
 import com.mongs.wear.domain.auth.usecase.JoinUseCase
 import com.mongs.wear.domain.auth.usecase.LoginUseCase
-import com.mongs.wear.domain.auth.usecase.LogoutUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -35,7 +32,6 @@ class LoginViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val joinUseCase: JoinUseCase,
     private val loginUseCase: LoginUseCase,
-    private val logoutUseCase: LogoutUseCase,
     private val firebaseMessaging: FirebaseMessaging,
 ): BaseViewModel() {
 
@@ -169,8 +165,6 @@ class LoginViewModel @Inject constructor(
     override fun exceptionHandler(exception: Throwable) {
 
         CoroutineScope(Dispatchers.IO).launch {
-
-            logoutUseCase()
 
             when (exception) {
 

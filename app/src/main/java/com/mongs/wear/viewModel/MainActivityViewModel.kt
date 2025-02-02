@@ -1,12 +1,12 @@
 package com.mongs.wear.viewModel
 
 import android.annotation.SuppressLint
-import com.mongs.wear.domain.device.usecase.ConnectMqttUseCase
-import com.mongs.wear.domain.device.usecase.DisConnectMqttUseCase
 import com.mongs.wear.domain.device.usecase.SetNetworkUseCase
-import com.mongs.wear.domain.global.client.MqttClient
-import com.mongs.wear.domain.management.usecase.UpdateCurrentSlotUseCase
 import com.mongs.wear.domain.device.usecase.SetServerTotalWalkingCountUseCase
+import com.mongs.wear.domain.global.usecase.ConnectMqttUseCase
+import com.mongs.wear.domain.global.usecase.DisConnectMqttUseCase
+import com.mongs.wear.domain.global.usecase.PauseConnectMqttUseCase
+import com.mongs.wear.domain.management.usecase.UpdateCurrentSlotUseCase
 import com.mongs.wear.domain.player.usecase.UpdatePlayerUseCase
 import com.mongs.wear.presentation.global.manager.StepSensorManager
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
@@ -25,6 +25,7 @@ class MainActivityViewModel @Inject constructor(
     private val updatePlayerUseCase: UpdatePlayerUseCase,
     private val setServerTotalWalkingCountUseCase: SetServerTotalWalkingCountUseCase,
     private val connectMqttUseCase: ConnectMqttUseCase,
+    private val pauseConnectMqttUseCase: PauseConnectMqttUseCase,
     private val disConnectMqttUseCase: DisConnectMqttUseCase,
 ) : BaseViewModel() {
 
@@ -53,7 +54,7 @@ class MainActivityViewModel @Inject constructor(
     /**
      * 현재 몽 동기화
      */
-    fun updateCurrentMong() {
+    fun updateCurrentSlot() {
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
             updateCurrentSlotUseCase()
         }
@@ -77,18 +78,25 @@ class MainActivityViewModel @Inject constructor(
     }
 
     /**
-     * 브로커 일시 중지
+     * 브로커 연결
      */
-    fun connectMqtt() = CoroutineScope(Dispatchers.IO).launch {
-//         mqttClient.resumeConnect()
+    fun connectMqtt() = viewModelScopeWithHandler.launch(Dispatchers.IO) {
+
+        uiState.loadingBar = true
+
         connectMqttUseCase()
+
+        uiState.loadingBar = false
+    }
+
+    fun pauseMqtt() = viewModelScopeWithHandler.launch(Dispatchers.IO) {
+        pauseConnectMqttUseCase()
     }
 
     /**
-     * 브로커 재연결
+     * 브로커 연결 해제
      */
     fun disConnectMqtt() = CoroutineScope(Dispatchers.IO).launch {
-//         mqttClient.pauseConnect()
         disConnectMqttUseCase()
     }
 
@@ -96,5 +104,11 @@ class MainActivityViewModel @Inject constructor(
 
     class UiState : BaseUiState()
 
-    override fun exceptionHandler(exception: Throwable) {}
+    override fun exceptionHandler(exception: Throwable) {
+
+        when(exception) {
+
+            else -> uiState.loadingBar = false
+        }
+    }
 }

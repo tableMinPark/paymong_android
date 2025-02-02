@@ -13,12 +13,14 @@ import com.mongs.wear.domain.battle.usecase.GetBattlePayPointUseCase
 import com.mongs.wear.domain.battle.usecase.GetMatchUseCase
 import com.mongs.wear.domain.battle.usecase.GetMyMatchPlayerUseCase
 import com.mongs.wear.domain.battle.usecase.GetRiverMatchPlayerUseCase
+import com.mongs.wear.domain.battle.usecase.MatchEndUseCase
 import com.mongs.wear.domain.battle.usecase.MatchExitUseCase
-import com.mongs.wear.domain.battle.usecase.MatchStartUseCase
 import com.mongs.wear.domain.battle.usecase.MatchOverUseCase
 import com.mongs.wear.domain.battle.usecase.MatchPickUseCase
+import com.mongs.wear.domain.battle.usecase.MatchStartUseCase
 import com.mongs.wear.domain.battle.vo.MatchPlayerVo
 import com.mongs.wear.domain.battle.vo.MatchVo
+import com.mongs.wear.domain.device.usecase.GetNetworkUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -31,6 +33,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BattleMatchViewModel @Inject constructor(
+    private val getNetworkUseCase: GetNetworkUseCase,
     private val getBattlePayPointUseCase: GetBattlePayPointUseCase,
     private val getMatchUseCase: GetMatchUseCase,
     private val getMyMatchPlayerUseCase: GetMyMatchPlayerUseCase,
@@ -39,11 +42,15 @@ class BattleMatchViewModel @Inject constructor(
     private val matchPickUseCase: MatchPickUseCase,
     private val matchOverUseCase: MatchOverUseCase,
     private val matchExitUseCase: MatchExitUseCase,
+    private val matchEndUseCase: MatchEndUseCase,
 ): BaseViewModel() {
 
     companion object {
         private const val TAG = "BattleMatchViewModel"
     }
+
+    val network: LiveData<Boolean> get() = _network
+    private val _network = MediatorLiveData(true)
 
     private val _battlePayPoint = MediatorLiveData<Int>(0)
     val battlePayPoint: LiveData<Int> get() = _battlePayPoint
@@ -61,6 +68,11 @@ class BattleMatchViewModel @Inject constructor(
         viewModelScopeWithHandler.launch(Dispatchers.Main) {
 
             uiState.loadingBar = true
+
+            // network flag 옵저버 객체 조회
+            _network.addSource(withContext(Dispatchers.IO) { getNetworkUseCase() }) {
+                _network.value = it
+            }
 
             _battlePayPoint.postValue(getBattlePayPointUseCase())
 
@@ -159,11 +171,15 @@ class BattleMatchViewModel @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 _matchVo.postValue(null)
+
                 matchExitUseCase(
                     MatchExitUseCase.Param(
                         roomId = roomId
                     )
                 )
+
+                matchEndUseCase()
+
             } catch (exception: Exception) {
                 Log.w(TAG, "[WARN] ${exception.javaClass.simpleName} ${exception.message}")
             } finally {
@@ -172,6 +188,21 @@ class BattleMatchViewModel @Inject constructor(
                 uiState.matchPickDialog = false
                 uiState.navMainEvent.emit(System.currentTimeMillis())
             }
+        }
+    }
+
+    /**
+     * 매치 종료
+     */
+    fun matchEnd() {
+        viewModelScopeWithHandler.launch(Dispatchers.IO) {
+
+            uiState.matchOverLoadingBar = false
+            uiState.matchPickDialog = false
+
+            matchEndUseCase()
+
+            uiState.navMainEvent.emit(System.currentTimeMillis())
         }
     }
 

@@ -8,6 +8,9 @@ enum class DomainErrorCode(
     // GLOBAL
     DOMAIN_GLOBAL_UNKNOWN_ERROR("알 수 없는 에러", false),
     DOMAIN_GLOBAL_DATA_ERROR("데이터 송수신 에러", false),
+    DOMAIN_GLOBAL_CONNECT_MQTT_FAILED("네트워크 재연결 실패", false),
+    DOMAIN_GLOBAL_PAUSE_CONNECT_MQTT_FAILED("네트워크 연결 일시중지 실패", false),
+    DOMAIN_GLOBAL_DISCONNECT_MQTT_FAILED("네트워크 연결 해제 실패", false),
 
     // AUTH
     DOMAIN_AUTH_NOT_EXISTS_GOOGLE_ACCOUNT_ID("계정 정보 없음", false),
@@ -21,11 +24,13 @@ enum class DomainErrorCode(
     DOMAIN_AUTH_CREATE_DEVICE_FAILED("기기 등록 실패", false),
 
     // BATTLE
+    DOMAIN_BATTLE_UPDATE_MATCH_FAILED("매치 정보 갱신 실패", false),
     DOMAIN_BATTLE_MATCH_EXIT_FAILED("매치 퇴장 실패", false),
     DOMAIN_BATTLE_GET_MATCH_FAILED("매치 조회 실패", false),
     DOMAIN_BATTLE_GET_MY_MATCH_PLAYER_FAILED("내 매치 조회 실패", false),
     DOMAIN_BATTLE_GET_RIVER_MATCH_PLAYER_FAILED("상대 매치 조회 실패", false),
     DOMAIN_BATTLE_MATCH_START_FAILED("매치 시작 실패", false),
+    DOMAIN_BATTLE_MATCH_END_FAILED("매치 종료 실패", false),
     DOMAIN_BATTLE_MATCH_ENTER_FAILED("매치 시작 실패", false),
     DOMAIN_BATTLE_MATCH_WAIT_CANCEL_FAILED("매치 대기 취소 실패", false),
     DOMAIN_BATTLE_MATCH_WAIT_FAILED("잠시후 다시시도", true),
@@ -73,8 +78,6 @@ enum class DomainErrorCode(
     DOMAIN_PLAYER_GET_STAR_POINT_FAILED("스타 포인트 조회 실패", false),
 
     // DEVICE
-    DOMAIN_DEVICE_CONNECT_MQTT_FAILED("네트워크 재연결 실패", true),
-    DOMAIN_DEVICE_DISCONNECT_MQTT_FAILED("네트워크 연결 해제 실패", true),
     DOMAIN_DEVICE_GET_BACKGROUND_MAP_CODE_FAILED("배경 조회 실패", false),
     DOMAIN_DEVICE_SET_BACKGROUND_MAP_CODE_FAILED("배경 변경 실패", false),
     DOMAIN_DEVICE_GET_NETWORK_FAILED("네트워크 FLAG 조회 실패", false),
