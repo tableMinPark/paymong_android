@@ -1,9 +1,10 @@
 package com.mongs.wear.domain.management.usecase
 
-import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.global.usecase.BaseNoParamUseCase
-import com.mongs.wear.domain.management.exception.FoodCodesEmptyException
-import com.mongs.wear.domain.management.exception.GetFoodCodesException
+import com.mongs.wear.core.exception.data.GetFeedItemsException
+import com.mongs.wear.core.exception.global.DataException
+import com.mongs.wear.core.usecase.BaseNoParamUseCase
+import com.mongs.wear.core.exception.usecase.FoodCodesEmptyUseCaseException
+import com.mongs.wear.core.exception.usecase.GetFoodCodesUseCaseException
 import com.mongs.wear.domain.management.repository.ManagementRepository
 import com.mongs.wear.domain.management.repository.SlotRepository
 import com.mongs.wear.domain.management.vo.FeedItemVo
@@ -20,8 +21,11 @@ class GetFoodCodesUseCase @Inject constructor(
         private const val FOOD_TYPE_GROUP_CODE = "FD"
     }
 
+    /**
+     * 먹이 목록 조회 UseCase
+     * @throws GetFeedItemsException
+     */
     override suspend fun execute(): List<FeedItemVo> {
-
         return withContext(Dispatchers.IO) {
             val feedItemVoList = slotRepository.getCurrentSlot()?.let { slotModel ->
                 managementRepository.getFeedItems(mongId = slotModel.mongId, foodTypeGroupCode = FOOD_TYPE_GROUP_CODE).map {
@@ -39,17 +43,19 @@ class GetFoodCodesUseCase @Inject constructor(
                 }
             } ?: run { ArrayList() }
 
-            if (feedItemVoList.isEmpty()) throw FoodCodesEmptyException()
+            if (feedItemVoList.isEmpty()) throw FoodCodesEmptyUseCaseException()
 
             feedItemVoList
         }
     }
 
-    override fun handleException(exception: ErrorException) {
+    override fun handleException(exception: DataException) {
         super.handleException(exception)
 
-        when(exception.code) {
-            else -> throw GetFoodCodesException()
+        when(exception) {
+            is GetFeedItemsException -> throw GetFoodCodesUseCaseException()
+
+            else -> throw GetFoodCodesUseCaseException()
         }
     }
 }

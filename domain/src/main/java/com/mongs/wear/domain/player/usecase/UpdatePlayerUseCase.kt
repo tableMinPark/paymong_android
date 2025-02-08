@@ -1,10 +1,10 @@
 package com.mongs.wear.domain.player.usecase
 
-import com.mongs.wear.core.exception.ErrorException
+import com.mongs.wear.core.exception.data.GetPlayerException
+import com.mongs.wear.core.exception.global.DataException
 import com.mongs.wear.domain.auth.repository.AuthRepository
-import com.mongs.wear.domain.global.usecase.BaseNoParamUseCase
-import com.mongs.wear.domain.player.exception.BuySlotException
-import com.mongs.wear.domain.player.exception.UpdatePlayerException
+import com.mongs.wear.core.usecase.BaseNoParamUseCase
+import com.mongs.wear.core.exception.usecase.UpdatePlayerUseCaseException
 import com.mongs.wear.domain.player.repository.PlayerRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,8 +15,11 @@ class UpdatePlayerUseCase @Inject constructor(
     private val playerRepository: PlayerRepository,
 ) : BaseNoParamUseCase<Unit>() {
 
+    /**
+     * 플레이어 정보 갱신 UseCase
+     * @throws GetPlayerException
+     */
     override suspend fun execute() {
-
         withContext(Dispatchers.IO) {
             if (authRepository.isLogin()) {
                 playerRepository.updatePlayer()
@@ -24,11 +27,13 @@ class UpdatePlayerUseCase @Inject constructor(
         }
     }
 
-    override fun handleException(exception: ErrorException) {
+    override fun handleException(exception: DataException) {
         super.handleException(exception)
 
-        when(exception.code) {
-            else -> throw UpdatePlayerException()
+        when(exception) {
+            is GetPlayerException -> throw UpdatePlayerUseCaseException()
+
+            else -> throw UpdatePlayerUseCaseException()
         }
     }
 }

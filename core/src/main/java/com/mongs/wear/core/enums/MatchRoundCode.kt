@@ -3,7 +3,6 @@ package com.mongs.wear.core.enums
 enum class MatchRoundCode(
     val message: String
 ) {
-
     /**
      * 선택
      */

@@ -11,22 +11,23 @@ interface DeviceRepository {
     suspend fun getAccountId(): Long
 
     /**
-     * 플레이어 걸음 수 환전
+     * 걸음 수 환전
+     * @throws ExchangeWalkingException
      */
     suspend fun exchangeWalkingCount(mongId: Long, walkingCount: Int, deviceBootedDt: LocalDateTime)
 
     /**
-     * 기기 총 걸음 수 서버 동기화
+     * 걸음 수 서버 동기화
      */
     suspend fun updateWalkingCountInServer(totalWalkingCount: Int, deviceBootedDt: LocalDateTime)
 
     /**
-     * 기기 총 걸음 수 동기화
+     * 걸음 수 로컬 동기화
      */
     suspend fun updateWalkingCountInLocal(totalWalkingCount: Int)
 
     /**
-     * 플레이어 걸음 수 라이브 객체 조회
+     * 걸음 수 라이브 객체 조회
      */
     suspend fun getStepsLive(): LiveData<Int>
 

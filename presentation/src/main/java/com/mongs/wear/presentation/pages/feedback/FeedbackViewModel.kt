@@ -4,7 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.mongs.wear.core.enums.FeedbackCode
-import com.mongs.wear.domain.feedback.exception.CreateFeedbackException
+import com.mongs.wear.core.exception.usecase.CreateFeedbackUseCaseException
 import com.mongs.wear.domain.feedback.usecase.CreateFeedbackUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +23,9 @@ class FeedbackViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 오류 신고 등록
+     */
     fun createFeedback(feedbackCode: FeedbackCode, content: String) {
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
 
@@ -49,10 +52,9 @@ class FeedbackViewModel @Inject constructor(
         var confirmDialog by mutableStateOf(false)
     }
 
-    override fun exceptionHandler(exception: Throwable) {
-
+    override suspend fun exceptionHandler(exception: Throwable) {
         when(exception) {
-            is CreateFeedbackException -> {
+            is CreateFeedbackUseCaseException -> {
                 uiState.loadingBar = false
             }
 

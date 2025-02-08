@@ -2,8 +2,8 @@ package com.mongs.wear.data.user.repository
 
 import com.mongs.wear.data.global.utils.HttpUtil
 import com.mongs.wear.data.user.api.CollectionApi
-import com.mongs.wear.data.user.exception.GetMapCollectionsException
-import com.mongs.wear.data.user.exception.GetMongCollectionsException
+import com.mongs.wear.core.exception.data.GetMapCollectionsException
+import com.mongs.wear.core.exception.data.GetMongCollectionsException
 import com.mongs.wear.domain.collection.model.CollectionModel
 import com.mongs.wear.domain.collection.repository.CollectionRepository
 import javax.inject.Inject
@@ -11,12 +11,12 @@ import javax.inject.Singleton
 
 @Singleton
 class CollectionRepositoryImpl @Inject constructor(
-    private val httpUtil: HttpUtil,
     private val collectionApi: CollectionApi,
 ): CollectionRepository {
 
     /**
      * 컬렉션 맵 목록 조회
+     * @throws GetMapCollectionsException
      */
     override suspend fun getMapCollections(): List<CollectionModel> {
 
@@ -34,11 +34,12 @@ class CollectionRepositoryImpl @Inject constructor(
             }
         }
 
-        throw GetMapCollectionsException(result = httpUtil.getErrorResult(response.errorBody()))
+        throw GetMapCollectionsException(result = HttpUtil.getErrorResult(response.errorBody()))
     }
 
     /**
      * 컬렉션 몽 목록 조회
+     * @throws GetMongCollectionsException
      */
     override suspend fun getMongCollections(): List<CollectionModel> {
 
@@ -56,6 +57,6 @@ class CollectionRepositoryImpl @Inject constructor(
             }
         }
 
-        throw GetMongCollectionsException(result = httpUtil.getErrorResult(response.errorBody()))
+        throw GetMongCollectionsException(result = HttpUtil.getErrorResult(response.errorBody()))
     }
 }

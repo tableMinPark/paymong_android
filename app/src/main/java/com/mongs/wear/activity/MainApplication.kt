@@ -12,7 +12,6 @@ import dagger.hilt.EntryPoints
 import dagger.hilt.InstallIn
 import dagger.hilt.android.HiltAndroidApp
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Inject
 
 @HiltAndroidApp
 class MainApplication : Application(), Configuration.Provider, LifecycleObserver {
@@ -27,6 +26,7 @@ class MainApplication : Application(), Configuration.Provider, LifecycleObserver
             .setWorkerFactory(EntryPoints.get(this, HiltWorkerFactoryEntryPoint::class.java).workerFactory())
             .build()
 
+    // foreground 여부 플래그
     var isAppForeground = false
         private set
 

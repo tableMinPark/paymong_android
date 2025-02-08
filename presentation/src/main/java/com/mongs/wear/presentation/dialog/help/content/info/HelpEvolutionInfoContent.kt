@@ -53,7 +53,7 @@ fun HelpEvolutionInfoContent() {
                     .weight(0.25f)
             ) {
                 Text(
-                    text = "경험치 게이지를",
+                    text = "경험치를 채우면",
                     textAlign = TextAlign.Center,
                     fontFamily = DAL_MU_RI,
                     fontWeight = FontWeight.Light,
@@ -71,7 +71,7 @@ fun HelpEvolutionInfoContent() {
                     .weight(0.25f)
             ) {
                 Text(
-                    text = "채우면 진화가능!",
+                    text = "몽 진화가 가능",
                     textAlign = TextAlign.Center,
                     fontFamily = DAL_MU_RI,
                     fontWeight = FontWeight.Light,
@@ -107,7 +107,7 @@ fun HelpEvolutionInfoContent() {
                     .weight(0.25f)
             ) {
                 Text(
-                    text = "경험치를 채워보세요!",
+                    text = "경험치를 채워보세요",
                     textAlign = TextAlign.Center,
                     fontFamily = DAL_MU_RI,
                     fontWeight = FontWeight.Light,

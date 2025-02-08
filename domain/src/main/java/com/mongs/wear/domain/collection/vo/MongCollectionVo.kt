@@ -2,9 +2,9 @@ package com.mongs.wear.domain.collection.vo
 
 data class MongCollectionVo(
 
-    val code: String,
+    val code: String = "",
 
-    val name: String,
+    val name: String = "",
 
-    val isIncluded: Boolean,
+    val isIncluded: Boolean = false,
 )

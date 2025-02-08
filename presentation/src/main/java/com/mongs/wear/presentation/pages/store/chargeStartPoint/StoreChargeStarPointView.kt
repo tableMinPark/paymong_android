@@ -77,6 +77,10 @@ fun StoreChargeStarPointView(
                 modifier = Modifier.zIndex(1f)
             )
             PaymentChargeStarPointContent(
+                productVoListIndex = productVoListIndex.intValue,
+                productVoSize = productVoList.value.size,
+                preProductVo = { productVoListIndex.intValue = max(0, productVoListIndex.intValue - 1) },
+                nextProductVo = { productVoListIndex.intValue = min(productVoListIndex.intValue + 1, productVoList.value.size - 1) },
                 productVo = productVoList.value.getOrNull(productVoListIndex.intValue),
                 starPoint = starPoint.value,
                 consumeOrder = { productId ->
@@ -92,17 +96,6 @@ fun StoreChargeStarPointView(
                 },
                 modifier = Modifier.zIndex(2f),
             )
-
-            SelectButton(
-                leftButtonClick = {
-                    productVoListIndex.intValue = max(0, productVoListIndex.intValue - 1)
-                },
-                rightButtonClick = {
-                    productVoListIndex.intValue =
-                        min(productVoListIndex.intValue + 1, productVoList.value.size - 1)
-                },
-                modifier = Modifier.zIndex(3f)
-            )
         }
     }
 
@@ -115,6 +108,10 @@ fun StoreChargeStarPointView(
 
 @Composable
 private fun PaymentChargeStarPointContent(
+    productVoListIndex: Int,
+    productVoSize: Int,
+    preProductVo: () -> Unit,
+    nextProductVo: () -> Unit,
     productVo: BillingManager.ProductVo?,
     starPoint: Int,
     productOrder: (String) -> Unit,
@@ -143,73 +140,59 @@ private fun PaymentChargeStarPointContent(
                 }
 
                 Row(
+                    verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(0.52f)
+                        .weight(0.2f)
                 ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.fillMaxSize()
+                    Text(
+                        text = productVo.productName,
+                        textAlign = TextAlign.Left,
+                        fontFamily = DAL_MU_RI,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 16.sp,
+                        color = MongsWhite,
+                        maxLines = 1,
+                    )
+                }
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.35f)
+                ) {
+                    SelectButton(
+                        leftBtnDisabled = productVoListIndex == 0,
+                        rightBtnDisabled = productVoListIndex == productVoSize - 1,
+                        leftBtnClick = preProductVo,
+                        rightBtnClick = nextProductVo,
+                        modifier = Modifier.zIndex(3f)
                     ) {
-                        Column(
-                            verticalArrangement = Arrangement.Center,
-                            modifier = Modifier.fillMaxHeight()
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center,
+                            modifier = Modifier.fillMaxWidth()
                         ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
-                                modifier = Modifier.fillMaxWidth()
+                            Image(
+                                painter = painterResource(R.drawable.starpoint_logo),
+                                contentDescription = null,
+                                modifier = Modifier.size(26.dp)
+                            )
 
-                            ) {
-                                Text(
-                                    text = productVo.productName,
-                                    textAlign = TextAlign.Left,
-                                    fontFamily = DAL_MU_RI,
-                                    fontWeight = FontWeight.Light,
-                                    fontSize = 14.sp,
-                                    color = MongsWhite,
-                                    maxLines = 1,
-                                )
-                            }
+                            Spacer(modifier = Modifier.width(10.dp))
 
-                            Spacer(modifier = Modifier.height(20.dp))
-
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.Center,
-                                modifier = Modifier.fillMaxWidth()
-                            ) {
-                                Image(
-                                    painter = painterResource(R.drawable.starpoint_logo),
-                                    contentDescription = null,
-                                    modifier = Modifier.size(26.dp)
-                                )
-
-                                Spacer(modifier = Modifier.width(6.dp))
-
-                                Text(
-                                    text = "X",
-                                    textAlign = TextAlign.Center,
-                                    fontFamily = DAL_MU_RI,
-                                    fontWeight = FontWeight.Light,
-                                    fontSize = 14.sp,
-                                    color = MongsWhite,
-                                    maxLines = 1,
-                                )
-
-                                Spacer(modifier = Modifier.width(6.dp))
-
-                                Text(
-                                    text = productVo.point.toString(),
-                                    textAlign = TextAlign.Center,
-                                    fontFamily = DAL_MU_RI,
-                                    fontWeight = FontWeight.Light,
-                                    fontSize = 14.sp,
-                                    color = MongsWhite,
-                                    maxLines = 1,
-                                )
-                            }
+                            Text(
+                                text = "+ ${productVo.point}",
+                                textAlign = TextAlign.Center,
+                                fontFamily = DAL_MU_RI,
+                                fontWeight = FontWeight.Light,
+                                fontSize = 18.sp,
+                                color = MongsWhite,
+                                maxLines = 1,
+                            )
                         }
                     }
                 }
@@ -218,7 +201,7 @@ private fun PaymentChargeStarPointContent(
                     horizontalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(0.28f)
+                        .weight(0.25f)
                 ) {
                     if (!productVo.hasNotConsumed) {
                         YellowButton(

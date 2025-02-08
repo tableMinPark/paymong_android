@@ -18,7 +18,6 @@ class HttpLogInterceptor(
 ) : Interceptor {
 
     companion object {
-
         private const val TAG = "HttpLogInterceptor"
 
         private const val CONNECTION_RESPONSE_CODE = 500

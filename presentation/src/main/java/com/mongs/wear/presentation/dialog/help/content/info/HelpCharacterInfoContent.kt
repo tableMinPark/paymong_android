@@ -25,6 +25,7 @@ fun HelpCharacterInfoContent() {
         modifier = Modifier.fillMaxHeight()
     ) {
         Spacer(modifier = Modifier.height(15.dp))
+
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -51,7 +52,7 @@ fun HelpCharacterInfoContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "총 3단계까지 존재!",
+                text = "총 3단계까지 존재",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -87,7 +88,7 @@ fun HelpCharacterInfoContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "종류가 달라져요!",
+                text = "종류가 달라져요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -96,6 +97,7 @@ fun HelpCharacterInfoContent() {
                 maxLines = 1,
             )
         }
+
         Spacer(modifier = Modifier.height(25.dp))
     }
 }

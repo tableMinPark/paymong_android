@@ -12,12 +12,21 @@ import retrofit2.http.POST
 
 interface StoreApi {
 
+    /**
+     * 인앱 상품 목록 조회
+     */
     @GET("user/store/product")
     suspend fun getProducts() : Response<ResponseDto<List<GetProductsResponseDto>>>
 
+    /**
+     * 인앱 상품 주문 ID 목록 조회
+     */
     @POST("user/store/order")
     suspend fun getConsumedOrderIds(@Body consumedOrderIdsRequestDto: GetConsumedOrderIdsRequestDto) : Response<ResponseDto<GetConsumedOrderIdsResponseDto>>
 
+    /**
+     * 인앱 상품 소비
+     */
     @POST("user/store/order/consume")
     suspend fun consumeProductOrder(@Body consumeProductOrderRequestDto: ConsumeProductOrderRequestDto) : Response<ResponseDto<Void>>
 }

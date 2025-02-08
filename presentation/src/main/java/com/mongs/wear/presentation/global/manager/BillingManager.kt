@@ -18,11 +18,12 @@ import com.android.billingclient.api.QueryProductDetailsParams
 import com.android.billingclient.api.QueryProductDetailsParams.Product
 import com.android.billingclient.api.QueryPurchasesParams
 import com.android.billingclient.api.queryProductDetails
-import com.mongs.wear.core.exception.ErrorException
+import com.mongs.wear.core.exception.global.DataException
 import com.mongs.wear.domain.store.usecase.ConsumeProductOrderUseCase
-import com.mongs.wear.presentation.global.exception.BillingConnectException
-import com.mongs.wear.presentation.global.exception.BillingNotSupportException
-import com.mongs.wear.presentation.global.exception.GetProductException
+import com.mongs.wear.core.exception.presentation.BillingConnectException
+import com.mongs.wear.core.exception.presentation.BillingNotSupportException
+import com.mongs.wear.core.exception.presentation.GetProductException
+import com.mongs.wear.presentation.component.common.logo.Logo
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -43,7 +44,7 @@ class BillingManager @Inject constructor(
     private val consumeProductOrderUseCase: ConsumeProductOrderUseCase,
 ) : PurchasesUpdatedListener {
 
-    private val _errorEvent = MutableSharedFlow<ErrorException>()
+    private val _errorEvent = MutableSharedFlow<DataException>()
     val errorEvent = _errorEvent.asSharedFlow()
 
     private val _abortEvent = MutableSharedFlow<Long>()
@@ -82,7 +83,7 @@ class BillingManager @Inject constructor(
 
                         _successEvent.emit(System.currentTimeMillis())
 
-                    } catch (exception: ErrorException) {
+                    } catch (exception: DataException) {
 
                         _errorEvent.emit(exception)
                     }
@@ -152,7 +153,7 @@ class BillingManager @Inject constructor(
                         ProductVo(
                             productId = productDetail.productId,
                             productName = productDetail.name,
-                            point = productDetail.description.toInt() ?: 0,
+                            point = productDetail.description.toInt(),
                             price = productDetail.oneTimePurchaseOfferDetails?.formattedPrice ?: "",
                             hasNotConsumed = false
                         )

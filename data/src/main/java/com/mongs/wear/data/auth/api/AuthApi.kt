@@ -14,18 +14,33 @@ import retrofit2.http.POST
 
 interface AuthApi {
 
+    /**
+     * 회원 가입
+     */
     @POST("auth/join")
     suspend fun join(@Body joinRequestDto: JoinRequestDto) : Response<ResponseDto<Void>>
 
+    /**
+     * 로그인
+     */
     @POST("auth/login")
     suspend fun login(@Body loginRequestDto: LoginRequestDto) : Response<ResponseDto<LoginResponseDto>>
 
+    /**
+     * 토큰 재발행
+     */
     @POST("auth/reissue")
     suspend fun reissue(@Body reissueRequestDto: ReissueRequestDto) : Response<ResponseDto<ReissueResponseDto>>
 
+    /**
+     * 로그 아웃
+     */
     @POST("auth/logout")
     suspend fun logout(@Body logoutRequestDto: LogoutRequestDto) : Response<ResponseDto<Void>>
 
+    /**
+     * 기기 등록
+     */
     @POST("auth/device")
     suspend fun createDevice(@Body createDeviceRequestDto: CreateDeviceRequestDto) : Response<ResponseDto<Void>>
 }

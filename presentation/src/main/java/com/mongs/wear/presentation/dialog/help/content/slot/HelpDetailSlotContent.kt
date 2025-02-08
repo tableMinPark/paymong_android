@@ -53,34 +53,7 @@ fun HelpDetailSlotContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "클릭해 상세정보 조회!",
-                textAlign = TextAlign.Center,
-                fontFamily = DAL_MU_RI,
-                fontWeight = FontWeight.Light,
-                fontSize = 14.sp,
-                color = MongsWhite,
-                maxLines = 1,
-            )
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.25f)
-        ) {
-            Image(
-                painter = painterResource(R.drawable.pointlogo),
-                contentDescription = null,
-                modifier = Modifier
-                    .height(20.dp)
-                    .width(20.dp),
-                contentScale = ContentScale.FillBounds,
-            )
-            Spacer(modifier = Modifier.width(7.dp))
-            Text(
-                text = "페이포인트,나이,이름",
+                text = "클릭해 정보를 확인해요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -98,7 +71,25 @@ fun HelpDetailSlotContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "을 확인해보세요!",
+                text = "몽의 상세정보를",
+                textAlign = TextAlign.Center,
+                fontFamily = DAL_MU_RI,
+                fontWeight = FontWeight.Light,
+                fontSize = 14.sp,
+                color = MongsWhite,
+                maxLines = 1,
+            )
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.25f)
+        ) {
+            Text(
+                text = "확인해보세요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

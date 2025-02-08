@@ -53,34 +53,7 @@ fun HelpBuySlotContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "클릭해 추가슬롯구매",
-                textAlign = TextAlign.Center,
-                fontFamily = DAL_MU_RI,
-                fontWeight = FontWeight.Light,
-                fontSize = 14.sp,
-                color = MongsWhite,
-                maxLines = 1,
-            )
-        }
-
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.25f)
-        ) {
-            Image(
-                painter = painterResource(R.drawable.starpoint_logo),
-                contentDescription = null,
-                modifier = Modifier
-                    .height(20.dp)
-                    .width(20.dp),
-                contentScale = ContentScale.FillBounds,
-            )
-            Spacer(modifier = Modifier.width(7.dp))
-            Text(
-                text = "10개로 여러마리를",
+                text = "클릭해 슬롯을 구매해요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -98,7 +71,25 @@ fun HelpBuySlotContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "키워보세요!!",
+                text = "여러 마리의 몽을",
+                textAlign = TextAlign.Center,
+                fontFamily = DAL_MU_RI,
+                fontWeight = FontWeight.Light,
+                fontSize = 14.sp,
+                color = MongsWhite,
+                maxLines = 1,
+            )
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.25f)
+        ) {
+            Text(
+                text = "키울 수 있어요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

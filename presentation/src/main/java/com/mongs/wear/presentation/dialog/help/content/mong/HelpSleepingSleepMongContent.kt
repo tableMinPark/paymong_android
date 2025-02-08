@@ -109,7 +109,7 @@ fun HelpSleepingSleepMongContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "지속적 증가!",
+                text = "지속적으로 증가해요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

@@ -33,7 +33,7 @@ fun HelpMatchThirdContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "방어: HP 소량감소",
+                text = "방어 - HP 소량 감소",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -51,7 +51,7 @@ fun HelpMatchThirdContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "공격: 상대 HP 감소",
+                text = "공격 - 상대 HP 감소",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -69,7 +69,7 @@ fun HelpMatchThirdContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "회복: HP 증가",
+                text = "회복 - HP 증가",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

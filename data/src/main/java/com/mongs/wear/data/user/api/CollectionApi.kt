@@ -8,9 +8,15 @@ import retrofit2.http.GET
 
 interface CollectionApi {
 
+    /**
+     * 맵 컬렉션 목록 조회
+     */
     @GET("user/collection/map")
     suspend fun getCollectionMaps() : Response<ResponseDto<List<GetCollectionMapResponseDto>>>
 
+    /**
+     * 몽 컬렉션 목록 조회
+     */
     @GET("user/collection/mong")
     suspend fun getCollectionMongs() : Response<ResponseDto<List<GetCollectionMongResponseDto>>>
 }

@@ -11,14 +11,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 
 @Composable
 fun SelectButton(
-    leftButtonClick: () -> Unit,
-    rightButtonClick: () -> Unit,
+    leftBtnDisabled: Boolean = false,
+    rightBtnDisabled: Boolean = false,
+    leftBtnClick: () -> Unit,
+    rightBtnClick: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
+    content: @Composable () -> Unit = {},
 ) {
     Box(
         contentAlignment = Alignment.Center,
@@ -40,9 +45,26 @@ fun SelectButton(
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxHeight()
-                        .weight(0.5f)
+                        .weight(0.15f)
                 ) {
-                    LeftButton(onClick = leftButtonClick)
+                    if (!leftBtnDisabled) {
+                        LeftButton(onClick = leftBtnClick)
+                    }
+                }
+
+                Column(
+                    horizontalAlignment = Alignment.Start,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(0.7f)
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = modifier.fillMaxWidth()
+                    ) {
+                        content()
+                    }
                 }
 
                 Column(
@@ -50,13 +72,24 @@ fun SelectButton(
                     verticalArrangement = Arrangement.Center,
                     modifier = Modifier
                         .fillMaxHeight()
-                        .weight(0.5f)
+                        .weight(0.15f)
                 ) {
-                    RightButton(onClick = rightButtonClick)
+                    if (!rightBtnDisabled) {
+                        RightButton(onClick = rightBtnClick)
+                    }
                 }
 
                 Spacer(modifier = Modifier.width(15.dp))
             }
         }
     }
+}
+
+@Preview(device = Devices.WEAR_OS_SMALL_ROUND)
+@Composable
+private fun RightButtonPreview() {
+    SelectButton(
+        leftBtnClick = {},
+        rightBtnClick = {},
+    )
 }

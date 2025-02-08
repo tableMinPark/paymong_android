@@ -33,7 +33,7 @@ fun HelpMatchSecondContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "매치가",
+                text = "라운드 내",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -51,7 +51,7 @@ fun HelpMatchSecondContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "끝나지 않는 경우에는",
+                text = "매치가 끝나지 않으면",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -69,7 +69,7 @@ fun HelpMatchSecondContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "HP가 높은",
+                text = "HP가 높은 플레이어가",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -87,7 +87,7 @@ fun HelpMatchSecondContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "사람이 승리!",
+                text = "승리해요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

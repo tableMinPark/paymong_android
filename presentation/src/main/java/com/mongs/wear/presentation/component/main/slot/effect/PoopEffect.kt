@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.mongs.wear.presentation.R
 
-val poopPadding = arrayOf(
+private val poopPadding = arrayOf(
     PaddingValues(end = 80.dp,bottom = 26.dp),
     PaddingValues(start = 76.dp,bottom = 28.dp),
     PaddingValues(end = 60.dp,bottom = 18.dp),

@@ -3,9 +3,9 @@ package com.mongs.wear.presentation.pages.main.slot
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import com.mongs.wear.domain.management.exception.EvolutionMongException
-import com.mongs.wear.domain.management.exception.GraduateCheckException
-import com.mongs.wear.domain.management.exception.StrokeMongException
+import com.mongs.wear.core.exception.usecase.EvolutionMongUseCaseException
+import com.mongs.wear.core.exception.usecase.GraduateCheckUseCaseException
+import com.mongs.wear.core.exception.usecase.StrokeMongUseCaseException
 import com.mongs.wear.domain.management.usecase.EvolutionMongUseCase
 import com.mongs.wear.domain.management.usecase.GraduateCheckMongUseCase
 import com.mongs.wear.domain.management.usecase.StrokeMongUseCase
@@ -28,6 +28,9 @@ class MainSlotViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 몽 쓰다 듬기
+     */
     fun stroke(mongId: Long) {
 
         if (effectState.isHappy) return
@@ -43,6 +46,9 @@ class MainSlotViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 몽 진화
+     */
     fun evolution(mongId: Long) {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
 
@@ -54,6 +60,9 @@ class MainSlotViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 몽 졸업 체크
+     */
     fun graduationReady(mongId: Long) {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
             graduateCheckMongUseCase(
@@ -70,18 +79,17 @@ class MainSlotViewModel @Inject constructor(
         var isEvolution by mutableStateOf(false)
     }
 
-    override fun exceptionHandler(exception: Throwable) {
-
+    override suspend fun exceptionHandler(exception: Throwable) {
         when(exception) {
-            is StrokeMongException -> {
+            is StrokeMongUseCaseException -> {
                 uiState.loadingBar = false
             }
 
-            is EvolutionMongException -> {
+            is EvolutionMongUseCaseException -> {
                 uiState.loadingBar = false
             }
 
-            is GraduateCheckException -> {
+            is GraduateCheckUseCaseException -> {
             }
 
             else -> {

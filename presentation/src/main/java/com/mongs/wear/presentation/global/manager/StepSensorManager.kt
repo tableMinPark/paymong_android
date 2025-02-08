@@ -6,7 +6,7 @@ import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.util.Log
-import com.mongs.wear.core.exception.UseCaseException
+import com.mongs.wear.core.exception.global.UseCaseException
 import com.mongs.wear.domain.device.usecase.SetLocalTotalWalkingCountUseCase
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope

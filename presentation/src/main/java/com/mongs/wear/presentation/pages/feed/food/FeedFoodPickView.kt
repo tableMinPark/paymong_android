@@ -104,8 +104,10 @@ fun FeedFoodPickView(
             )
 
             SelectButton(
-                leftButtonClick = { feedItemVoIndex.intValue = max(0, feedItemVoIndex.intValue - 1) },
-                rightButtonClick = { feedItemVoIndex.intValue = min(feedItemVoIndex.intValue + 1, feedItemVoList.value.size - 1) },
+                leftBtnDisabled = feedItemVoIndex.intValue == 0,
+                rightBtnDisabled = feedItemVoIndex.intValue == feedItemVoList.value.size - 1,
+                leftBtnClick = { feedItemVoIndex.intValue = max(0, feedItemVoIndex.intValue - 1) },
+                rightBtnClick = { feedItemVoIndex.intValue = min(feedItemVoIndex.intValue + 1, feedItemVoList.value.size - 1) },
                 modifier = Modifier.zIndex(3f)
             )
         }

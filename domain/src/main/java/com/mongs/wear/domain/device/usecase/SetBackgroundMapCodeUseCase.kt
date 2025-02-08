@@ -1,11 +1,10 @@
 package com.mongs.wear.domain.device.usecase
 
-import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.device.exception.GetNetworkException
-import com.mongs.wear.domain.device.exception.SetBackgroundMapCodeException
+import com.mongs.wear.core.exception.global.DataException
+import com.mongs.wear.core.exception.usecase.SetBackgroundMapCodeUseCaseException
 import com.mongs.wear.domain.device.repository.DeviceRepository
 import com.mongs.wear.domain.device.usecase.SetBackgroundMapCodeUseCase.Param
-import com.mongs.wear.domain.global.usecase.BaseParamUseCase
+import com.mongs.wear.core.usecase.BaseParamUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -18,8 +17,10 @@ class SetBackgroundMapCodeUseCase @Inject constructor(
         private const val DEFAULT_MAP_TYPE_CODE = "MP000"
     }
 
+    /**
+     * 배경 코드 설정 UseCase
+     */
     override suspend fun execute(param: Param) {
-
         withContext(Dispatchers.IO) {
             deviceRepository.setBgMapTypeCode(mapTypeCode = param.mapTypeCode ?: DEFAULT_MAP_TYPE_CODE)
         }
@@ -29,11 +30,11 @@ class SetBackgroundMapCodeUseCase @Inject constructor(
         val mapTypeCode: String?
     )
 
-    override fun handleException(exception: ErrorException) {
+    override fun handleException(exception: DataException) {
         super.handleException(exception)
 
-        when(exception.code) {
-            else -> throw SetBackgroundMapCodeException()
+        when(exception) {
+            else -> throw SetBackgroundMapCodeUseCaseException()
         }
     }
 }

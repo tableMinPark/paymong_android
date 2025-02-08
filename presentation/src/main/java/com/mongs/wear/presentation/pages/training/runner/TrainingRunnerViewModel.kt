@@ -8,7 +8,7 @@ import androidx.lifecycle.MediatorLiveData
 import com.mongs.wear.core.enums.TrainingCode
 import com.mongs.wear.domain.management.usecase.GetCurrentSlotUseCase
 import com.mongs.wear.domain.management.vo.MongVo
-import com.mongs.wear.domain.training.exception.GetTrainingPayPointException
+import com.mongs.wear.core.exception.usecase.GetTrainingPayPointUseCaseException
 import com.mongs.wear.domain.training.usecase.GetTrainingPayPointUseCase
 import com.mongs.wear.domain.training.usecase.TrainingMongUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
@@ -63,6 +63,9 @@ class TrainingRunnerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 훈련 러너 시작
+     */
     fun runnerStart() {
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
             runnerEngine.endEvent.collect {
@@ -82,6 +85,9 @@ class TrainingRunnerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 훈련 러너 종료
+     */
     fun runnerEnd(mongId: Long, score: Int) {
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
             runnerEngine.end()
@@ -98,6 +104,14 @@ class TrainingRunnerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * ViewModel 소멸자
+     */
+    override fun onCleared() {
+        super.onCleared()
+        runnerEngine.end()
+    }
+
     val uiState = UiState()
 
     class UiState : BaseUiState() {
@@ -106,24 +120,15 @@ class TrainingRunnerViewModel @Inject constructor(
         var trainingOverDialog by mutableStateOf(false)
     }
 
-    override fun exceptionHandler(exception: Throwable) {
+    override suspend fun exceptionHandler(exception: Throwable) {
+        when (exception) {
+            is GetTrainingPayPointUseCaseException -> {
+                uiState.navMainEvent.emit(System.currentTimeMillis())
+            }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            when (exception) {
-
-                is GetTrainingPayPointException -> {
-                    uiState.navMainEvent.emit(System.currentTimeMillis())
-                }
-
-                else -> {
-                    uiState.loadingBar = false
-                }
+            else -> {
+                uiState.loadingBar = false
             }
         }
-    }
-
-    override fun onCleared() {
-        super.onCleared()
-        runnerEngine.end()
     }
 }

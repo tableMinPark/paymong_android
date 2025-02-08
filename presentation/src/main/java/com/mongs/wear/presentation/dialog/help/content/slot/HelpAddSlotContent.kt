@@ -48,7 +48,7 @@ fun HelpAddSlotContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "클릭해 몽 생성",
+                text = "클릭해 알을 생성해요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -66,7 +66,7 @@ fun HelpAddSlotContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "알은 5분 후 부화!",
+                text = "생성한 알은",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -75,6 +75,25 @@ fun HelpAddSlotContent() {
                 maxLines = 1,
             )
         }
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.25f)
+        ) {
+            Text(
+                text = "5분 후 부화해요",
+                textAlign = TextAlign.Center,
+                fontFamily = DAL_MU_RI,
+                fontWeight = FontWeight.Light,
+                fontSize = 14.sp,
+                color = MongsWhite,
+                maxLines = 1,
+            )
+        }
+
         Spacer(modifier = Modifier.height(25.dp))
     }
 }

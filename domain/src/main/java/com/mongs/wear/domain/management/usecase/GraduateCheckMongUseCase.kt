@@ -1,8 +1,8 @@
 package com.mongs.wear.domain.management.usecase
 
-import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.global.usecase.BaseParamUseCase
-import com.mongs.wear.domain.management.exception.GraduateCheckException
+import com.mongs.wear.core.exception.global.DataException
+import com.mongs.wear.core.exception.usecase.GraduateCheckUseCaseException
+import com.mongs.wear.core.usecase.BaseParamUseCase
 import com.mongs.wear.domain.management.repository.ManagementRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,8 +12,10 @@ class GraduateCheckMongUseCase @Inject constructor(
     private val managementRepository: ManagementRepository,
 ) : BaseParamUseCase<GraduateCheckMongUseCase.Param, Unit>() {
 
+    /**
+     * 몽 졸업 확인 상태로 변경 UseCase
+     */
     override suspend fun execute(param: Param) {
-
         withContext(Dispatchers.IO) {
             managementRepository.graduateCheckMong(mongId = param.mongId)
         }
@@ -23,11 +25,11 @@ class GraduateCheckMongUseCase @Inject constructor(
         val mongId: Long,
     )
 
-    override fun handleException(exception: ErrorException) {
+    override fun handleException(exception: DataException) {
         super.handleException(exception)
 
-        when(exception.code) {
-            else -> throw GraduateCheckException()
+        when(exception) {
+            else -> throw GraduateCheckUseCaseException()
         }
     }
 }

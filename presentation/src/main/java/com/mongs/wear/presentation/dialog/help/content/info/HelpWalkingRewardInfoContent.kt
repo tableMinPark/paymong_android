@@ -79,7 +79,7 @@ fun HelpWalkingRewardInfoContent() {
             )
             Spacer(modifier = Modifier.width(7.dp))
             Text(
-                text = "페이포인트로 환전!",
+                text = "로 환전!",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -97,7 +97,25 @@ fun HelpWalkingRewardInfoContent() {
                 .weight(0.2f)
         ) {
             Text(
-                text = "1000걸음 = 100개",
+                text = "1000걸음 = ",
+                textAlign = TextAlign.Center,
+                fontFamily = DAL_MU_RI,
+                fontWeight = FontWeight.Light,
+                fontSize = 14.sp,
+                color = MongsWhite,
+                maxLines = 1,
+            )
+            Image(
+                painter = painterResource(R.drawable.pointlogo),
+                contentDescription = null,
+                modifier = Modifier
+                    .height(15.dp)
+                    .width(15.dp),
+                contentScale = ContentScale.FillBounds,
+            )
+            Spacer(modifier = Modifier.width(5.dp))
+            Text(
+                text = "100개",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

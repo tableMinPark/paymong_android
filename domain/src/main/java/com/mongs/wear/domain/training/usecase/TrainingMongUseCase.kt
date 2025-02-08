@@ -1,9 +1,10 @@
 package com.mongs.wear.domain.training.usecase
 
 import com.mongs.wear.core.enums.TrainingCode
-import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.global.usecase.BaseParamUseCase
-import com.mongs.wear.domain.training.exception.TrainingMongException
+import com.mongs.wear.core.exception.data.TrainingRunnerException
+import com.mongs.wear.core.exception.global.DataException
+import com.mongs.wear.core.exception.usecase.TrainingMongUseCaseException
+import com.mongs.wear.core.usecase.BaseParamUseCase
 import com.mongs.wear.domain.training.repository.TrainingRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -13,6 +14,10 @@ class TrainingMongUseCase @Inject constructor(
     private val trainingRepository: TrainingRepository,
 ) : BaseParamUseCase<TrainingMongUseCase.Param, Unit>() {
 
+    /**
+     * 훈련 완료 UseCase
+     * @throws TrainingRunnerException
+     */
     override suspend fun execute(param: Param) {
         withContext(Dispatchers.IO) {
             when(param.trainingCode) {
@@ -41,11 +46,13 @@ class TrainingMongUseCase @Inject constructor(
         val score: Int,
     )
 
-    override fun handleException(exception: ErrorException) {
+    override fun handleException(exception: DataException) {
         super.handleException(exception)
 
-        when(exception.code) {
-            else -> throw TrainingMongException()
+        when(exception) {
+            is TrainingRunnerException -> throw TrainingMongUseCaseException()
+
+            else -> throw TrainingMongUseCaseException()
         }
     }
 }

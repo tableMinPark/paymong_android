@@ -14,11 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
 import com.mongs.wear.presentation.component.common.pagenation.PageIndicator
-import com.mongs.wear.presentation.dialog.help.content.HelpCancelContent
+import com.mongs.wear.presentation.dialog.help.content.common.HelpCancelContent
 import com.mongs.wear.presentation.dialog.help.content.point.HelpAddPayPointContent
 import com.mongs.wear.presentation.dialog.help.content.point.HelpAddStarPointContent
-import com.mongs.wear.presentation.dialog.help.content.point.HelpSubPayPointContent
-import com.mongs.wear.presentation.dialog.help.content.point.HelpSubStarPointContent
 import com.mongs.wear.presentation.dialog.help.content.point.HelpWarningPointContent
 
 @Composable
@@ -26,7 +24,7 @@ fun HelpPointDialog(
     cancel: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val pagerState = rememberPagerState(initialPage = 0) { 6 }
+    val pagerState = rememberPagerState(initialPage = 0) { 4 }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -52,22 +50,14 @@ fun HelpPointDialog(
                     }
 
                     1 -> {
-                        HelpSubPayPointContent()
-                    }
-
-                    2 -> {
                         HelpAddStarPointContent()
                     }
 
-                    3 -> {
-                        HelpSubStarPointContent()
-                    }
-
-                    4 -> {
+                    2 -> {
                         HelpWarningPointContent()
                     }
 
-                    5 -> {
+                    3 -> {
                         HelpCancelContent(cancel = cancel)
                     }
                 }

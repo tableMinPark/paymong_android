@@ -10,6 +10,9 @@ object TimeUtil {
 
     private val dateFormatter = DateTimeFormatter.ofPattern("yyyyMMddHHmm")
 
+    /**
+     * 기기 부팅 시간 확인
+     */
     fun getBootedDt() : LocalDateTime {
 
         val uptimeMillis = System.currentTimeMillis() - SystemClock.elapsedRealtime()

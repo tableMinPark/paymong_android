@@ -2,7 +2,7 @@ package com.mongs.wear.presentation.pages.store.menu
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.mongs.wear.domain.management.exception.GetCurrentSlotException
+import com.mongs.wear.core.exception.usecase.GetCurrentSlotUseCaseException
 import com.mongs.wear.domain.management.usecase.GetCurrentSlotUseCase
 import com.mongs.wear.domain.management.vo.MongVo
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
@@ -37,13 +37,11 @@ class StoreMenuViewModel @Inject constructor(
 
     val uiState = UiState()
 
-    class UiState : BaseUiState() {
-    }
+    class UiState : BaseUiState() {}
 
-    override fun exceptionHandler(exception: Throwable) {
-
+    override suspend fun exceptionHandler(exception: Throwable) {
         when(exception) {
-            is GetCurrentSlotException -> {
+            is GetCurrentSlotUseCaseException -> {
                 uiState.loadingBar = false
             }
 

@@ -20,7 +20,6 @@ data class MatchRoomEntity(
 
     var stateCode: MatchStateCode,
 ) {
-
     fun update(
         roomId: Long = this.roomId,
         round: Int = this.round,

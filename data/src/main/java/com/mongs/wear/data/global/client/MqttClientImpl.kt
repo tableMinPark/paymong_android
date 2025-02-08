@@ -2,17 +2,17 @@ package com.mongs.wear.data.global.client
 
 import android.content.Context
 import com.mongs.wear.core.enums.MatchRoundCode
+import com.mongs.wear.core.exception.data.ConnectMqttException
+import com.mongs.wear.core.exception.data.DisSubMqttException
+import com.mongs.wear.core.exception.data.DisconnectMqttException
+import com.mongs.wear.core.exception.data.PauseMqttException
+import com.mongs.wear.core.exception.data.PubMqttException
+import com.mongs.wear.core.exception.data.SubMqttException
 import com.mongs.wear.data.R
 import com.mongs.wear.data.activity.dto.request.EnterBattleRequestDto
 import com.mongs.wear.data.activity.dto.request.ExitBattleRequestDto
 import com.mongs.wear.data.activity.dto.request.PickBattleRequestDto
 import com.mongs.wear.data.global.api.MqttApi
-import com.mongs.wear.data.global.exception.ConnectMqttException
-import com.mongs.wear.data.global.exception.DisSubMqttException
-import com.mongs.wear.data.global.exception.DisconnectMqttException
-import com.mongs.wear.data.global.exception.PauseMqttException
-import com.mongs.wear.data.global.exception.PubMqttException
-import com.mongs.wear.data.global.exception.SubMqttException
 import com.mongs.wear.domain.global.client.MqttClient
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
@@ -29,6 +29,9 @@ class MqttClientImpl @Inject constructor(
         val mqttState = MqttState()
     }
 
+    /**
+     * 연결 여부 플래그 조회
+     */
     override suspend fun isConnected(): Boolean {
 
         while (mqttState.connectPending) delay(500)
@@ -37,7 +40,8 @@ class MqttClientImpl @Inject constructor(
     }
 
     /**
-     * 브로커
+     * 브로커 연결
+     * @throws ConnectMqttException
      */
     override suspend fun connect() {
 
@@ -60,6 +64,10 @@ class MqttClientImpl @Inject constructor(
         }
     }
 
+    /**
+     * 브로커 일시 중지
+     * @throws PauseMqttException
+     */
     override suspend fun pauseConnect() {
 
         if (mqttState.isConnect()) {
@@ -74,6 +82,10 @@ class MqttClientImpl @Inject constructor(
         }
     }
 
+    /**
+     * 브로커 연결 해제
+     * @throws DisconnectMqttException
+     */
     override suspend fun disConnect() {
 
         if (mqttState.isConnect()) {
@@ -87,7 +99,8 @@ class MqttClientImpl @Inject constructor(
     }
 
     /**
-     * 몽 매니저
+     * 몽 매니저 구독
+     * @throws SubMqttException
      */
     override suspend fun subManager(mongId: Long) {
 
@@ -105,6 +118,10 @@ class MqttClientImpl @Inject constructor(
         }
     }
 
+    /**
+     * 몽 매니저 구독 해제
+     * @throws DisSubMqttException
+     */
     override suspend fun disSubManager() {
 
         if (mqttState.isConnect()) {
@@ -121,7 +138,8 @@ class MqttClientImpl @Inject constructor(
     }
 
     /**
-     * 플레이어
+     * 플레이어 구독
+     * @throws SubMqttException
      */
     override suspend fun subPlayer(accountId: Long) {
 
@@ -139,6 +157,10 @@ class MqttClientImpl @Inject constructor(
         }
     }
 
+    /**
+     * 플레이어 구독 해제
+     * @throws DisSubMqttException
+     */
     override suspend fun disSubPlayer() {
 
         if (mqttState.isConnect()) {
@@ -155,7 +177,8 @@ class MqttClientImpl @Inject constructor(
     }
 
     /**
-     * 배틀 매칭 대기열
+     * 배틀 매칭 대기열 구독
+     * @throws SubMqttException
      */
     override suspend fun subSearchMatch(deviceId: String) {
 
@@ -173,6 +196,10 @@ class MqttClientImpl @Inject constructor(
         }
     }
 
+    /**
+     * 배틀 매칭 대기열 구독 해제
+     * @throws DisSubMqttException
+     */
     override suspend fun disSubSearchMatch() {
 
         if (mqttState.isConnect()) {
@@ -189,7 +216,8 @@ class MqttClientImpl @Inject constructor(
     }
 
     /**
-     * 배틀 매치
+     * 배틀 매치 구독
+     * @throws SubMqttException
      */
     override suspend fun subBattleMatch(roomId: Long) {
 
@@ -207,6 +235,10 @@ class MqttClientImpl @Inject constructor(
         }
     }
 
+    /**
+     * 배틀 매치 구독 해제
+     * @throws DisSubMqttException
+     */
     override suspend fun disSubBattleMatch() {
 
         if (mqttState.isConnect()) {
@@ -222,6 +254,10 @@ class MqttClientImpl @Inject constructor(
         }
     }
 
+    /**
+     * 배틀 입장 메시지 전송
+     * @throws PubMqttException
+     */
     override suspend fun pubBattleMatchEnter(roomId: Long, playerId: String) {
 
         if (mqttState.isConnect()) {
@@ -240,6 +276,10 @@ class MqttClientImpl @Inject constructor(
         }
     }
 
+    /**
+     * 배틀 선택 메시지 전송
+     * @throws PubMqttException
+     */
     override suspend fun pubBattleMatchPick(roomId: Long, playerId: String, targetPlayerId: String, pickCode: MatchRoundCode) {
 
         if (mqttState.isConnect()) {
@@ -262,6 +302,10 @@ class MqttClientImpl @Inject constructor(
         }
     }
 
+    /**
+     * 배틀 퇴장 메시지 전송
+     * @throws PubMqttException
+     */
     override suspend fun pubBattleMatchExit(roomId: Long, playerId: String) {
 
         if (mqttState.isConnect()) {

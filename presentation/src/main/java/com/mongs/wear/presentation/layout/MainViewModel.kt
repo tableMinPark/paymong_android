@@ -11,7 +11,8 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import com.mongs.wear.domain.global.exception.ConnectMqttException
+import com.mongs.wear.domain.battle.usecase.UpdateMatchUseCase
+import com.mongs.wear.core.exception.usecase.ConnectMqttUseCaseException
 import com.mongs.wear.domain.global.usecase.ConnectMqttUseCase
 import com.mongs.wear.domain.device.usecase.GetNetworkUseCase
 import com.mongs.wear.domain.device.usecase.SetDeviceIdUseCase
@@ -38,6 +39,7 @@ class MainViewModel @Inject constructor(
     private val connectMqttUseCase: ConnectMqttUseCase,
     private val updateCurrentSlotUseCase: UpdateCurrentSlotUseCase,
     private val updatePlayerUseCase: UpdatePlayerUseCase,
+    private val updateMatchUseCase: UpdateMatchUseCase,
 ) : BaseViewModel() {
 
     val network: LiveData<Boolean> get() = _network
@@ -87,6 +89,8 @@ class MainViewModel @Inject constructor(
 
             updateCurrentSlotUseCase()
 
+            updateMatchUseCase()
+
             uiState.errorDialogLoadingBar = false
         }
     }
@@ -98,11 +102,9 @@ class MainViewModel @Inject constructor(
         var errorDialogLoadingBar by mutableStateOf(false)
     }
 
-    override fun exceptionHandler(exception: Throwable) {
-
+    override suspend fun exceptionHandler(exception: Throwable) {
         when (exception) {
-
-            is ConnectMqttException -> {
+            is ConnectMqttUseCaseException -> {
                 uiState.errorDialogLoadingBar = false
             }
 

@@ -6,15 +6,15 @@ import com.mongs.wear.data.manager.api.ManagementApi
 import com.mongs.wear.data.manager.dto.request.CreateMongRequestDto
 import com.mongs.wear.data.manager.dto.request.FeedMongRequestDto
 import com.mongs.wear.data.manager.entity.MongEntity
-import com.mongs.wear.data.manager.exception.CreateMongException
-import com.mongs.wear.data.manager.exception.DeleteMongException
-import com.mongs.wear.data.manager.exception.EvolutionMongException
-import com.mongs.wear.data.manager.exception.FeedMongException
-import com.mongs.wear.data.manager.exception.GetFeedItemsException
-import com.mongs.wear.data.manager.exception.GraduateMongException
-import com.mongs.wear.data.manager.exception.PoopCleanMongException
-import com.mongs.wear.data.manager.exception.SleepMongException
-import com.mongs.wear.data.manager.exception.StrokeMongException
+import com.mongs.wear.core.exception.data.CreateMongException
+import com.mongs.wear.core.exception.data.DeleteMongException
+import com.mongs.wear.core.exception.data.EvolutionMongException
+import com.mongs.wear.core.exception.data.FeedMongException
+import com.mongs.wear.core.exception.data.GetFeedItemsException
+import com.mongs.wear.core.exception.data.GraduateMongException
+import com.mongs.wear.core.exception.data.PoopCleanMongException
+import com.mongs.wear.core.exception.data.SleepMongException
+import com.mongs.wear.core.exception.data.StrokeMongException
 import com.mongs.wear.domain.management.model.FeedItemModel
 import com.mongs.wear.domain.management.model.MongModel
 import com.mongs.wear.domain.management.repository.ManagementRepository
@@ -24,7 +24,6 @@ import javax.inject.Singleton
 
 @Singleton
 class ManagementRepositoryImpl @Inject constructor(
-    private val httpUtil: HttpUtil,
     private val roomDB: RoomDB,
     private val managementApi: ManagementApi,
 ): ManagementRepository {
@@ -114,6 +113,7 @@ class ManagementRepositoryImpl @Inject constructor(
 
     /**
      * 몽 생성
+     * @throws CreateMongException
      */
     override suspend fun createMong(name: String, sleepStart: String, sleepEnd: String) {
 
@@ -124,19 +124,20 @@ class ManagementRepositoryImpl @Inject constructor(
         ));
 
         if (!response.isSuccessful) {
-            throw CreateMongException(result = httpUtil.getErrorResult(errorBody = response.errorBody()))
+            throw CreateMongException(result = HttpUtil.getErrorResult(errorBody = response.errorBody()))
         }
     }
 
     /**
      * 몽 삭제
+     * @throws DeleteMongException
      */
     override suspend fun deleteMong(mongId: Long) {
 
         val response = managementApi.deleteMong(mongId = mongId)
 
         if (!response.isSuccessful) {
-            throw DeleteMongException(result = httpUtil.getErrorResult(errorBody = response.errorBody()))
+            throw DeleteMongException(result = HttpUtil.getErrorResult(errorBody = response.errorBody()))
         } else {
             roomDB.mongDao().deleteByMongId(mongId = mongId)
         }
@@ -144,6 +145,7 @@ class ManagementRepositoryImpl @Inject constructor(
 
     /**
      * 먹이 목록 조회
+     * @throws GetFeedItemsException
      */
     override suspend fun getFeedItems(mongId: Long, foodTypeGroupCode: String): List<FeedItemModel> {
 
@@ -169,30 +171,32 @@ class ManagementRepositoryImpl @Inject constructor(
             }
         }
 
-        throw GetFeedItemsException(result = httpUtil.getErrorResult(errorBody = response.errorBody()))
+        throw GetFeedItemsException(result = HttpUtil.getErrorResult(errorBody = response.errorBody()))
     }
 
     /**
      * 몽 먹이 주기
+     * @throws FeedMongException
      */
     override suspend fun feedMong(mongId: Long, foodTypeCode: String) {
 
         val response = managementApi.feedMong(mongId = mongId, feedMongRequestDto = FeedMongRequestDto(foodTypeCode = foodTypeCode))
 
         if (!response.isSuccessful) {
-            throw FeedMongException(result = httpUtil.getErrorResult(errorBody = response.errorBody()))
+            throw FeedMongException(result = HttpUtil.getErrorResult(errorBody = response.errorBody()))
         }
     }
 
     /**
      * 몽 졸업
+     * @throws GraduateMongException
      */
     override suspend fun graduateMong(mongId: Long) {
 
         val response = managementApi.graduateMong(mongId = mongId)
 
         if (!response.isSuccessful) {
-            throw GraduateMongException(result = httpUtil.getErrorResult(errorBody = response.errorBody()))
+            throw GraduateMongException(result = HttpUtil.getErrorResult(errorBody = response.errorBody()))
         }
     }
 
@@ -208,49 +212,53 @@ class ManagementRepositoryImpl @Inject constructor(
 
     /**
      * 몽 진화
+     * @throws EvolutionMongException
      */
     override suspend fun evolutionMong(mongId: Long) {
 
         val response = managementApi.evolutionMong(mongId = mongId)
 
         if (!response.isSuccessful) {
-            throw EvolutionMongException(result = httpUtil.getErrorResult(errorBody = response.errorBody()))
+            throw EvolutionMongException(result = HttpUtil.getErrorResult(errorBody = response.errorBody()))
         }
     }
 
     /**
      * 몽 수면/기상
+     * @throws SleepMongException
      */
     override suspend fun sleepingMong(mongId: Long) {
 
         val response = managementApi.sleepMong(mongId = mongId)
 
         if (!response.isSuccessful) {
-            throw SleepMongException(result = httpUtil.getErrorResult(errorBody = response.errorBody()))
+            throw SleepMongException(result = HttpUtil.getErrorResult(errorBody = response.errorBody()))
         }
     }
 
     /**
      * 몽 쓰다 듬기
+     * @throws StrokeMongException
      */
     override suspend fun strokeMong(mongId: Long) {
 
         val response = managementApi.strokeMong(mongId = mongId)
 
         if (!response.isSuccessful) {
-            throw StrokeMongException(result = httpUtil.getErrorResult(errorBody = response.errorBody()))
+            throw StrokeMongException(result = HttpUtil.getErrorResult(errorBody = response.errorBody()))
         }
     }
 
     /**
      * 몽 배변 처리
+     * @throws PoopCleanMongException
      */
     override suspend fun poopCleanMong(mongId: Long) {
 
         val response = managementApi.poopCleanMong(mongId = mongId)
 
         if (!response.isSuccessful) {
-            throw PoopCleanMongException(result = httpUtil.getErrorResult(errorBody = response.errorBody()))
+            throw PoopCleanMongException(result = HttpUtil.getErrorResult(errorBody = response.errorBody()))
         }
     }
 }

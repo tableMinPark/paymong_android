@@ -45,6 +45,7 @@ fun FeedbackView(
             FeedbackLoadingBar()
         } else if(feedbackViewModel.uiState.inputDialog) {
             FeedbackAddDialog(
+                feedbackCode = feedbackCode.value,
                 text = content.value,
                 changeText = { content.value = it },
                 confirm = {

@@ -6,26 +6,26 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.mongs.wear.domain.management.exception.CreateMongException
-import com.mongs.wear.domain.management.exception.DeleteMongException
-import com.mongs.wear.domain.management.exception.GetSlotsException
-import com.mongs.wear.domain.management.exception.GraduateMongException
-import com.mongs.wear.domain.management.exception.SetCurrentSlotException
+import com.mongs.wear.core.exception.usecase.BuySlotUseCaseException
+import com.mongs.wear.core.exception.usecase.CreateMongUseCaseException
+import com.mongs.wear.core.exception.usecase.DeleteMongUseCaseException
+import com.mongs.wear.core.exception.usecase.GetSlotCountUseCaseException
+import com.mongs.wear.core.exception.usecase.GetSlotsUseCaseException
+import com.mongs.wear.core.exception.usecase.GetStarPointUseCaseException
+import com.mongs.wear.core.exception.usecase.GraduateMongUseCaseException
+import com.mongs.wear.core.exception.usecase.SetCurrentSlotUseCaseException
 import com.mongs.wear.domain.management.usecase.CreateMongUseCase
 import com.mongs.wear.domain.management.usecase.DeleteMongUseCase
 import com.mongs.wear.domain.management.usecase.GetSlotsUseCase
 import com.mongs.wear.domain.management.usecase.GraduateMongUseCase
 import com.mongs.wear.domain.management.usecase.SetCurrentSlotUseCase
 import com.mongs.wear.domain.management.vo.SlotVo
-import com.mongs.wear.domain.player.exception.BuySlotException
-import com.mongs.wear.domain.player.exception.GetSlotCountException
-import com.mongs.wear.domain.player.exception.GetStarPointException
 import com.mongs.wear.domain.player.usecase.BuySlotUseCase
 import com.mongs.wear.domain.player.usecase.GetSlotCountUseCase
 import com.mongs.wear.domain.player.usecase.GetStarPointUseCase
+import com.mongs.wear.presentation.global.constValue.SlotConst
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -43,10 +43,6 @@ class SlotPickViewModel @Inject constructor(
     private val setCurrentSlotUseCase: SetCurrentSlotUseCase,
     private val buySlotUseCase: BuySlotUseCase,
 ): BaseViewModel() {
-
-    companion object {
-        private const val MAX_SLOT_COUNT = 3
-    }
 
     val starPoint: LiveData<Int> get() = _starPoint
     private val _starPoint = MediatorLiveData<Int>()
@@ -74,6 +70,9 @@ class SlotPickViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 몽 슬롯 목록 조회
+     */
     private suspend fun getSlots() {
         withContext(Dispatchers.IO) {
 
@@ -84,7 +83,7 @@ class SlotPickViewModel @Inject constructor(
                     slotVoList.add(SlotVo(code = SlotVo.SlotCode.EMPTY))
                 }
 
-                repeat((MAX_SLOT_COUNT - slotVoList.size).coerceAtLeast(0)) {
+                repeat((SlotConst.MAX_SLOT_COUNT - slotVoList.size).coerceAtLeast(0)) {
                     slotVoList.add(SlotVo(code = SlotVo.SlotCode.BUY_SLOT))
                 }
 
@@ -95,6 +94,9 @@ class SlotPickViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 몽 생성
+     */
     fun createMong(name: String, sleepStart: String, sleepEnd: String) {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
 
@@ -113,6 +115,9 @@ class SlotPickViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 몽 삭제
+     */
     fun deleteMong(mongId: Long) {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
 
@@ -131,6 +136,9 @@ class SlotPickViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 현재 슬롯 선택
+     */
     fun pickMong(mongId: Long) {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
 
@@ -149,6 +157,9 @@ class SlotPickViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 몽 졸업
+     */
     fun graduateMong(mongId: Long) {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
 
@@ -167,6 +178,9 @@ class SlotPickViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 추가 슬롯 구매
+     */
     fun buySlot() {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
 
@@ -193,53 +207,50 @@ class SlotPickViewModel @Inject constructor(
         var pickDialog by mutableStateOf(false)
     }
 
-    override fun exceptionHandler(exception: Throwable) {
+    override suspend fun exceptionHandler(exception: Throwable) {
+        when (exception) {
+            is GetSlotsUseCaseException -> {
+                uiState.loadingBar = false
+                uiState.navMainEvent.emit(System.currentTimeMillis())
+            }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            when (exception) {
-                is GetSlotsException -> {
-                    uiState.loadingBar = false
-                    uiState.navMainEvent.emit(System.currentTimeMillis())
-                }
+            is CreateMongUseCaseException -> {
+                uiState.loadingBar = false
+                uiState.mongCreateDialog = false
+            }
 
-                is CreateMongException -> {
-                    uiState.loadingBar = false
-                    uiState.mongCreateDialog = false
-                }
+            is DeleteMongUseCaseException -> {
+                uiState.loadingBar = false
+                uiState.mongDeleteDialog = false
+            }
 
-                is DeleteMongException -> {
-                    uiState.loadingBar = false
-                    uiState.mongDeleteDialog = false
-                }
+            is GraduateMongUseCaseException -> {
+                uiState.loadingBar = false
+                uiState.mongGraduateDialog = false
+            }
 
-                is GraduateMongException -> {
-                    uiState.loadingBar = false
-                    uiState.mongGraduateDialog = false
-                }
+            is GetStarPointUseCaseException -> {
+                uiState.loadingBar = false
+                uiState.navMainEvent.emit(System.currentTimeMillis())
+            }
 
-                is GetStarPointException -> {
-                    uiState.loadingBar = false
-                    uiState.navMainEvent.emit(System.currentTimeMillis())
-                }
+            is GetSlotCountUseCaseException -> {
+                uiState.loadingBar = false
+                uiState.navMainEvent.emit(System.currentTimeMillis())
+            }
 
-                is GetSlotCountException -> {
-                    uiState.loadingBar = false
-                    uiState.navMainEvent.emit(System.currentTimeMillis())
-                }
+            is SetCurrentSlotUseCaseException -> {
+                uiState.loadingBar = false
+                uiState.pickDialog = false
+            }
 
-                is SetCurrentSlotException -> {
-                    uiState.loadingBar = false
-                    uiState.pickDialog = false
-                }
+            is BuySlotUseCaseException -> {
+                uiState.loadingBar = false
+                uiState.buySlotDialog = false
+            }
 
-                is BuySlotException -> {
-                    uiState.loadingBar = false
-                    uiState.buySlotDialog = false
-                }
-
-                else -> {
-                    uiState.loadingBar = false
-                }
+            else -> {
+                uiState.loadingBar = false
             }
         }
     }

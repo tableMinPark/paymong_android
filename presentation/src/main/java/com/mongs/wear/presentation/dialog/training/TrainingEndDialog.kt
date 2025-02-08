@@ -23,9 +23,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
+import com.mongs.wear.core.enums.TrainingCode
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
@@ -34,6 +37,7 @@ import com.mongs.wear.presentation.component.common.button.BlueButton
 @Composable
 fun TrainingEndDialog(
     trainingEnd: () -> Unit,
+    trainingCode: TrainingCode,
     rewardPayPoint: Int,
     modifier: Modifier = Modifier
 ) {
@@ -66,7 +70,7 @@ fun TrainingEndDialog(
                     textAlign = TextAlign.Center,
                     fontFamily = DAL_MU_RI,
                     fontWeight = FontWeight.Light,
-                    fontSize = 28.sp,
+                    fontSize = 25.sp,
                     color = MongsWhite,
                     maxLines = 1,
                 )
@@ -80,7 +84,7 @@ fun TrainingEndDialog(
                     .weight(0.2f)
             ) {
                 Text(
-                    text = "Runner",
+                    text = trainingCode.message,
                     textAlign = TextAlign.Center,
                     fontFamily = DAL_MU_RI,
                     fontWeight = FontWeight.Light,
@@ -147,4 +151,14 @@ fun TrainingEndDialog(
             Spacer(modifier = Modifier.height(25.dp))
         }
     }
+}
+
+@Preview(showSystemUi = true, device = Devices.WEAR_OS_SMALL_ROUND)
+@Composable
+private fun PreView() {
+    TrainingEndDialog(
+        trainingEnd = {},
+        rewardPayPoint = 5,
+        trainingCode = TrainingCode.RUNNER,
+    )
 }

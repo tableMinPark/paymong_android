@@ -6,7 +6,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mongs.wear.core.exception.UseCaseException
+import com.mongs.wear.core.exception.global.PresentationException
+import com.mongs.wear.core.exception.global.UseCaseException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,30 +42,44 @@ abstract class BaseViewModel : ViewModel() {
         val effectState = BaseEffectState()
     }
 
+    /**
+     * ViewModel Exception Handler
+     */
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
-
         CoroutineScope(Dispatchers.IO).launch {
 
             if (exception is UseCaseException) {
-                exceptionHandler(exception = exception)
                 Log.e(TAG, "[Exception] ${exception.javaClass.simpleName} ${exception.message} ===> ${exception.result}")
 
+                // 알림 표출
                 if (exception.code.isMessageShow()) {
                     _errorEvent.emit(exception.message)
                 }
+            } else if (exception is PresentationException) {
+                Log.e(TAG, "[Exception] ${exception.javaClass.simpleName} ${exception.message} ===> ${exception.result}")
 
+                // 알림 표출
+                if (exception.code.isMessageShow()) {
+                    _errorEvent.emit(exception.message)
+                }
             } else {
-                exceptionHandler(exception = exception)
                 Log.e(TAG, "[Exception] ${exception.javaClass.name} ${exception.message ?: ""}")
             }
+
+            // 자식 클래스 exception handler 실행
+            exceptionHandler(exception = exception)
         }
     }
+
+    /**
+     * ViewModel Exception Handler Override
+     * ViewModel 자식 클래스에서 Exception Handler 를 재정의 하여 사용
+     */
+    abstract suspend fun exceptionHandler(exception: Throwable)
 
     protected val viewModelScopeWithHandler = CoroutineScope(
         viewModelScope.coroutineContext + exceptionHandler
     )
-
-    abstract fun exceptionHandler(exception: Throwable)
 
     open class BaseUiState {
         var loadingBar by mutableStateOf(true)

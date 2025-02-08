@@ -28,6 +28,7 @@ fun HelpCollectionInfoContent() {
         modifier = Modifier.fillMaxHeight()
     ) {
         Spacer(modifier = Modifier.height(15.dp))
+
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -41,7 +42,9 @@ fun HelpCollectionInfoContent() {
                 size = 30,
                 onClick = {}
             )
+
             Spacer(modifier = Modifier.width(5.dp))
+
             Text(
                 text = "클릭해",
                 textAlign = TextAlign.Center,
@@ -61,7 +64,7 @@ fun HelpCollectionInfoContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "수집한 컬렉션 조회!",
+                text = "수집한 컬렉션 조회",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -97,7 +100,7 @@ fun HelpCollectionInfoContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "확인해보세요!",
+                text = "확인해보세요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -106,6 +109,7 @@ fun HelpCollectionInfoContent() {
                 maxLines = 1,
             )
         }
+
         Spacer(modifier = Modifier.height(25.dp))
     }
 }

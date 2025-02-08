@@ -25,6 +25,7 @@ val MongsPurple = Color(0xFFCCA2FE)
 val MongsDarkPurple = Color(0xFF8F47E6)
 val MongsNavy = Color(0xFF0C4DA2)
 val MongsWhite = Color(0xFFFFFFFF)
+val MongsDarkGray = Color(0xFF737373)
 val MongsLightGray = Color(0xFFF0F0F0)
 
 @Composable

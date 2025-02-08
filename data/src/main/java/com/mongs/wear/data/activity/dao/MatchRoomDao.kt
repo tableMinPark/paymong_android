@@ -12,6 +12,9 @@ import com.mongs.wear.data.activity.entity.MatchRoomEntity
 @Dao
 interface MatchRoomDao {
 
+    /**
+     * SELECT
+     */
     @Query("SELECT * FROM mongs_match_room WHERE deviceId = :deviceId")
     fun findByDeviceId(deviceId: String) : MatchRoomEntity?
 
@@ -21,21 +24,33 @@ interface MatchRoomDao {
     @Query("SELECT * FROM mongs_match_room WHERE roomId = :roomId")
     fun findByRoomId(roomId: Long) : MatchRoomEntity?
 
+    /**
+     * DELETE
+     */
     @Query("DELETE FROM mongs_match_room")
     fun deleteAll()
 
+    /**
+     * INSERT
+     */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(matchRoomEntity: MatchRoomEntity) : Long
 
+    /**
+     * UPDATE
+     */
     @Update
     fun update(matchRoomEntity: MatchRoomEntity) : Int
 
+    /**
+     * INSERT & UPDATE
+     */
     @Transaction
     fun save(matchRoomEntity: MatchRoomEntity) : MatchRoomEntity {
 
-        val isSuccess = this.insert(matchRoomEntity = matchRoomEntity)
-
-        if (isSuccess == -1L) this.update(matchRoomEntity = matchRoomEntity)
+        if (this.insert(matchRoomEntity = matchRoomEntity) == -1L) {
+            this.update(matchRoomEntity = matchRoomEntity)
+        }
 
         return matchRoomEntity
     }

@@ -8,6 +8,9 @@ import retrofit2.http.POST
 
 interface FeedbackApi {
 
+    /**
+     * 오류 신고 등록
+     */
     @POST("user/feedback")
     suspend fun createFeedback(@Body createFeedbackRequestDto: CreateFeedbackRequestDto) : Response<ResponseDto<Void>>
 }

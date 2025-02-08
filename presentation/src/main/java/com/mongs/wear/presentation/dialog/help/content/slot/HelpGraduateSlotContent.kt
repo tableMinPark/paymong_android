@@ -53,7 +53,7 @@ fun HelpGraduateSlotContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "클릭해 몽 졸업",
+                text = "클릭해 몽을 졸업시켜요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -80,7 +80,7 @@ fun HelpGraduateSlotContent() {
             )
             Spacer(modifier = Modifier.width(7.dp))
             Text(
-                text = "과 함께 소멸되니",
+                text = "과 함께",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -98,7 +98,7 @@ fun HelpGraduateSlotContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "주의하세요!",
+                text = " 소멸되요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

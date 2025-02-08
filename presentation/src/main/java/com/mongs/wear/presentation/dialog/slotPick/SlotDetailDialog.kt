@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -32,6 +34,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.wear.compose.material.CircularProgressIndicator
 import androidx.wear.compose.material.Text
+import com.mongs.wear.core.enums.MongStateCode
+import com.mongs.wear.core.enums.MongStatusCode
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsBlue
@@ -54,7 +58,9 @@ fun SlotDetailDialog(
     onClick: () -> Unit = {},
     initTabIndex: Int = 0,
     mongId: Long = 0L,
-    name: String = "이름 없음",
+    statusCode: MongStatusCode,
+    stateCode: MongStateCode,
+    isSleep: Boolean,
     weight: Double = 0.0,
     healthy: Double = 0.0,
     satiety: Double = 0.0,
@@ -106,7 +112,7 @@ fun SlotDetailDialog(
                         onClick = { tabIndex.intValue = 1 },
                     )
                     SlotDetailTab(
-                        text = "포인트",
+                        text = "상태",
                         color = if (tabIndex.intValue == 2) MongsLightGray else Color.LightGray,
                         onClick = { tabIndex.intValue = 2 },
                     )
@@ -131,7 +137,7 @@ fun SlotDetailDialog(
                     0 -> InfoTab(
                         modifier = Modifier.matchParentSize(),
                         mongId = mongId,
-                        name = name,
+                        payPoint = payPoint,
                         born = born,
                         weight = weight,
                     )
@@ -142,9 +148,11 @@ fun SlotDetailDialog(
                         strength = strength,
                         sleep = sleep,
                     )
-                    2 -> PointTab(
+                    2 -> StateTab(
                         modifier = Modifier.matchParentSize(),
-                        payPoint = payPoint,
+                        statusCode = statusCode,
+                        stateCode = stateCode,
+                        isSleep = isSleep,
                     )
                 }
             }
@@ -156,7 +164,7 @@ fun SlotDetailDialog(
 private fun InfoTab(
     modifier: Modifier = Modifier.fillMaxSize(),
     mongId: Long,
-    name: String,
+    payPoint: Int,
     born: LocalDateTime,
     weight: Double,
 ) {
@@ -184,8 +192,20 @@ private fun InfoTab(
                 .width(SLOT_DETAIL_WIDTH.dp)
                 .weight(0.2f)
         ) {
+            PayPoint(
+                width = 110,
+                payPoint = payPoint,
+            )
+        }
+        Row (
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .width(SLOT_DETAIL_WIDTH.dp)
+                .weight(0.2f)
+        ) {
             Text(
-                text = name,
+                text = "%.2f kg".format(weight),
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -203,23 +223,6 @@ private fun InfoTab(
         ) {
             Text(
                 text = age.value,
-                textAlign = TextAlign.Center,
-                fontFamily = DAL_MU_RI,
-                fontWeight = FontWeight.Light,
-                fontSize = 14.sp,
-                maxLines = 1,
-                color = Color.Black,
-            )
-        }
-        Row (
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .width(SLOT_DETAIL_WIDTH.dp)
-                .weight(0.2f)
-        ) {
-            Text(
-                text = "%.2f g".format(weight),
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -272,17 +275,67 @@ private fun StatusTab(
 }
 
 @Composable
-private fun PointTab(
+private fun StateTab(
     modifier: Modifier = Modifier.fillMaxSize(),
-    payPoint: Int,
+    statusCode: MongStatusCode,
+    stateCode: MongStateCode,
+    isSleep: Boolean,
 ) {
     Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-        modifier = modifier,
+        modifier = modifier.padding(8.dp)
     ) {
-        Row {
-            PayPoint(payPoint = payPoint)
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .width(SLOT_DETAIL_WIDTH.dp)
+                .weight(0.3f)
+        ) {
+            Text(
+                text = if(isSleep) "수면중" else "기상",
+                textAlign = TextAlign.Center,
+                fontFamily = DAL_MU_RI,
+                fontWeight = FontWeight.Light,
+                fontSize = 14.sp,
+                maxLines = 1,
+                color = Color.Black,
+            )
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .width(SLOT_DETAIL_WIDTH.dp)
+                .weight(0.3f)
+        ) {
+            Text(
+                text = statusCode.message,
+                textAlign = TextAlign.Center,
+                fontFamily = DAL_MU_RI,
+                fontWeight = FontWeight.Light,
+                fontSize = 14.sp,
+                maxLines = 1,
+                color = Color.Black,
+            )
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .width(SLOT_DETAIL_WIDTH.dp)
+                .weight(0.3f)
+        ) {
+            Text(
+                text = stateCode.message,
+                textAlign = TextAlign.Center,
+                fontFamily = DAL_MU_RI,
+                fontWeight = FontWeight.Light,
+                fontSize = 14.sp,
+                maxLines = 1,
+                color = Color.Black,
+            )
         }
     }
 }
@@ -345,29 +398,63 @@ private fun SlotDetailTab(
 @Preview(showSystemUi = true, device = Devices.WEAR_OS_SMALL_ROUND)
 @Composable
 private fun FirstSlotDetailDialogPreview() {
-    SlotDetailDialog(initTabIndex = 0)
+    SlotDetailDialog(
+        initTabIndex = 0,
+        stateCode = MongStateCode.NORMAL,
+        statusCode = MongStatusCode.NORMAL,
+        isSleep = false,
+    )
 }
 
 @Preview(showSystemUi = true, device = Devices.WEAR_OS_SMALL_ROUND)
 @Composable
 private fun SecondEmptySlotDetailDialogPreview() {
-    SlotDetailDialog(initTabIndex = 1)
+    SlotDetailDialog(
+        initTabIndex = 1,
+        stateCode = MongStateCode.NORMAL,
+        statusCode = MongStatusCode.NORMAL,
+        isSleep = false,
+    )
 }
 
 @Preview(showSystemUi = true, device = Devices.WEAR_OS_SMALL_ROUND)
 @Composable
 private fun SecondFullSlotDetailDialogPreview() {
-    SlotDetailDialog(initTabIndex = 1, healthy = 100.0, strength = 100.0, satiety = 100.0, sleep = 100.0)
+    SlotDetailDialog(
+        initTabIndex = 1,
+        healthy = 100.0,
+        strength = 100.0,
+        satiety = 100.0,
+        sleep = 100.0,
+        stateCode = MongStateCode.NORMAL,
+        statusCode = MongStatusCode.NORMAL,
+        isSleep = false,
+    )
 }
 
 @Preview(showSystemUi = true, device = Devices.WEAR_OS_LARGE_ROUND)
 @Composable
 private fun LargeSecondFullSlotDetailDialogPreview() {
-    SlotDetailDialog(initTabIndex = 1, healthy = 100.0, strength = 100.0, satiety = 100.0, sleep = 100.0)
+    SlotDetailDialog(
+        initTabIndex = 1,
+        healthy = 100.0,
+        strength = 100.0,
+        satiety = 100.0,
+        sleep = 100.0,
+        stateCode = MongStateCode.NORMAL,
+        statusCode = MongStatusCode.NORMAL,
+        isSleep = false,
+    )
 }
 
 @Preview(showSystemUi = true, device = Devices.WEAR_OS_SMALL_ROUND)
 @Composable
 private fun ThirdSlotDetailDialogPreview() {
-    SlotDetailDialog(initTabIndex = 2, payPoint = 100)
+    SlotDetailDialog(
+        initTabIndex = 2,
+        payPoint = 100,
+        stateCode = MongStateCode.NORMAL,
+        statusCode = MongStatusCode.NORMAL,
+        isSleep = false,
+    )
 }

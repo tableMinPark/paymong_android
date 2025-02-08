@@ -1,6 +1,5 @@
 package com.mongs.wear.data.manager.resolver
 
-import androidx.room.Transaction
 import com.mongs.wear.data.global.room.RoomDB
 import com.mongs.wear.data.manager.dto.response.MongBasicDto
 import com.mongs.wear.data.manager.dto.response.MongStateDto
@@ -16,7 +15,6 @@ class ManagementObserveResolver @Inject constructor(
     /**
      * 몽 정보 변경 옵저빙 함수
      */
-    @Transaction
     fun updateMongBasic(mongBasicDto: MongBasicDto) {
 
         roomDB.mongDao().findByMongId(mongId = mongBasicDto.mongId)?.let { mongEntity ->
@@ -31,7 +29,6 @@ class ManagementObserveResolver @Inject constructor(
     /**
      * 몽 상태 변경 옵저빙 함수
      */
-    @Transaction
     fun updateMongState(mongStateDto: MongStateDto) {
 
         roomDB.mongDao().findByMongId(mongId = mongStateDto.mongId)?.let { mongEntity ->
@@ -46,7 +43,6 @@ class ManagementObserveResolver @Inject constructor(
     /**
      * 몽 지수 변경 옵저빙 함수
      */
-    @Transaction
     fun updateMongStatus(mongStatusDto: MongStatusDto) {
 
         roomDB.mongDao().findByMongId(mongId = mongStatusDto.mongId)?.let { mongEntity ->

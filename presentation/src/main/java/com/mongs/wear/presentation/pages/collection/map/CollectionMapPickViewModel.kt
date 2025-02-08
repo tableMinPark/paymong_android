@@ -5,11 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.mongs.wear.domain.collection.exception.GetMapCollectionsException
+import com.mongs.wear.core.exception.usecase.GetMapCollectionsUseCaseException
+import com.mongs.wear.core.exception.usecase.SetBackgroundMapCodeUseCaseException
 import com.mongs.wear.domain.collection.usecase.GetMapCollectionsUseCase
 import com.mongs.wear.domain.collection.vo.MapCollectionVo
-import com.mongs.wear.domain.device.exception.SetBackgroundMapCodeException
 import com.mongs.wear.domain.device.usecase.SetBackgroundMapCodeUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -40,6 +39,9 @@ class CollectionMapPickViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 배경 설정
+     */
     fun setBackground(mapCode: String) {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
 
@@ -63,15 +65,14 @@ class CollectionMapPickViewModel @Inject constructor(
         var detailDialog by mutableStateOf(false)
     }
 
-    override fun exceptionHandler(exception: Throwable) {
-
+    override suspend fun exceptionHandler(exception: Throwable) {
         when(exception) {
-            is GetMapCollectionsException -> {
+            is GetMapCollectionsUseCaseException -> {
                 uiState.loadingBar = false
                 uiState.navCollectionMenu = true
             }
 
-            is SetBackgroundMapCodeException -> {
+            is SetBackgroundMapCodeUseCaseException -> {
                 uiState.loadingBar = false
                 uiState.detailDialog = false
             }

@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.work.WorkManager
-import com.mongs.wear.domain.auth.exception.LogoutException
+import com.mongs.wear.core.exception.usecase.LogoutUseCaseException
 import com.mongs.wear.domain.auth.usecase.LogoutUseCase
 import com.mongs.wear.domain.device.usecase.GetNotificationUseCase
 import com.mongs.wear.domain.device.usecase.SetNotificationUseCase
@@ -80,10 +80,9 @@ class SettingViewModel @Inject constructor(
         var logoutDialog by mutableStateOf(false)
     }
 
-    override fun exceptionHandler(exception: Throwable) {
-
+    override suspend fun exceptionHandler(exception: Throwable) {
         when(exception) {
-            is LogoutException -> {
+            is LogoutUseCaseException -> {
                 uiState.loadingBar = false
                 uiState.logoutDialog = false
             }

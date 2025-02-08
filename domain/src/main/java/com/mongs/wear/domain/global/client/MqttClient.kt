@@ -1,6 +1,12 @@
 package com.mongs.wear.domain.global.client
 
 import com.mongs.wear.core.enums.MatchRoundCode
+import com.mongs.wear.core.exception.data.ConnectMqttException
+import com.mongs.wear.core.exception.data.DisSubMqttException
+import com.mongs.wear.core.exception.data.DisconnectMqttException
+import com.mongs.wear.core.exception.data.PauseMqttException
+import com.mongs.wear.core.exception.data.PubMqttException
+import com.mongs.wear.core.exception.data.SubMqttException
 
 interface MqttClient {
 
@@ -10,78 +16,86 @@ interface MqttClient {
     suspend fun isConnected(): Boolean
 
     /**
-     * 구독 준비 (콜백 클래스 등록 및 MqttClient 객체 생성)
+     * 브로커 연결
+     * @throws ConnectMqttException
      */
     suspend fun connect()
 
     /**
-     * 구독중인 topic 전체 구독 해제
-     * 구독 정보 유지 (mongId, accountId, roomId)
+     * 브로커 일시 중지
+     * @throws PauseMqttException
      */
     suspend fun pauseConnect()
 
     /**
-     * 구독중인 topic 전체 구독 해제
-     * 구독 정보 삭제 (mongId, accountId, roomId)
+     * 브로커 연결 해제
+     * @throws DisconnectMqttException
      */
     suspend fun disConnect()
 
     /**
-     * Manager 구독
+     * 몽 매니저 구독
+     * @throws SubMqttException
      */
     suspend fun subManager(mongId :Long)
 
     /**
-     * Manager 구독 해제
-     * 구독 정보 삭제 (mongId)
+     * 몽 매니저 구독 해제
+     * @throws DisSubMqttException
      */
     suspend fun disSubManager()
 
     /**
-     * SearchMatch 구독
-     */
-    suspend fun subSearchMatch(deviceId: String)
-
-    /**
-     * SearchMatch 구독 해제
-     * 구독 정보 삭제 (deviceId)
-     */
-    suspend fun disSubSearchMatch()
-
-    /**
-     * BattleMatch 구독
-     */
-    suspend fun subBattleMatch(roomId: Long)
-
-    /**
-     * BattleMatch 입장
-     */
-    suspend fun pubBattleMatchEnter(roomId: Long, playerId: String)
-
-    /**
-     * BattleMatch 선택
-     */
-    suspend fun pubBattleMatchPick(roomId: Long, playerId: String, targetPlayerId: String, pickCode: MatchRoundCode)
-
-    /**
-     * BattleMatch 퇴장
-     */
-    suspend fun pubBattleMatchExit(roomId: Long, playerId: String)
-
-    /**
-     * BattleMatch 구독 해제
-     * 구독 정보 삭제 (roomId)
-     */
-    suspend fun disSubBattleMatch()
-
-    /**
-     * Player 구독
+     * 플레이어 구독
+     * @throws SubMqttException
      */
     suspend fun subPlayer(accountId: Long)
 
     /**
-     * Player 구독 해제
-     * 구독 정보 삭제 (accountId)
+     * 플레이어 구독 해제
+     * @throws DisSubMqttException
      */
     suspend fun disSubPlayer()
+
+    /**
+     * 배틀 매칭 대기열 구독
+     * @throws SubMqttException
+     */
+    suspend fun subSearchMatch(deviceId: String)
+
+    /**
+     * 배틀 매칭 대기열 구독 해제
+     * @throws DisSubMqttException
+     */
+    suspend fun disSubSearchMatch()
+
+    /**
+     * 배틀 매치 구독
+     * @throws SubMqttException
+     */
+    suspend fun subBattleMatch(roomId: Long)
+
+    /**
+     * 배틀 매치 구독 해제
+     * @throws DisSubMqttException
+     */
+    suspend fun disSubBattleMatch()
+
+    /**
+     * 배틀 입장 메시지 전송
+     * @throws PubMqttException
+     */
+    suspend fun pubBattleMatchEnter(roomId: Long, playerId: String)
+
+    /**
+     * 배틀 선택 메시지 전송
+     * @throws PubMqttException
+     */
+    suspend fun pubBattleMatchPick(roomId: Long, playerId: String, targetPlayerId: String, pickCode: MatchRoundCode)
+
+    /**
+     * 배틀 퇴장 메시지 전송
+     * @throws PubMqttException
+     */
+    suspend fun pubBattleMatchExit(roomId: Long, playerId: String)
 }

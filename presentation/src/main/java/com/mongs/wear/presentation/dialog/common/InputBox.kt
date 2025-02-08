@@ -18,6 +18,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Icon
@@ -82,5 +84,14 @@ fun InputBox(
                 }
             }
         }
+    )
+}
+
+@Preview(device = Devices.WEAR_OS_SMALL_ROUND)
+@Composable
+private fun OkDialogPreview() {
+    InputBox(
+        text = "입력 텍스트",
+        changeInput = {},
     )
 }

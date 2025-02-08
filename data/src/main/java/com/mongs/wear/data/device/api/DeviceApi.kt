@@ -12,9 +12,15 @@ import retrofit2.http.POST
 
 interface DeviceApi {
 
+    /**
+     * 걸음 수 환전
+     */
     @POST("user/step/exchange/walking")
     suspend fun exchangeWalkingCount(@Body exchangeWalkingCountRequestDto: ExchangeWalkingCountRequestDto) : Response<ResponseDto<ExchangeWalkingCountResponseDto>>
 
+    /**
+     * 걸음 수 갱신
+     */
     @PATCH("user/step/walking")
     suspend fun updateWalkingCount(@Body updateWalkingCountRequestDto: UpdateWalkingCountRequestDto) : Response<ResponseDto<UpdateWalkingCountResponseDto>>
 }

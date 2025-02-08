@@ -4,19 +4,22 @@ import com.mongs.wear.data.global.utils.HttpUtil
 import com.mongs.wear.data.user.api.StoreApi
 import com.mongs.wear.data.user.dto.request.ConsumeProductOrderRequestDto
 import com.mongs.wear.data.user.dto.request.GetConsumedOrderIdsRequestDto
-import com.mongs.wear.data.user.exception.ConsumeProductOrderException
-import com.mongs.wear.data.user.exception.GetConsumedOrderIdsException
-import com.mongs.wear.data.user.exception.GetProductIdsException
+import com.mongs.wear.core.exception.data.ConsumeProductOrderException
+import com.mongs.wear.core.exception.data.GetConsumedOrderIdsException
+import com.mongs.wear.core.exception.data.GetProductIdsException
 import com.mongs.wear.domain.store.repository.StoreRepository
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class StoreRepositoryImpl @Inject constructor(
-    private val httpUtil: HttpUtil,
     private val storeApi: StoreApi,
 ) : StoreRepository {
 
+    /**
+     * 인앱 상품 ID 목록 조회
+     * @throws GetProductIdsException
+     */
     override suspend fun getProductIds(): List<String> {
 
         val response = storeApi.getProducts()
@@ -29,9 +32,13 @@ class StoreRepositoryImpl @Inject constructor(
             }
         }
 
-        throw GetProductIdsException(result = httpUtil.getErrorResult(response.errorBody()))
+        throw GetProductIdsException(result = HttpUtil.getErrorResult(response.errorBody()))
     }
 
+    /**
+     * 인앱 상품 소비 주문 ID 목록 조회
+     * @throws GetConsumedOrderIdsException
+     */
     override suspend fun getConsumedOrderIds(orderIds: List<String>): List<String> {
 
         val response = storeApi.getConsumedOrderIds(GetConsumedOrderIdsRequestDto(orderIds))
@@ -44,9 +51,13 @@ class StoreRepositoryImpl @Inject constructor(
             }
         }
 
-        throw GetConsumedOrderIdsException(result = httpUtil.getErrorResult(response.errorBody()))
+        throw GetConsumedOrderIdsException(result = HttpUtil.getErrorResult(response.errorBody()))
     }
 
+    /**
+     * 주문 소비
+     * @throws ConsumeProductOrderException
+     */
     override suspend fun consumeProductOrder(productId: String, orderId: String, purchaseToken: String) {
 
         val response = storeApi.consumeProductOrder(
@@ -58,7 +69,7 @@ class StoreRepositoryImpl @Inject constructor(
         )
 
         if (!response.isSuccessful) {
-            throw ConsumeProductOrderException(result = httpUtil.getErrorResult(response.errorBody()))
+            throw ConsumeProductOrderException(result = HttpUtil.getErrorResult(response.errorBody()))
         }
     }
 }

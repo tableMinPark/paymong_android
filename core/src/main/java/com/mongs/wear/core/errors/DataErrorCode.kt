@@ -10,11 +10,13 @@ enum class DataErrorCode(
     DATA_GLOBAL_MQTT_PUB("MQTT 전송 실패", false),
     DATA_GLOBAL_MQTT_SUB("MQTT 구독 실패", false),
     DATA_GLOBAL_MQTT_PAUSE("MQTT 구독 일시 중지 실패", false),
-    DATA_GLOBAL_MQTT_RESUME("MQTT 구독 복구 실패", false),
     DATA_GLOBAL_MQTT_DIS_SUB("MQTT 구독 해제 실패", false),
     DATA_GLOBAL_MQTT_DISCONNECT("MQTT 연결 해제 실패", false),
 
-    // ACTIVITY
+    // ACTIVITY-BATTLE
+    DATA_ACTIVITY_BATTLE_GET_BATTLE("배틀 정보 조회 실패", false),
+    DATA_ACTIVITY_BATTLE_GET_BATTLE_REWARD("배틀 보상 정보 조회 실패", false),
+    DATA_ACTIVITY_BATTLE_UPDATE_OVER_MATCH("배틀 매치 결과 조회 실패", false),
     DATA_ACTIVITY_BATTLE_CREATE_MATCH("배틀 매칭 등록 실패", false),
     DATA_ACTIVITY_BATTLE_DELETE_MATCH("배틀 매칭 삭제 실패", false),
     DATA_ACTIVITY_BATTLE_ENTER_MATCH("배틀 매치 입장 실패", false),
@@ -22,8 +24,8 @@ enum class DataErrorCode(
     DATA_ACTIVITY_BATTLE_NOT_EXISTS_MATCH("배틀 매칭이 존재하지 않음", false),
     DATA_ACTIVITY_BATTLE_NOT_EXISTS_MATCH_PLAYER("배틀 플레이어가 존재하지 않음", false),
     DATA_ACTIVITY_BATTLE_PICK_MATCH("배틀 매치 선택 실패", false),
-    DATA_ACTIVITY_BATTLE_UPDATE_OVER_MATCH("배틀 매치 결과 조회 실패", false),
-    DATA_ACTIVITY_GET_BATTLE("배틀 정보 조회 실패", false),
+
+    // ACTIVITY-TRAINING
     DATA_ACTIVITY_GET_TRAINING_RUNNER("훈련 러너 정보 조회 실패", false),
     DATA_ACTIVITY_TRAINING_RUNNER("훈련 러너 완료 실패", false),
 
@@ -47,18 +49,22 @@ enum class DataErrorCode(
     DATA_MANAGER_MANAGEMENT_SLEEP_MONG("몽 수면/기상에 실패했습니다.", false),
     DATA_MANAGER_MANAGEMENT_STROKE_MONG("쓰다듬을 수 없습니다.", false),
 
-    // USER
+    // USER-DEVICE
+    DATA_USER_DEVICE_EXCHANGE_WALKING("걸음 수 환전 실패했습니다.", false),
+    // USER-COLLECTION
     DATA_USER_COLLECTION_GET_MAP_COLLECTIONS("컬렉션 맵 조회 실패했습니다.", false),
     DATA_USER_COLLECTION_GET_MONG_COLLECTIONS("컬렉션 맵 조회 실패했습니다.", false),
+    // USER-FEEDBACK
     DATA_USER_FEEDBACK_CREATE_FEEDBACK("오류 신고 실패했습니다.", false),
+    // USER-PLAYER
     DATA_USER_PLAYER_CREATE_PLAYER("플레이어 정보 등록 실패했습니다.", false),
     DATA_USER_PLAYER_GET_PLAYER("플레이어 정보 조회 실패했습니다.", false),
     DATA_USER_PLAYER_BUY_SLOT("슬롯 구매 실패했습니다.", false),
     DATA_USER_PLAYER_EXCHANGE_STAR_POINT("스타포인트 환전 실패했습니다.", false),
+    // USER-STORE
     DATA_USER_STORE_GET_PRODUCT_IDS("상품 목록 조회에 실패했습니다.", false),
     DATA_USER_STORE_CONSUME_PRODUCT_ORDER("상품 소비에 실패했습니다.", false),
     DATA_USER_STORE_CONSUMED_ORDER_IDS("상품 소비 ID 목록 조회에 실패했습니다.", false),
-    DATA_USER_DEVICE_EXCHANGE_WALKING("걸음 수 환전 실패했습니다.", false),
     ;
 
     override fun getMessage(): String {

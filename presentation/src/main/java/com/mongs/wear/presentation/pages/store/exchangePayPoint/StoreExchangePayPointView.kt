@@ -1,8 +1,6 @@
 package com.mongs.wear.presentation.pages.store.exchangePayPoint
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -37,16 +35,14 @@ import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.component.common.background.StoreNestedBackground
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
-import com.mongs.wear.presentation.component.common.button.LeftButton
-import com.mongs.wear.presentation.component.common.button.RightButton
+import com.mongs.wear.presentation.component.common.button.SelectButton
 import com.mongs.wear.presentation.component.common.button.YellowButton
 import com.mongs.wear.presentation.component.common.textbox.PayPoint
 import com.mongs.wear.presentation.dialog.common.ConfirmAndCancelDialog
+import com.mongs.wear.presentation.global.constValue.StoreConst
 import com.mongs.wear.presentation.pages.store.exchangePayPoint.StoreExchangePayPointViewModel.UiState
 import kotlin.math.max
 import kotlin.math.min
-
-private val STAR_POINT_PER = 1000
 
 @Composable
 fun StoreExchangePayPointView(
@@ -58,7 +54,7 @@ fun StoreExchangePayPointView(
     val ratio = remember { mutableIntStateOf(0) }
     val totalStarPoint = storeExchangePayPointViewModel.starPoint.observeAsState(0)
     val starPoint = remember { derivedStateOf { totalStarPoint.value - ratio.intValue } }
-    val chargePayPoint = remember { derivedStateOf { STAR_POINT_PER * ratio.intValue } }
+    val chargePayPoint = remember { derivedStateOf { StoreConst.STAR_POINT_PER * ratio.intValue } }
 
     Box {
         StoreNestedBackground()
@@ -81,12 +77,14 @@ fun StoreExchangePayPointView(
             )
         } else {
             StoreExchangePayPointContent(
+                ratio = ratio.intValue,
+                decreaseRatio = { ratio.intValue = max(ratio.intValue - 1, 0) },
+                increaseRatio = { ratio.intValue = min(ratio.intValue + 1, totalStarPoint.value) },
                 mongVo = mongVo.value,
                 chargePayPoint = chargePayPoint.value,
                 starPoint = starPoint.value,
+                totalStarPoint = totalStarPoint.value,
                 uiState = storeExchangePayPointViewModel.uiState,
-                increaseRatio = { ratio.intValue = min(ratio.intValue + 1, totalStarPoint.value) },
-                decreaseRatio = { ratio.intValue = max(ratio.intValue - 1, 0) },
                 modifier = Modifier.zIndex(1f)
             )
         }
@@ -95,12 +93,14 @@ fun StoreExchangePayPointView(
 
 @Composable
 private fun StoreExchangePayPointContent(
+    ratio: Int,
+    decreaseRatio: () -> Unit,
+    increaseRatio: () -> Unit,
     mongVo: MongVo?,
     chargePayPoint: Int,
     starPoint: Int,
+    totalStarPoint: Int,
     uiState: UiState,
-    increaseRatio: () -> Unit,
-    decreaseRatio: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
     Box(
@@ -115,6 +115,7 @@ private fun StoreExchangePayPointContent(
 
             Row(
                 horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(0.2f)
@@ -124,78 +125,52 @@ private fun StoreExchangePayPointContent(
 
             Row(
                 horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.55f)
+                    .weight(0.25f)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = {},
-                        ),
+                Image(
+                    painter = painterResource(R.drawable.starpoint_logo),
+                    contentDescription = null,
+                    modifier = Modifier.size(20.dp)
+                )
+
+                Spacer(modifier = Modifier.width(10.dp))
+
+                Text(
+                    text = "X $starPoint",
+                    textAlign = TextAlign.Center,
+                    fontFamily = DAL_MU_RI,
+                    fontWeight = FontWeight.Light,
+                    fontSize = 16.sp,
+                    color = MongsWhite,
+                    maxLines = 1,
+                )
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.Top,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(0.3f)
+            ) {
+                SelectButton(
+                    leftBtnDisabled = ratio == 0,
+                    rightBtnDisabled = ratio == totalStarPoint,
+                    leftBtnClick = decreaseRatio,
+                    rightBtnClick = increaseRatio,
                 ) {
-                    Spacer(modifier = Modifier.height(10.dp))
-
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(0.3f)
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        Image(
-                            painter = painterResource(R.drawable.starpoint_logo),
-                            contentDescription = null,
-                            modifier = Modifier.size(26.dp)
-                        )
-
-                        Spacer(modifier = Modifier.width(10.dp))
-
-                        Text(
-                            text = "X",
-                            textAlign = TextAlign.Center,
-                            fontFamily = DAL_MU_RI,
-                            fontWeight = FontWeight.Light,
-                            fontSize = 15.sp,
-                            color = MongsWhite,
-                            maxLines = 1,
-                        )
-
-                        Spacer(modifier = Modifier.width(13.dp))
-
-                        Text(
-                            text = "$starPoint",
-                            textAlign = TextAlign.Center,
-                            fontFamily = DAL_MU_RI,
-                            fontWeight = FontWeight.Light,
-                            fontSize = 17.sp,
-                            color = MongsWhite,
-                            maxLines = 1,
-                        )
-                    }
-
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(0.7f)
-                    ) {
-                        LeftButton(onClick = decreaseRatio)
-
-                        Spacer(modifier = Modifier.width(30.dp))
-
                         Image(
                             painter = painterResource(R.drawable.pointlogo),
                             contentDescription = null,
-                            modifier = Modifier
-                                .height(24.dp)
-                                .width(24.dp),
+                            modifier = Modifier.size(26.dp),
                             contentScale = ContentScale.FillBounds,
                         )
 
@@ -210,13 +185,7 @@ private fun StoreExchangePayPointContent(
                             color = MongsWhite,
                             maxLines = 1,
                         )
-
-                        Spacer(modifier = Modifier.width(30.dp))
-
-                        RightButton(onClick = increaseRatio)
                     }
-
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
 

@@ -66,15 +66,6 @@ fun HelpAddStarPointContent() {
                 .fillMaxWidth()
                 .weight(0.25f)
         ) {
-            Image(
-                painter = painterResource(R.drawable.point_store),
-                contentDescription = null,
-                modifier = Modifier
-                    .height(20.dp)
-                    .width(15.dp),
-                contentScale = ContentScale.FillBounds,
-            )
-            Spacer(modifier = Modifier.width(5.dp))
             Text(
                 text = "스타 포인트 충전",
                 textAlign = TextAlign.Center,
@@ -94,7 +85,7 @@ fun HelpAddStarPointContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "을 통해 획득 가능!",
+                text = "으로 획득 가능 해요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

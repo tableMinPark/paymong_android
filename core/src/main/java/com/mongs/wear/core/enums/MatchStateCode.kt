@@ -3,7 +3,6 @@ package com.mongs.wear.core.enums
 enum class MatchStateCode(
     val message: String
 ) {
-
     /**
      * 배틀 상태
      */

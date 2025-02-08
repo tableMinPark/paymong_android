@@ -1,9 +1,11 @@
 package com.mongs.wear.domain.management.usecase
 
-import com.mongs.wear.core.exception.ErrorException
+import com.mongs.wear.core.exception.data.DisSubMqttException
+import com.mongs.wear.core.exception.data.SubMqttException
+import com.mongs.wear.core.exception.global.DataException
+import com.mongs.wear.core.exception.usecase.SetCurrentSlotUseCaseException
+import com.mongs.wear.core.usecase.BaseParamUseCase
 import com.mongs.wear.domain.global.client.MqttClient
-import com.mongs.wear.domain.global.usecase.BaseParamUseCase
-import com.mongs.wear.domain.management.exception.SetCurrentSlotException
 import com.mongs.wear.domain.management.repository.ManagementRepository
 import com.mongs.wear.domain.management.repository.SlotRepository
 import kotlinx.coroutines.Dispatchers
@@ -16,8 +18,12 @@ class SetCurrentSlotUseCase @Inject constructor(
     private val slotRepository: SlotRepository,
 ) : BaseParamUseCase<SetCurrentSlotUseCase.Param, Unit>() {
 
+    /**
+     * 현재 몽 설정 UseCase
+     * @throws DisSubMqttException
+     * @throws SubMqttException
+     */
     override suspend fun execute(param: Param) {
-
         withContext(Dispatchers.IO) {
             mqttClient.disSubManager()
             managementRepository.updateMong(mongId = param.mongId)
@@ -30,11 +36,15 @@ class SetCurrentSlotUseCase @Inject constructor(
         val mongId: Long,
     )
 
-    override fun handleException(exception: ErrorException) {
+    override fun handleException(exception: DataException) {
         super.handleException(exception)
 
-        when(exception.code) {
-            else -> throw SetCurrentSlotException()
+        when(exception) {
+            is DisSubMqttException -> throw SetCurrentSlotUseCaseException()
+
+            is SubMqttException -> throw SetCurrentSlotUseCaseException()
+
+            else -> throw SetCurrentSlotUseCaseException()
         }
     }
 }

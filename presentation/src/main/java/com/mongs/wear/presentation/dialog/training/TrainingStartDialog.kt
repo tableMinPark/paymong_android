@@ -23,6 +23,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Devices
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
@@ -142,4 +144,15 @@ fun TrainingStartDialog(
             Spacer(modifier = Modifier.height(25.dp))
         }
     }
+}
+
+@Preview(showSystemUi = true, device = Devices.WEAR_OS_SMALL_ROUND)
+@Composable
+private fun PreView() {
+    TrainingStartDialog(
+        firstText = "",
+        secondText = "",
+        rewardPayPoint = 5,
+        trainingStart = {},
+    )
 }

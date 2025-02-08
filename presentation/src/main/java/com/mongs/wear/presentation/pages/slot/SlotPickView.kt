@@ -69,8 +69,11 @@ fun SlotPickView(
             if (slotPickViewModel.uiState.mongCreateDialog) {
                 SlotPickBackground()
                 SlotAddDialog(
-                    add = { name, sleepStart, sleepEnd ->
+                    addBtnClick = { name, sleepStart, sleepEnd ->
                         slotPickViewModel.createMong(name, sleepStart, sleepEnd)
+                    },
+                    closeBtnClick = {
+                        slotPickViewModel.uiState.mongCreateDialog = false
                     }
                 )
             } else if (slotPickViewModel.uiState.mongDeleteDialog) {
@@ -125,7 +128,9 @@ fun SlotPickView(
                     SlotDetailDialog(
                         onClick = { slotPickViewModel.uiState.mongDetailDialog = false },
                         mongId = mongVo.mongId,
-                        name = mongVo.mongName,
+                        statusCode = mongVo.statusCode,
+                        stateCode = mongVo.stateCode,
+                        isSleep = mongVo.isSleeping,
                         weight = mongVo.weight,
                         healthy = mongVo.healthy,
                         satiety = mongVo.satiety,
@@ -154,8 +159,10 @@ fun SlotPickView(
                 )
 
                 SelectButton(
-                    leftButtonClick = { mongVoListIndex.intValue = max(0, mongVoListIndex.intValue - 1) },
-                    rightButtonClick = { mongVoListIndex.intValue = min(mongVoListIndex.intValue + 1, slotVoList.value.size - 1) },
+                    leftBtnDisabled = mongVoListIndex.intValue == 0,
+                    rightBtnDisabled = mongVoListIndex.intValue == slotVoList.value.size - 1,
+                    leftBtnClick = { mongVoListIndex.intValue = max(0, mongVoListIndex.intValue - 1) },
+                    rightBtnClick = { mongVoListIndex.intValue = min(mongVoListIndex.intValue + 1, slotVoList.value.size - 1) },
                     modifier = Modifier.zIndex(3f)
                 )
             }

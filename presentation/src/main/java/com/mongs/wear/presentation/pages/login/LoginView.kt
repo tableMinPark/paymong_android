@@ -35,11 +35,11 @@ import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.assets.NavItem
-import com.mongs.wear.presentation.component.common.Logo
 import com.mongs.wear.presentation.component.common.background.LoginBackground
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
 import com.mongs.wear.presentation.component.common.button.BlueButton
 import com.mongs.wear.presentation.component.common.button.GoogleSignInButton
+import com.mongs.wear.presentation.component.common.logo.Logo
 import com.mongs.wear.presentation.pages.login.LoginViewModel.UiState
 
 @Composable

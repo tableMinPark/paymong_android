@@ -1,23 +1,21 @@
 package com.mongs.wear.domain.auth.usecase
 
-import android.util.Log
-import com.mongs.wear.core.errors.DataErrorCode
-import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.auth.exception.CreateDeviceException
-import com.mongs.wear.domain.auth.exception.LoginException
-import com.mongs.wear.domain.auth.exception.NeedJoinException
-import com.mongs.wear.domain.auth.exception.NeedUpdateAppException
-import com.mongs.wear.domain.auth.exception.NotExistsEmailException
-import com.mongs.wear.domain.auth.exception.NotExistsGoogleAccountIdException
+import com.mongs.wear.core.exception.data.CreateDeviceException
+import com.mongs.wear.core.exception.data.LoginException
+import com.mongs.wear.core.exception.data.NeedJoinException
+import com.mongs.wear.core.exception.data.NeedUpdateAppException
+import com.mongs.wear.core.exception.global.DataException
+import com.mongs.wear.core.exception.usecase.CreateDeviceUseCaseException
+import com.mongs.wear.core.exception.usecase.LoginUseCaseException
+import com.mongs.wear.core.exception.usecase.NeedJoinUseCaseException
+import com.mongs.wear.core.exception.usecase.NeedUpdateAppUseCaseException
 import com.mongs.wear.domain.auth.repository.AuthRepository
 import com.mongs.wear.domain.device.repository.DeviceRepository
 import com.mongs.wear.domain.global.client.MqttClient
-import com.mongs.wear.domain.global.usecase.BaseParamUseCase
+import com.mongs.wear.core.usecase.BaseParamUseCase
 import com.mongs.wear.domain.management.repository.ManagementRepository
 import com.mongs.wear.domain.player.repository.PlayerRepository
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -31,20 +29,14 @@ class LoginUseCase @Inject constructor(
 
     /**
      * 로그인 UseCase
-     * 1. 기기 등록
-     * 2. 로그인
-     * 3. 브로커 연결
-     * 4. 플레이어 정보 등록
-     * 5. 네트워크 플래그 true
+     * @throws CreateDeviceException 기기 등록 실패
+     * @throws NeedUpdateAppUseCaseException 앱 업데이트 필요
+     * @throws NeedJoinUseCaseException 회원 가입 필요
+     * @throws LoginException 로그인 실패
      */
     override suspend fun execute(param: Param) {
 
         withContext(Dispatchers.IO) {
-
-            if (param.email.isNullOrEmpty()) throw NotExistsEmailException()
-
-            if (param.googleAccountId.isNullOrEmpty()) throw NotExistsGoogleAccountIdException()
-
             // 기기 등록
             authRepository.createDevice(
                 deviceId = deviceRepository.getDeviceId(),
@@ -69,32 +61,33 @@ class LoginUseCase @Inject constructor(
                 // 몽 정보 전체 동기화
                 managementRepository.updateMongs()
             } else {
-                throw LoginException()
+                throw LoginUseCaseException()
             }
         }
     }
 
     data class Param(
 
-        val googleAccountId: String?,
+        val googleAccountId: String,
 
-        val email: String?,
+        val email: String,
 
         val fcmToken: String,
     )
 
-    override fun handleException(exception: ErrorException) {
+    override fun handleException(exception: DataException) {
         super.handleException(exception)
 
-        when (exception.code) {
+        when (exception) {
+            is NeedUpdateAppException -> throw NeedUpdateAppUseCaseException()
 
-            DataErrorCode.DATA_AUTH_NEED_JOIN -> throw NeedJoinException()
+            is NeedJoinException -> throw NeedJoinUseCaseException()
 
-            DataErrorCode.DATA_AUTH_NEED_UPDATE_APP -> throw NeedUpdateAppException()
+            is CreateDeviceException -> throw CreateDeviceUseCaseException()
 
-            DataErrorCode.DATA_AUTH_CREATE_DEVICE -> throw CreateDeviceException()
+            is LoginException -> throw LoginUseCaseException()
 
-            else -> throw LoginException()
+            else -> throw LoginUseCaseException()
         }
     }
 }

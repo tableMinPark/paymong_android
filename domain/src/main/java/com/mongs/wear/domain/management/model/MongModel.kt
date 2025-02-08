@@ -41,7 +41,6 @@ data class MongModel(
 
     val graduateCheck: Boolean,
 ) {
-
     fun toMongVo() = MongVo(
         mongId = this.mongId,
         mongName = this.mongName,

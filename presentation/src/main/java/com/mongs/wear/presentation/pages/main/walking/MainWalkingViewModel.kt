@@ -5,13 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import com.mongs.wear.core.exception.usecase.ExchangeWalkingCountUseCaseException
+import com.mongs.wear.core.exception.usecase.GetCurrentSlotUseCaseException
+import com.mongs.wear.core.exception.usecase.GetStepsUseCaseException
 import com.mongs.wear.core.utils.TimeUtil
-import com.mongs.wear.domain.device.exception.ExchangeWalkingCountException
 import com.mongs.wear.domain.device.usecase.ExchangeWalkingCountUseCase
-import com.mongs.wear.domain.management.exception.GetCurrentSlotException
-import com.mongs.wear.domain.management.usecase.GetCurrentSlotUseCase
-import com.mongs.wear.domain.device.exception.GetStepsException
 import com.mongs.wear.domain.device.usecase.GetStepsUseCase
+import com.mongs.wear.domain.management.usecase.GetCurrentSlotUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -51,7 +51,10 @@ class MainWalkingViewModel @Inject constructor(
         }
     }
 
-    fun chargePayPoint(mongId: Long, walkingCount: Int) {
+    /**
+     * 걸음 수 환전
+     */
+    fun exchangeWalkingCount(mongId: Long, walkingCount: Int) {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
 
             uiState.loadingBar = true
@@ -79,18 +82,17 @@ class MainWalkingViewModel @Inject constructor(
         var chargePayPointDialog by mutableStateOf(false)
     }
 
-    override fun exceptionHandler(exception: Throwable) {
-
+    override suspend fun exceptionHandler(exception: Throwable) {
         when(exception) {
-            is GetCurrentSlotException -> {
+            is GetCurrentSlotUseCaseException -> {
                 uiState.loadingBar = false
             }
 
-            is GetStepsException -> {
+            is GetStepsUseCaseException -> {
                 uiState.loadingBar = false
             }
 
-            is ExchangeWalkingCountException -> {
+            is ExchangeWalkingCountUseCaseException -> {
                 uiState.loadingBar = false
                 uiState.chargePayPointDialog = false
             }

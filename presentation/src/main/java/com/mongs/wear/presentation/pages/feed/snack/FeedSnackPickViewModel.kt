@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import com.mongs.wear.domain.management.exception.FoodCodesEmptyException
+import com.mongs.wear.core.exception.usecase.FoodCodesEmptyUseCaseException
 import com.mongs.wear.domain.management.usecase.FeedMongUseCase
 import com.mongs.wear.domain.management.usecase.GetCurrentSlotUseCase
 import com.mongs.wear.domain.management.usecase.GetSnackCodesUseCase
@@ -14,7 +14,6 @@ import com.mongs.wear.domain.management.vo.FeedItemVo
 import com.mongs.wear.domain.management.vo.MongVo
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -49,6 +48,9 @@ class FeedSnackPickViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 간식 구매
+     */
     fun buySnack(foodTypeCode: String) {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
 
@@ -75,20 +77,16 @@ class FeedSnackPickViewModel @Inject constructor(
         var detailDialog by mutableStateOf(false)
     }
 
-    override fun exceptionHandler(exception: Throwable) {
+    override suspend fun exceptionHandler(exception: Throwable) {
+        when (exception) {
+            is FoodCodesEmptyUseCaseException -> {
+                uiState.navFeedMenuEvent.emit(System.currentTimeMillis())
+            }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            when (exception) {
-
-                is FoodCodesEmptyException -> {
-                    uiState.navFeedMenuEvent.emit(System.currentTimeMillis())
-                }
-
-                else -> {
-                    uiState.loadingBar = false
-                    uiState.detailDialog = false
-                    uiState.buyDialog = false
-                }
+            else -> {
+                uiState.loadingBar = false
+                uiState.detailDialog = false
+                uiState.buyDialog = false
             }
         }
     }

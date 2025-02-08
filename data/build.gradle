@@ -58,11 +58,11 @@ dependencies {
     implementation 'androidx.room:room-ktx:2.6.1'
     ksp "androidx.room:room-compiler:2.6.1"
 
-    // data source
+    // data store
     implementation "androidx.datastore:datastore-preferences:1.1.2"
     implementation "androidx.datastore:datastore-preferences-core:1.1.2"
 
-    // MQTT
+    // mqtt
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'com.github.hannesa2:paho.mqtt.android:4.2.3'
 }

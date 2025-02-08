@@ -137,7 +137,7 @@ fun HelpFeedMongContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "회복 가능!",
+                text = "증가해요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

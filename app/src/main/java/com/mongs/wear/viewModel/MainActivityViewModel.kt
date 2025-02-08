@@ -89,6 +89,9 @@ class MainActivityViewModel @Inject constructor(
         uiState.loadingBar = false
     }
 
+    /**
+     * 브로커 일시 중지
+     */
     fun pauseMqtt() = viewModelScopeWithHandler.launch(Dispatchers.IO) {
         pauseConnectMqttUseCase()
     }
@@ -104,10 +107,8 @@ class MainActivityViewModel @Inject constructor(
 
     class UiState : BaseUiState()
 
-    override fun exceptionHandler(exception: Throwable) {
-
+    override suspend fun exceptionHandler(exception: Throwable) {
         when(exception) {
-
             else -> uiState.loadingBar = false
         }
     }

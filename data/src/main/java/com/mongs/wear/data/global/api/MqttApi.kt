@@ -30,8 +30,14 @@ class MqttApi @Inject constructor(
         private const val TAG = "MqttClientApi"
     }
 
+    /**
+     * Mqtt 브로커 연결 여부
+     */
     fun isConnected(): Boolean = mqttAndroidClient.isConnected
 
+    /**
+     * Mqtt 브로커 연결
+     */
     suspend fun connect() {
         withContext(Dispatchers.IO) {
             val options = MqttConnectOptions().apply {
@@ -52,6 +58,9 @@ class MqttApi @Inject constructor(
         }
     }
 
+    /**
+     * Mqtt 브로커 연결 해제
+     */
     suspend fun disConnect() {
         withContext(Dispatchers.IO) {
             if (mqttAndroidClient.isConnected) {
@@ -61,6 +70,9 @@ class MqttApi @Inject constructor(
         }
     }
 
+    /**
+     * Mqtt 브로커 구독
+     */
     suspend fun subscribe(topic: String) {
         withContext(Dispatchers.IO) {
             if (mqttAndroidClient.isConnected) {
@@ -72,6 +84,9 @@ class MqttApi @Inject constructor(
         }
     }
 
+    /**
+     * Mqtt 브로커 구독 해제
+     */
     suspend fun disSubscribe(topic: String) {
         withContext(Dispatchers.IO) {
             if (mqttAndroidClient.isConnected) {
@@ -83,6 +98,9 @@ class MqttApi @Inject constructor(
         }
     }
 
+    /**
+     * Mqtt 브로커 전송
+     */
     suspend fun <T> produce(topic: String, requestDto: T) {
         withContext(Dispatchers.IO) {
             if (mqttAndroidClient.isConnected) {

@@ -66,7 +66,7 @@ fun HelpWarningPointContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "몽과 동시에 소멸!",
+                text = "몽과 함께 사라져요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -111,7 +111,7 @@ fun HelpWarningPointContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "회원 탈퇴 시 소멸!",
+                text = "회원 탈퇴 시 사라져요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

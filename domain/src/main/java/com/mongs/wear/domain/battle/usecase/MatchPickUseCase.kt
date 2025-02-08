@@ -1,12 +1,13 @@
 package com.mongs.wear.domain.battle.usecase
 
 import com.mongs.wear.core.enums.MatchRoundCode
-import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.battle.exception.NotExistsPlayerIdException
-import com.mongs.wear.domain.battle.exception.NotExistsTargetPlayerIdException
-import com.mongs.wear.domain.battle.exception.MatchPickException
+import com.mongs.wear.core.exception.data.PickMatchException
+import com.mongs.wear.core.exception.global.DataException
+import com.mongs.wear.core.exception.usecase.MatchPickUseCaseException
+import com.mongs.wear.core.exception.usecase.NotExistsPlayerIdUseCaseException
+import com.mongs.wear.core.exception.usecase.NotExistsTargetPlayerIdUseCaseException
 import com.mongs.wear.domain.battle.repository.BattleRepository
-import com.mongs.wear.domain.global.usecase.BaseParamUseCase
+import com.mongs.wear.core.usecase.BaseParamUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -15,13 +16,16 @@ class MatchPickUseCase @Inject constructor(
     private val battleRepository: BattleRepository,
 ) : BaseParamUseCase<MatchPickUseCase.Param, Unit>() {
 
+    /**
+     * 배틀 선택 UseCase
+     * @throws PickMatchException
+     */
     override suspend fun execute(param: Param) {
-
         withContext(Dispatchers.IO) {
 
-            if (param.playerId.isNullOrEmpty()) throw NotExistsPlayerIdException()
+            if (param.playerId.isNullOrEmpty()) throw NotExistsPlayerIdUseCaseException()
 
-            if (param.targetPlayerId.isNullOrEmpty()) throw NotExistsTargetPlayerIdException()
+            if (param.targetPlayerId.isNullOrEmpty()) throw NotExistsTargetPlayerIdUseCaseException()
 
             when (param.pickCode) {
                 MatchRoundCode.MATCH_PICK_ATTACK ->
@@ -49,11 +53,13 @@ class MatchPickUseCase @Inject constructor(
         val pickCode: MatchRoundCode,
     )
 
-    override fun handleException(exception: ErrorException) {
+    override fun handleException(exception: DataException) {
         super.handleException(exception)
 
-        when(exception.code) {
-            else -> throw MatchPickException()
+        when(exception) {
+            is PickMatchException -> throw MatchPickUseCaseException()
+
+            else -> throw MatchPickUseCaseException()
         }
     }
 }

@@ -7,8 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.mongs.wear.core.enums.MatchRoundCode
-import com.mongs.wear.domain.battle.exception.NotExistsPlayerIdException
-import com.mongs.wear.domain.battle.exception.NotExistsTargetPlayerIdException
+import com.mongs.wear.core.exception.usecase.NotExistsPlayerIdUseCaseException
+import com.mongs.wear.core.exception.usecase.NotExistsTargetPlayerIdUseCaseException
 import com.mongs.wear.domain.battle.usecase.GetBattlePayPointUseCase
 import com.mongs.wear.domain.battle.usecase.GetMatchUseCase
 import com.mongs.wear.domain.battle.usecase.GetMyMatchPlayerUseCase
@@ -215,13 +215,11 @@ class BattleMatchViewModel @Inject constructor(
         var matchOverDialog by mutableStateOf(false)
     }
 
-    override fun exceptionHandler(exception: Throwable) {
-
+    override suspend fun exceptionHandler(exception: Throwable) {
         when (exception) {
+            is NotExistsPlayerIdUseCaseException -> {}
 
-            is NotExistsPlayerIdException -> {}
-
-            is NotExistsTargetPlayerIdException -> {}
+            is NotExistsTargetPlayerIdUseCaseException -> {}
 
             else -> {
                 _matchVo.value?.let {

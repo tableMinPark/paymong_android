@@ -5,11 +5,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.mongs.wear.domain.device.exception.ExchangeWalkingCountException
-import com.mongs.wear.domain.management.exception.GetCurrentSlotException
+import com.mongs.wear.core.exception.usecase.ExchangeWalkingCountUseCaseException
+import com.mongs.wear.core.exception.usecase.GetCurrentSlotUseCaseException
+import com.mongs.wear.core.exception.usecase.GetStepsUseCaseException
 import com.mongs.wear.domain.management.usecase.GetCurrentSlotUseCase
 import com.mongs.wear.domain.management.vo.MongVo
-import com.mongs.wear.domain.device.exception.GetStepsException
 import com.mongs.wear.domain.player.usecase.ExchangeStarPointUseCase
 import com.mongs.wear.domain.player.usecase.GetStarPointUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
@@ -51,6 +51,9 @@ class StoreExchangePayPointViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 스타 포인트 환전
+     */
     fun exchangeStarPoint(mongId: Long, starPoint: Int) {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
 
@@ -76,18 +79,17 @@ class StoreExchangePayPointViewModel @Inject constructor(
         var exchangeStarPointDialog by mutableStateOf(false)
     }
 
-    override fun exceptionHandler(exception: Throwable) {
-
-        when(exception) {
-            is GetStepsException -> {
+    override suspend fun exceptionHandler(exception: Throwable) {
+        when (exception) {
+            is GetStepsUseCaseException -> {
                 uiState.loadingBar = false
             }
 
-            is GetCurrentSlotException -> {
+            is GetCurrentSlotUseCaseException -> {
                 uiState.loadingBar = false
             }
 
-            is ExchangeWalkingCountException -> {
+            is ExchangeWalkingCountUseCaseException -> {
                 uiState.loadingBar = false
                 uiState.exchangeStarPointDialog = false
             }

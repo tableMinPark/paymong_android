@@ -74,7 +74,7 @@ fun HelpPoopCleanMongContent() {
             )
             Spacer(modifier = Modifier.width(5.dp))
             Text(
-                text = "배변 개수에 비례하여",
+                text = "배변 수에 따라",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -92,7 +92,7 @@ fun HelpPoopCleanMongContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "경험치 증가!",
+                text = "경험치가 증가해요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

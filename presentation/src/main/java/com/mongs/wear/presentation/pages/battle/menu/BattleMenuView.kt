@@ -112,14 +112,6 @@ fun BattleMenuView(
             lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
-
-    val network = battleMenuViewModel.network.observeAsState(true)
-
-    LaunchedEffect(network.value) {
-        if (!network.value) {
-            battleMenuViewModel.matchWaitStopAndReset()
-        }
-    }
 }
 
 @Composable
@@ -160,7 +152,7 @@ private fun BattleMenuLoadingBar(
                         )
                     } else if (matchStateCode == MatchStateCode.MATCH_MATCHING) {
                         Text(
-                            text = "입장 대기중..",
+                            text = "입장 대기중",
                             textAlign = TextAlign.Center,
                             fontFamily = DAL_MU_RI,
                             fontWeight = FontWeight.Light,

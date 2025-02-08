@@ -48,7 +48,7 @@ fun HelpPickSlotContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "클릭해 몽을 선택!",
+                text = "클릭해 몽을 선택해요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -66,7 +66,7 @@ fun HelpPickSlotContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "선택 된 몽은 로비에서",
+                text = "선택된 몽은 로비에서",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -84,7 +84,7 @@ fun HelpPickSlotContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "확인할 수 있어요!",
+                text = "확인할 수 있어요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

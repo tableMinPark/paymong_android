@@ -1,10 +1,11 @@
 package com.mongs.wear.domain.collection.usecase
 
-import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.collection.exception.GetMongCollectionException
+import com.mongs.wear.core.exception.data.GetMongCollectionsException
+import com.mongs.wear.core.exception.global.DataException
+import com.mongs.wear.core.exception.usecase.GetMongCollectionUseCaseException
 import com.mongs.wear.domain.collection.repository.CollectionRepository
 import com.mongs.wear.domain.collection.vo.MongCollectionVo
-import com.mongs.wear.domain.global.usecase.BaseNoParamUseCase
+import com.mongs.wear.core.usecase.BaseNoParamUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -13,8 +14,11 @@ class GetMongCollectionsUseCase @Inject constructor(
     private val collectionRepository: CollectionRepository,
 ) : BaseNoParamUseCase<List<MongCollectionVo>>() {
 
+    /**
+     * 몽 컬렉션 목록 조회 UseCase
+     * @throws GetMongCollectionsException
+     */
     override suspend fun execute(): List<MongCollectionVo> {
-
         return withContext(Dispatchers.IO) {
             collectionRepository.getMongCollections().map {
                 MongCollectionVo(
@@ -26,11 +30,13 @@ class GetMongCollectionsUseCase @Inject constructor(
         }
     }
 
-    override fun handleException(exception: ErrorException) {
+    override fun handleException(exception: DataException) {
         super.handleException(exception)
 
-        when(exception.code) {
-            else -> throw GetMongCollectionException()
+        when(exception) {
+            is GetMongCollectionsException -> throw GetMongCollectionUseCaseException()
+
+            else -> throw GetMongCollectionUseCaseException()
         }
     }
 }

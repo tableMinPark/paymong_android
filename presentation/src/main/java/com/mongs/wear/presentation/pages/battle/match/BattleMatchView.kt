@@ -16,6 +16,8 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -52,9 +54,9 @@ import com.mongs.wear.presentation.component.common.bar.LoadingBar
 import com.mongs.wear.presentation.component.common.charactor.Mong
 import com.mongs.wear.presentation.dialog.battle.MatchOverDialog
 import com.mongs.wear.presentation.dialog.battle.MatchPickDialog
-import com.mongs.wear.presentation.pages.battle.enums.BattleConst
+import com.mongs.wear.presentation.global.constValue.BattleConst
+import kotlinx.coroutines.delay
 import kotlin.math.max
-
 
 @Composable
 fun BattleMatchView(
@@ -62,6 +64,7 @@ fun BattleMatchView(
     battleMatchViewModel: BattleMatchViewModel = hiltViewModel(),
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
 ) {
+    val network = battleMatchViewModel.network.observeAsState(true)
     val battlePayPoint = battleMatchViewModel.battlePayPoint.observeAsState(0)
     val matchVo = battleMatchViewModel.matchVo.observeAsState()
     val myMatchPlayerVo = battleMatchViewModel.myMatchPlayerVo.observeAsState()
@@ -77,8 +80,28 @@ fun BattleMatchView(
                 if (battleMatchViewModel.uiState.matchOverLoadingBar) {
                     BattleMatchLoadingBar()
                 } else if (battleMatchViewModel.uiState.matchPickDialog) {
+
+                    val progress = remember { mutableFloatStateOf(0f) }
+                    val timer = remember { mutableFloatStateOf(0f) }
+
+                    // 타이머
+                    LaunchedEffect(Unit) {
+                        while (progress.floatValue < 100f) {
+
+                            delay(200)
+
+                            if (!network.value) {
+                                timer.floatValue = 0f
+                            } else {
+                                timer.floatValue += 0.2f
+                            }
+
+                            progress.floatValue =
+                                timer.floatValue / BattleConst.MAX_SECONDS.toFloat() * 100f
+                        }
+                    }
+
                     MatchPickDialog(
-                        maxSeconds = BattleConst.MAX_SECONDS,
                         attack = {
                             battleMatchViewModel.matchPick(
                                 roomId = matchVo.roomId,
@@ -103,6 +126,7 @@ fun BattleMatchView(
                                 pickCode = MatchRoundCode.MATCH_PICK_HEAL,
                             )
                         },
+                        progress = progress.floatValue,
                         modifier = Modifier.zIndex(1f),
                     )
                 } else if (battleMatchViewModel.uiState.matchOverDialog) {
@@ -165,22 +189,6 @@ fun BattleMatchView(
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose {
             lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
-
-    val network = battleMatchViewModel.network.observeAsState(true)
-
-    LaunchedEffect(network.value) {
-        if (!network.value) {
-            matchVo.value?.let {
-                if (it.stateCode != MatchStateCode.MATCH_OVER) {
-                    battleMatchViewModel.matchEnd()
-                } else {
-                    battleMatchViewModel.matchExit(roomId = it.roomId)
-                }
-            } ?: run {
-                battleMatchViewModel.matchEnd()
-            }
         }
     }
 }

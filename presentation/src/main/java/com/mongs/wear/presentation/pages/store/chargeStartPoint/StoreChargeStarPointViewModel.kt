@@ -6,21 +6,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.mongs.wear.core.exception.ErrorException
+import com.mongs.wear.core.exception.global.DataException
+import com.mongs.wear.core.exception.presentation.BillingConnectException
+import com.mongs.wear.core.exception.presentation.BillingNotSupportException
+import com.mongs.wear.core.exception.presentation.GetProductException
+import com.mongs.wear.core.exception.usecase.ConsumeProductOrderUseCaseException
+import com.mongs.wear.core.exception.usecase.GetConsumedOrderIdsUseCaseException
+import com.mongs.wear.core.exception.usecase.GetProductIdsUseCaseException
 import com.mongs.wear.domain.player.usecase.GetStarPointUseCase
-import com.mongs.wear.domain.store.exception.ConsumeProductOrderException
-import com.mongs.wear.domain.store.exception.GetConsumedOrderIdsException
-import com.mongs.wear.domain.store.exception.GetProductIdsException
 import com.mongs.wear.domain.store.usecase.ConsumeProductOrderUseCase
 import com.mongs.wear.domain.store.usecase.GetConsumedOrderIdsUseCase
 import com.mongs.wear.domain.store.usecase.GetProductIdsUseCase
-import com.mongs.wear.presentation.global.exception.BillingConnectException
-import com.mongs.wear.presentation.global.exception.BillingNotSupportException
-import com.mongs.wear.presentation.global.exception.GetProductException
 import com.mongs.wear.presentation.global.manager.BillingManager
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.launch
@@ -43,7 +42,7 @@ class StoreChargeStarPointViewModel @Inject constructor(
     val productVoList: LiveData<List<BillingManager.ProductVo>> get() = _productVoList
 
     // 결제 실패 오류 메시지
-    private val billingErrorEvent: SharedFlow<ErrorException> = billingManager.errorEvent
+    private val billingErrorEvent: SharedFlow<DataException> = billingManager.errorEvent
 
     // 결제 중단 플래그
     private val billingAbortEvent: SharedFlow<Long> = billingManager.abortEvent
@@ -62,6 +61,9 @@ class StoreChargeStarPointViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 인앱 상품 목록 조회
+     */
     private suspend fun getProducts() {
 
         uiState.loadingBar = true
@@ -96,6 +98,9 @@ class StoreChargeStarPointViewModel @Inject constructor(
         uiState.loadingBar = false
     }
 
+    /**
+     * 인앱 상품 주문 및 소비
+     */
     fun productOrder(activity: Activity, productId: String) {
 
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
@@ -133,6 +138,9 @@ class StoreChargeStarPointViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 인앱 상품 소비
+     */
     fun consumeOrder(productId: String) {
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
 
@@ -166,9 +174,8 @@ class StoreChargeStarPointViewModel @Inject constructor(
         var navStoreMenu by mutableStateOf(false)
     }
 
-    override fun exceptionHandler(exception: Throwable) {
-
-        when(exception) {
+    override suspend fun exceptionHandler(exception: Throwable) {
+        when (exception) {
             is BillingConnectException -> {
                 uiState.loadingBar = false
                 uiState.navStoreMenu = true
@@ -184,22 +191,19 @@ class StoreChargeStarPointViewModel @Inject constructor(
                 uiState.navStoreMenu = true
             }
 
-            is GetProductIdsException -> {
+            is GetProductIdsUseCaseException -> {
                 uiState.loadingBar = false
                 uiState.navStoreMenu = true
             }
 
-            is GetConsumedOrderIdsException -> {
+            is GetConsumedOrderIdsUseCaseException -> {
                 uiState.loadingBar = false
                 uiState.navStoreMenu = true
             }
 
-            is ConsumeProductOrderException -> {
+            is ConsumeProductOrderUseCaseException -> {
                 uiState.loadingBar = false
-
-                CoroutineScope(Dispatchers.IO).launch {
-                    getProducts()
-                }
+                getProducts()
             }
 
             else -> {

@@ -21,7 +21,6 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
-import com.mongs.wear.core.enums.MatchStateCode
 import com.mongs.wear.core.enums.MongStateCode
 import com.mongs.wear.domain.management.vo.MongVo
 import com.mongs.wear.presentation.assets.MapResourceCode

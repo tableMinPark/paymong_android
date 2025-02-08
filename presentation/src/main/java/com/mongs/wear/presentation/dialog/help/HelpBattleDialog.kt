@@ -14,13 +14,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
 import com.mongs.wear.presentation.component.common.pagenation.PageIndicator
-import com.mongs.wear.presentation.dialog.help.content.HelpCancelContent
 import com.mongs.wear.presentation.dialog.help.content.battle.HelpBattleContent
 import com.mongs.wear.presentation.dialog.help.content.battle.HelpMatchContent
 import com.mongs.wear.presentation.dialog.help.content.battle.HelpMatchRewardContent
 import com.mongs.wear.presentation.dialog.help.content.battle.HelpMatchSecondContent
 import com.mongs.wear.presentation.dialog.help.content.battle.HelpMatchThirdContent
 import com.mongs.wear.presentation.dialog.help.content.battle.HelpMatchingBattleContent
+import com.mongs.wear.presentation.dialog.help.content.common.HelpCancelContent
 
 @Composable
 fun HelpBattleDialog(
@@ -88,5 +88,4 @@ fun HelpBattleDialog(
             PageIndicator(pagerState = pagerState)
         }
     }
-
 }

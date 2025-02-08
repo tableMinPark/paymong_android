@@ -161,11 +161,11 @@ private fun MainInteractionContent(
                 CircleImageButton(
                     icon = R.drawable.battle,
                     border = R.drawable.interaction_bnt_pink,
-                    disable = mongVo?.let {
-                        MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg ||
-                                mongVo.stateCode == MongStateCode.DEAD ||
-                                mongVo.isSleeping
-                    } ?: true,
+//                    disable = mongVo?.let {
+//                        MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg ||
+//                                mongVo.stateCode == MongStateCode.DEAD ||
+//                                mongVo.isSleeping
+//                    } ?: true,
                     onClick = battle,
                 )
             }

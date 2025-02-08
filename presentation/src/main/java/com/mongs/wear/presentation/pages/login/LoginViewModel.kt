@@ -11,15 +11,17 @@ import androidx.compose.runtime.setValue
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.messaging.FirebaseMessaging
-import com.mongs.wear.domain.auth.exception.LoginException
-import com.mongs.wear.domain.auth.exception.NeedJoinException
-import com.mongs.wear.domain.auth.exception.NeedUpdateAppException
+import com.mongs.wear.core.exception.presentation.NotExistsEmailException
+import com.mongs.wear.core.exception.presentation.NotExistsGoogleAccountIdException
+import com.mongs.wear.core.exception.presentation.NotExistsNameException
+import com.mongs.wear.core.exception.usecase.LoginUseCaseException
+import com.mongs.wear.core.exception.usecase.NeedJoinUseCaseException
+import com.mongs.wear.core.exception.usecase.NeedUpdateAppUseCaseException
 import com.mongs.wear.domain.auth.usecase.JoinUseCase
 import com.mongs.wear.domain.auth.usecase.LoginUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
@@ -44,10 +46,17 @@ class LoginViewModel @Inject constructor(
             uiState.loadingBar = true
 
             GoogleSignIn.getLastSignedInAccount(context)?.let { account ->
+                val googleAccountId = account.id
+                val email = account.email
+
+                if (googleAccountId.isNullOrEmpty()) throw NotExistsGoogleAccountIdException()
+
+                if (email.isNullOrEmpty()) throw NotExistsEmailException()
+
                 loginUseCase(
                     LoginUseCase.Param(
-                        googleAccountId = account.id,
-                        email = account.email,
+                        googleAccountId = googleAccountId,
+                        email = email,
                         fcmToken = firebaseMessaging.getTokenSuspend(),
                     )
                 )
@@ -66,10 +75,18 @@ class LoginViewModel @Inject constructor(
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
             if (googleSignInResult.resultCode == Activity.RESULT_OK) {
                 GoogleSignIn.getSignedInAccountFromIntent(googleSignInResult.data).result?.let { account ->
+
+                    val googleAccountId = account.id
+                    val email = account.email
+
+                    if (googleAccountId.isNullOrEmpty()) throw NotExistsGoogleAccountIdException()
+
+                    if (email.isNullOrEmpty()) throw NotExistsEmailException()
+
                     loginUseCase(
                         LoginUseCase.Param(
-                            googleAccountId = account.id,
-                            email = account.email,
+                            googleAccountId = googleAccountId,
+                            email = email,
                             fcmToken = firebaseMessaging.getTokenSuspend(),
                         )
                     )
@@ -89,18 +106,28 @@ class LoginViewModel @Inject constructor(
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
             GoogleSignIn.getLastSignedInAccount(context)?.let { account ->
 
+                val googleAccountId = account.id
+                val email = account.email
+                val name = account.displayName
+
+                if (googleAccountId.isNullOrEmpty()) throw NotExistsGoogleAccountIdException()
+
+                if (email.isNullOrEmpty()) throw NotExistsEmailException()
+
+                if (name.isNullOrEmpty()) throw NotExistsNameException()
+
                 joinUseCase(
                     JoinUseCase.Param(
-                        googleAccountId = account.id,
-                        email = account.email,
-                        name = account.displayName
+                        googleAccountId = googleAccountId,
+                        email = email,
+                        name = name,
                     )
                 )
 
                 loginUseCase(
                     LoginUseCase.Param(
-                        googleAccountId = account.id,
-                        email = account.email,
+                        googleAccountId = googleAccountId,
+                        email = email,
                         fcmToken = firebaseMessaging.getTokenSuspend(),
                     )
                 )
@@ -146,7 +173,7 @@ class LoginViewModel @Inject constructor(
             if (task.isSuccessful) {
                 cont.resume(task.result ?: "")
             } else {
-                cont.resumeWithException(task.exception ?: Exception("Unknown error occurred"))
+                cont.resumeWithException(task.exception ?: Exception("FCM 토큰 조회 실패"))
             }
         }
     }
@@ -162,30 +189,25 @@ class LoginViewModel @Inject constructor(
         var navMainPagerView by mutableStateOf(false)
     }
 
-    override fun exceptionHandler(exception: Throwable) {
+    override suspend fun exceptionHandler(exception: Throwable) {
+        when (exception) {
+            is NeedJoinUseCaseException -> {
+                joinAndLogin()
+            }
 
-        CoroutineScope(Dispatchers.IO).launch {
+            is NeedUpdateAppUseCaseException -> {
+                uiState.loadingBar = false
+                uiState.needAppUpdate = true
+            }
 
-            when (exception) {
+            is LoginUseCaseException -> {
+                uiState.loadingBar = false
+                uiState.signInButton = true
+            }
 
-                is NeedJoinException -> {
-                    joinAndLogin()
-                }
-
-                is NeedUpdateAppException -> {
-                    uiState.loadingBar = false
-                    uiState.needAppUpdate = true
-                }
-
-                is LoginException -> {
-                    uiState.loadingBar = false
-                    uiState.signInButton = true
-                }
-
-                else -> {
-                    uiState.loadingBar = false
-                    uiState.signInButton = true
-                }
+            else -> {
+                uiState.loadingBar = false
+                uiState.signInButton = true
             }
         }
     }

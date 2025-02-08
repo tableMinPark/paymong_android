@@ -3,16 +3,14 @@ package com.mongs.wear.presentation.pages.battle.menu
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.mongs.wear.domain.battle.exception.MatchWaitCancelException
-import com.mongs.wear.domain.battle.exception.MatchWaitException
+import com.mongs.wear.core.exception.usecase.GetBattlePayPointUseCaseException
+import com.mongs.wear.core.exception.usecase.MatchWaitCancelUseCaseException
+import com.mongs.wear.core.exception.usecase.MatchWaitUseCaseException
 import com.mongs.wear.domain.battle.usecase.GetBattlePayPointUseCase
-import com.mongs.wear.domain.battle.usecase.MatchEndUseCase
 import com.mongs.wear.domain.battle.usecase.MatchEnterUseCase
 import com.mongs.wear.domain.battle.usecase.MatchWaitCancelUseCase
 import com.mongs.wear.domain.battle.usecase.MatchWaitUseCase
 import com.mongs.wear.domain.battle.vo.MatchVo
-import com.mongs.wear.domain.device.usecase.GetNetworkUseCase
-import com.mongs.wear.domain.training.exception.GetBattlePayPointException
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -24,20 +22,15 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BattleMenuViewModel @Inject constructor(
-    private val getNetworkUseCase: GetNetworkUseCase,
     private val getBattlePayPointUseCase: GetBattlePayPointUseCase,
     private val matchWaitUseCase: MatchWaitUseCase,
     private val matchWaitCancelUseCase: MatchWaitCancelUseCase,
     private val matchEnterUseCase: MatchEnterUseCase,
-    private val matchEndUseCase: MatchEndUseCase,
 ) : BaseViewModel() {
 
     companion object {
         private const val TAG = "BattleMenuViewModel"
     }
-
-    val network: LiveData<Boolean> get() = _network
-    private val _network = MediatorLiveData(true)
 
     private val _matchVo = MediatorLiveData<MatchVo?>(null)
     val matchVo: LiveData<MatchVo?> get() = _matchVo
@@ -49,11 +42,6 @@ class BattleMenuViewModel @Inject constructor(
         viewModelScopeWithHandler.launch(Dispatchers.Main) {
 
             uiState.loadingBar = true
-
-            // network flag 옵저버 객체 조회
-            _network.addSource(withContext(Dispatchers.IO) { getNetworkUseCase() }) {
-                _network.value = it
-            }
 
             _battlePayPoint.postValue(getBattlePayPointUseCase())
 
@@ -115,44 +103,29 @@ class BattleMenuViewModel @Inject constructor(
         }
     }
 
-    /**
-     * 매칭 종료
-     */
-    fun matchWaitStopAndReset() {
-        viewModelScopeWithHandler.launch (Dispatchers.IO) {
-
-            matchEndUseCase()
-
-            uiState.loadingBar = false
-        }
-    }
-
     val uiState: UiState = UiState()
 
     class UiState : BaseUiState() {
         var navMainEvent = MutableSharedFlow<Long>()
     }
 
-    override fun exceptionHandler(exception: Throwable) {
+    override suspend fun exceptionHandler(exception: Throwable) {
+        when (exception) {
 
-        CoroutineScope(Dispatchers.IO).launch {
-            when (exception) {
+            is GetBattlePayPointUseCaseException -> {
+                uiState.navMainEvent.emit(System.currentTimeMillis())
+            }
 
-                is GetBattlePayPointException -> {
-                    uiState.navMainEvent.emit(System.currentTimeMillis())
-                }
+            is MatchWaitUseCaseException -> {
+                matchExit()
+            }
 
-                is MatchWaitException -> {
-                    matchExit()
-                }
+            is MatchWaitCancelUseCaseException -> {
+                uiState.navMainEvent.emit(System.currentTimeMillis())
+            }
 
-                is MatchWaitCancelException -> {
-                    uiState.navMainEvent.emit(System.currentTimeMillis())
-                }
-
-                else -> {
-                    matchExit()
-                }
+            else -> {
+                matchExit()
             }
         }
     }

@@ -71,7 +71,7 @@ fun HelpFeedDetailContent() {
                 .weight(0.2f)
         ) {
             Text(
-                text = "스텟 증가량",
+                text = "지수 증가량",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -89,7 +89,7 @@ fun HelpFeedDetailContent() {
                 .weight(0.2f)
         ) {
             Text(
-                text = "확인 가능!",
+                text = "확인이 가능해요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

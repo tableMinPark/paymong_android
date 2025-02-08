@@ -49,19 +49,19 @@ const val SLOT_ADD_BAR_HEIGHT = 32
 
 @Composable
 fun SlotAddDialog(
-    add: (String, String, String) -> Unit,
+    addBtnClick: (String, String, String) -> Unit,
+    closeBtnClick: () -> Unit,
     initTabIndex: Int = 0,
     context: Context = LocalContext.current,
 ) {
     val timePickerDialog = remember { mutableStateOf(false) }
-    val timePickerFlag = remember { mutableIntStateOf(0) }
     val addDialog = remember { mutableStateOf(false) }
 
     val tabIndex = remember{ mutableIntStateOf(initTabIndex) }
     val name = remember { mutableStateOf("") }
-    val sleepStartHour = remember { mutableIntStateOf(0) }
+    val sleepStartHour = remember { mutableIntStateOf(22) }
     val sleepStartMinute = remember { mutableIntStateOf(0) }
-    val sleepEndHour = remember { mutableIntStateOf(0) }
+    val sleepEndHour = remember { mutableIntStateOf(8) }
     val sleepEndMinute = remember { mutableIntStateOf(0) }
 
     Box(
@@ -138,11 +138,9 @@ fun SlotAddDialog(
                         minute = sleepStartMinute.intValue,
                         hourTimePickerDialog = {
                             timePickerDialog.value = true
-                            timePickerFlag.intValue = 0
                         },
                         minuteTimePickerDialog = {
                             timePickerDialog.value = true
-                            timePickerFlag.intValue = 1
                         }
                     )
 
@@ -152,11 +150,9 @@ fun SlotAddDialog(
                         minute = sleepEndMinute.intValue,
                         hourTimePickerDialog = {
                             timePickerDialog.value = true
-                            timePickerFlag.intValue = 0
                         },
                         minuteTimePickerDialog = {
                             timePickerDialog.value = true
-                            timePickerFlag.intValue = 1
                         }
                     )
                 }
@@ -172,51 +168,50 @@ fun SlotAddDialog(
                     .zIndex(2f)
                     .align(Alignment.BottomCenter)
             ) {
-                BlueButton(
-                    text = "생성",
-                    onClick = {
-                        if (name.value.length <= 6) {
-                            addDialog.value = true
-                        } else {
-                            Toast.makeText(context, "이름은 6자 제한!", Toast.LENGTH_SHORT).show()
-                        }
-                    },
-                    height = 26,
-                    disable = name.value.isBlank() || (sleepStartHour.intValue == sleepEndHour.intValue && sleepStartMinute.intValue == sleepEndMinute.intValue)
-                )
+                Row {
+                    Column {
+                        BlueButton(
+                            text = "닫기",
+                            onClick = closeBtnClick,
+                            height = 26,
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(5.dp))
+
+                    Column {
+                        BlueButton(
+                            text = "생성",
+                            onClick = {
+                                if (name.value.length <= 6) {
+                                    addDialog.value = true
+                                } else {
+                                    Toast.makeText(context, "이름은 6자 제한!", Toast.LENGTH_SHORT).show()
+                                }
+                            },
+                            height = 26,
+                            disable = name.value.isBlank() || (sleepStartHour.intValue == sleepEndHour.intValue && sleepStartMinute.intValue == sleepEndMinute.intValue)
+                        )
+                    }
+                }
             }
         }
     }
 
     if (timePickerDialog.value) {
         TimePickerDialog(
-            initValue = when(timePickerFlag.intValue) {
-                0 -> 12
-                1 -> 0
-                else -> 0
-            },
-            valueRange = when(timePickerFlag.intValue) {
-                0 -> (0..23).toList()
-                1 -> (0..59).toList()
-                else -> emptyList()
-            },
-            confirm = when(timePickerFlag.intValue) {
-                0 -> { value ->
-                    when(tabIndex.intValue) {
-                        1 -> { sleepStartHour.intValue = value }
-                        2 -> { sleepEndHour.intValue = value }
-                    }
-                    timePickerDialog.value = false
+            initHour = if (tabIndex.intValue == 1) sleepStartHour.intValue else if(tabIndex.intValue == 2) sleepEndHour.intValue else 0,
+            initMinute = if (tabIndex.intValue == 1) sleepStartMinute.intValue else if(tabIndex.intValue == 2) sleepEndMinute.intValue else 0,
+            confirm = { hour, minute ->
+                if (tabIndex.intValue == 1) {
+                    sleepStartHour.intValue = hour
+                    sleepStartMinute.intValue = minute
+                } else if (tabIndex.intValue == 2) {
+                    sleepEndHour.intValue = hour
+                    sleepEndMinute.intValue = minute
                 }
 
-                1 -> { value ->
-                    when(tabIndex.intValue) {
-                        1 -> { sleepStartMinute.intValue = value }
-                        2 -> { sleepEndMinute.intValue = value }
-                    }
-                    timePickerDialog.value = false
-                }
-                else -> { _ -> }
+                timePickerDialog.value = false
             },
         )
     }
@@ -228,7 +223,7 @@ fun SlotAddDialog(
                 if (name.value.length <= 6) {
                     val sleepStart = "%02d:%02d".format(sleepStartHour.intValue, sleepStartMinute.intValue)
                     val sleepEnd = "%02d:%02d".format(sleepEndHour.intValue, sleepEndMinute.intValue)
-                    add(name.value, sleepStart, sleepEnd)
+                    addBtnClick(name.value, sleepStart, sleepEnd)
                 } else {
                     Toast.makeText(context, "이름은 6자 제한!", Toast.LENGTH_SHORT).show()
                 }
@@ -398,23 +393,30 @@ private fun SlotAddTab(
 @Preview(showSystemUi = true, device = Devices.WEAR_OS_SMALL_ROUND)
 @Composable
 private fun FirstSlotDetailDialogPreview() {
-    SlotAddDialog(add = { name, sleepStart, sleepEnd -> }, initTabIndex = 0)
+    SlotAddDialog(
+        addBtnClick = { name, sleepStart, sleepEnd -> },
+        initTabIndex = 0,
+        closeBtnClick = {},
+    )
 }
 
 @Preview(showSystemUi = true, device = Devices.WEAR_OS_SMALL_ROUND)
 @Composable
 private fun SecondEmptySlotDetailDialogPreview() {
-    SlotAddDialog(add = { name, sleepStart, sleepEnd -> }, initTabIndex = 1)
+    SlotAddDialog(
+        addBtnClick = { name, sleepStart, sleepEnd -> },
+        initTabIndex = 1,
+        closeBtnClick = {},
+    )
 }
 
 @Preview(showSystemUi = true, device = Devices.WEAR_OS_SMALL_ROUND)
 @Composable
-private fun SecondFullSlotDetailDialogPreview() {
-    SlotAddDialog(add = { name, sleepStart, sleepEnd -> }, initTabIndex = 1)
+private fun ThirdSlotDetailDialogPreview() {
+    SlotAddDialog(
+        addBtnClick = { name, sleepStart, sleepEnd -> },
+        initTabIndex = 2,
+        closeBtnClick = {},
+    )
 }
 
-@Preview(showSystemUi = true, device = Devices.WEAR_OS_LARGE_ROUND)
-@Composable
-private fun LargeSecondFullSlotDetailDialogPreview() {
-    SlotAddDialog(add = { name, sleepStart, sleepEnd -> }, initTabIndex = 1)
-}

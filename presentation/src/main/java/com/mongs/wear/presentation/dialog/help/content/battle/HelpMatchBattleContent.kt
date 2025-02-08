@@ -51,7 +51,7 @@ fun HelpMatchContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "공격,방어,회복 선택해",
+                text = "공격,방어,회복",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -69,7 +69,7 @@ fun HelpMatchContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "상대 HP를",
+                text = "을 선택, 상대 HP를",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -86,7 +86,7 @@ fun HelpMatchContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "깎으면 승리",
+                text = "다 깎으면 승리해요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

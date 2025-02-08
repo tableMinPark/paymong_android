@@ -1,10 +1,9 @@
 package com.mongs.wear.data.global.interceptor
 
-import android.util.Log
 import com.mongs.wear.data.auth.api.AuthApi
 import com.mongs.wear.data.auth.dataStore.TokenDataStore
 import com.mongs.wear.data.auth.dto.request.ReissueRequestDto
-import com.mongs.wear.data.auth.exception.ReissueException
+import com.mongs.wear.core.exception.data.ReissueException
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor
 import okhttp3.Interceptor.Chain
@@ -18,6 +17,8 @@ class AuthorizationInterceptor (
 
     companion object {
         private const val AUTHORIZATION_HEADER = "Authorization"
+
+        private const val CONNECTION_FORBIDDEN_CODE = 401
     }
 
     /**
@@ -29,7 +30,7 @@ class AuthorizationInterceptor (
 
         val response = chain.proceed(this.generateRequest(chain, accessToken))
 
-        if (response.code() == 401) {
+        if (response.code() == CONNECTION_FORBIDDEN_CODE) {
 
             val newAccessToken = runBlocking { reissue() }
 

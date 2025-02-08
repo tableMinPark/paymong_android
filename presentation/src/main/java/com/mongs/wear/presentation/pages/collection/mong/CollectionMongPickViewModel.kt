@@ -5,8 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
-import com.mongs.wear.domain.collection.exception.GetMongCollectionException
+import com.mongs.wear.core.exception.usecase.GetMongCollectionUseCaseException
 import com.mongs.wear.domain.collection.usecase.GetMongCollectionsUseCase
 import com.mongs.wear.domain.collection.vo.MongCollectionVo
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
@@ -44,10 +43,9 @@ class CollectionMongPickViewModel @Inject constructor(
         var detailDialog by mutableStateOf(false)
     }
 
-    override fun exceptionHandler(exception: Throwable) {
-
+    override suspend fun exceptionHandler(exception: Throwable) {
         when(exception) {
-            is GetMongCollectionException -> {
+            is GetMongCollectionUseCaseException -> {
                 uiState.loadingBar = false
                 uiState.navCollectionMenu = true
             }

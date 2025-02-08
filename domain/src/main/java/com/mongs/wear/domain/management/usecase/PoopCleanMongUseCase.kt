@@ -1,8 +1,9 @@
 package com.mongs.wear.domain.management.usecase
 
-import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.global.usecase.BaseParamUseCase
-import com.mongs.wear.domain.management.exception.PoopCleanMongException
+import com.mongs.wear.core.exception.data.PoopCleanMongException
+import com.mongs.wear.core.exception.global.DataException
+import com.mongs.wear.core.exception.usecase.PoopCleanMongUseCaseException
+import com.mongs.wear.core.usecase.BaseParamUseCase
 import com.mongs.wear.domain.management.repository.ManagementRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -12,8 +13,11 @@ class PoopCleanMongUseCase @Inject constructor(
     private val managementRepository: ManagementRepository,
 ) : BaseParamUseCase<PoopCleanMongUseCase.Param, Unit>() {
 
+    /**
+     * 몽 배변 처리 UseCase
+     * @throws PoopCleanMongException
+     */
     override suspend fun execute(param: Param) {
-
         withContext(Dispatchers.IO) {
             managementRepository.poopCleanMong(mongId = param.mongId)
         }
@@ -23,11 +27,13 @@ class PoopCleanMongUseCase @Inject constructor(
         val mongId: Long,
     )
 
-    override fun handleException(exception: ErrorException) {
+    override fun handleException(exception: DataException) {
         super.handleException(exception)
 
-        when(exception.code) {
-            else -> throw PoopCleanMongException()
+        when(exception) {
+            is PoopCleanMongException -> throw PoopCleanMongUseCaseException()
+
+            else -> throw PoopCleanMongUseCaseException()
         }
     }
 }

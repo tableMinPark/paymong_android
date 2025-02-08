@@ -40,25 +40,15 @@ fun MatchPickDialog(
     attack: () -> Unit,
     defence: () -> Unit,
     heal: () -> Unit,
-    maxSeconds: Int = 30,
+    progress: Float,
     modifier: Modifier = Modifier,
 ) {
-    val progress = remember { mutableFloatStateOf(0f) }
-    val timer = remember { mutableFloatStateOf(0f) }
-
-    // 타이머
-    LaunchedEffect(Unit) {
-        while (progress.floatValue < 100f) {
-            delay(200)
-            timer.floatValue += 0.2f
-            progress.floatValue = timer.floatValue / maxSeconds.toFloat() * 100f
-
-            if (progress.floatValue >= 100f) {
-                when (Random.nextInt(3)) {
-                    0 -> { attack() }
-                    1 -> { defence() }
-                    else -> { heal() }
-                }
+    LaunchedEffect(progress) {
+        if (progress >= 100f) {
+            when (Random.nextInt(3)) {
+                0 -> { attack() }
+                1 -> { defence() }
+                else -> { heal() }
             }
         }
     }
@@ -70,7 +60,7 @@ fun MatchPickDialog(
             .fillMaxSize()
     ) {
         ProgressIndicator(
-            progress = progress.floatValue,
+            progress = progress,
             modifier = Modifier.zIndex(1f)
         )
 
@@ -194,7 +184,8 @@ private fun BattlePickDialogPreview() {
         MatchPickDialog(
             attack = {},
             defence = {},
-            heal = {}
+            heal = {},
+            progress = 50f
         )
     }
 }

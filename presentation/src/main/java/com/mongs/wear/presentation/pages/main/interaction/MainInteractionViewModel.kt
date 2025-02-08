@@ -1,7 +1,7 @@
 package com.mongs.wear.presentation.pages.main.interaction
 
-import com.mongs.wear.domain.management.exception.PoopCleanMongException
-import com.mongs.wear.domain.management.exception.SleepingMongException
+import com.mongs.wear.core.exception.usecase.PoopCleanMongUseCaseException
+import com.mongs.wear.core.exception.usecase.SleepingMongUseCaseException
 import com.mongs.wear.domain.management.usecase.PoopCleanMongUseCase
 import com.mongs.wear.domain.management.usecase.SleepingMongUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
@@ -16,6 +16,9 @@ class MainInteractionViewModel @Inject constructor(
     private val poopCleanMongUseCase: PoopCleanMongUseCase,
 ): BaseViewModel() {
 
+    /**
+     * 몽 수면/기상
+     */
     fun sleeping(mongId: Long) {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
             sleepingMongUseCase(
@@ -28,6 +31,9 @@ class MainInteractionViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 몽 청소
+     */
     fun poopClean(mongId: Long) {
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
 
@@ -47,14 +53,13 @@ class MainInteractionViewModel @Inject constructor(
 
     class UiState : BaseUiState() {}
 
-    override fun exceptionHandler(exception: Throwable) {
-
+    override suspend fun exceptionHandler(exception: Throwable) {
         when(exception) {
-            is SleepingMongException -> {
+            is SleepingMongUseCaseException -> {
                 uiState.loadingBar = false
             }
 
-            is PoopCleanMongException -> {
+            is PoopCleanMongUseCaseException -> {
                 uiState.loadingBar = false
             }
 

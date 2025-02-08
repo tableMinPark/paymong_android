@@ -65,7 +65,7 @@ fun HelpMatchRewardContent() {
             )
             Spacer(modifier = Modifier.width(7.dp))
             Text(
-                text = "100개 보상!",
+                text = "을 보상받아요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -101,7 +101,7 @@ fun HelpMatchRewardContent() {
                 .weight(0.2f)
         ) {
             Text(
-                text = "보상이 없음!",
+                text = "보상이 없어요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

@@ -1,6 +1,5 @@
 package com.mongs.wear.data.activity.resolver
 
-import androidx.room.Transaction
 import com.mongs.wear.core.enums.MatchStateCode
 import com.mongs.wear.data.activity.dto.response.CreateBattleResponseDto
 import com.mongs.wear.data.activity.dto.response.GetBattleResponseDto
@@ -20,7 +19,6 @@ class BattleObserveResolver @Inject constructor(
     /**
      * 매칭 성공 갱신
      */
-    @Transaction
     fun updateSearchMatch(createBattleResponseDto: CreateBattleResponseDto) {
 
         val deviceId = deviceDataStore.getDeviceId()
@@ -61,7 +59,6 @@ class BattleObserveResolver @Inject constructor(
     /**
      * 모든 플레이어 입장 완료
      */
-    @Transaction
     fun updateBattleMatchEnter(getBattleResponseDto: GetBattleResponseDto) {
 
         // 배틀 룸 정보 업데이트
@@ -95,7 +92,6 @@ class BattleObserveResolver @Inject constructor(
     /**
      * 매치 종료
      */
-    @Transaction
     fun updateBattleMatchOver(overBattleResponseDto: OverBattleResponseDto) {
 
         // 배틀 룸 정보 업데이트
@@ -121,7 +117,6 @@ class BattleObserveResolver @Inject constructor(
     /**
      * 라운드 종료
      */
-    @Transaction
     fun updateBattleMatchFight(getBattleResponseDto: GetBattleResponseDto) {
 
         // 배틀 룸 정보 업데이트
@@ -139,11 +134,8 @@ class BattleObserveResolver @Inject constructor(
 
         // 배틀 플레이어 정보 업데이트
         roomDB.matchPlayerDao().let { dao ->
-
             getBattleResponseDto.battlePlayers.forEach({ battlePlayer ->
-
                 dao.findByPlayerId(playerId = battlePlayer.playerId)?.let { matchPlayerEntity ->
-
                     dao.save(
                         matchPlayerEntity = matchPlayerEntity.update(
                             hp = battlePlayer.hp,

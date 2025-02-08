@@ -32,9 +32,6 @@ interface MongDao {
     @Query("SELECT * FROM mongs_mong")
     fun findAll() : List<MongEntity>
 
-    @Query("SELECT * FROM mongs_mong")
-    fun findLiveAll() : LiveData<List<MongEntity>>
-
     /**
      * DELETE
      */
@@ -100,7 +97,7 @@ interface MongDao {
         if (this.insert(mongEntity = mongEntity) == -1L) {
             this.findByMongId(mongId = mongEntity.mongId)?.let { nowMongEntity ->
                 // 몽 기본 정보 업데이트
-                if (mongEntity.basicUpdatedAt.isAfter(nowMongEntity.basicUpdatedAt)) {
+                if (mongEntity.basicUpdatedAt.isAfter(nowMongEntity.basicUpdatedAt) || mongEntity.basicUpdatedAt.isEqual(nowMongEntity.basicUpdatedAt)) {
                     this.updateMongBasic(
                         mongId = mongEntity.mongId,
                         mongName = mongEntity.mongName,
@@ -111,7 +108,7 @@ interface MongDao {
                 }
 
                 // 몽 상태 정보 업데이트
-                if (mongEntity.stateUpdatedAt.isAfter(nowMongEntity.stateUpdatedAt)) {
+                if (mongEntity.stateUpdatedAt.isAfter(nowMongEntity.stateUpdatedAt) || mongEntity.stateUpdatedAt.isEqual(nowMongEntity.stateUpdatedAt)) {
                     this.updateMongState(
                         mongId = mongEntity.mongId,
                         stateCode = mongEntity.stateCode,
@@ -121,7 +118,7 @@ interface MongDao {
                 }
 
                 // 몽 지수 정보 업데이트
-                if (mongEntity.statusUpdatedAt.isAfter(nowMongEntity.statusUpdatedAt)) {
+                if (mongEntity.statusUpdatedAt.isAfter(nowMongEntity.statusUpdatedAt) || mongEntity.statusUpdatedAt.isEqual(nowMongEntity.statusUpdatedAt)) {
                     this.updateMongStatus(
                         mongId = mongEntity.mongId,
                         statusCode = mongEntity.statusCode,

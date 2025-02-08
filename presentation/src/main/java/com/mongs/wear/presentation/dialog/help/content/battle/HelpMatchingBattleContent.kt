@@ -33,7 +33,7 @@ fun HelpMatchingBattleContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "다른플레이어와",
+                text = "플레이어와",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -51,7 +51,7 @@ fun HelpMatchingBattleContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "실시간 배틀 매칭 진행",
+                text = "실시간으로 매칭이 되요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -69,7 +69,7 @@ fun HelpMatchingBattleContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "15초이상 매칭 실패 시",
+                text = "플레이어가 없는 경우",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -87,7 +87,7 @@ fun HelpMatchingBattleContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "봇매칭으로 진행!",
+                text = "봇 매치로 진행되요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

@@ -1,33 +1,24 @@
 package com.mongs.wear.domain.auth.usecase
 
-import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.auth.exception.JoinException
-import com.mongs.wear.domain.auth.exception.NotExistsEmailException
-import com.mongs.wear.domain.auth.exception.NotExistsGoogleAccountIdException
-import com.mongs.wear.domain.auth.exception.NotExistsNameException
+import com.mongs.wear.core.exception.data.JoinException
+import com.mongs.wear.core.exception.global.DataException
+import com.mongs.wear.core.exception.usecase.JoinUseCaseException
 import com.mongs.wear.domain.auth.repository.AuthRepository
-import com.mongs.wear.domain.global.usecase.BaseParamUseCase
+import com.mongs.wear.core.usecase.BaseParamUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * 회원 가입 UseCase
+ * @throws JoinException 회원 가입 실패 예외 클래스
  */
 class JoinUseCase @Inject constructor(
     private val authRepository: AuthRepository,
 ) : BaseParamUseCase<JoinUseCase.Param, Unit>() {
 
     override suspend fun execute(param: Param) {
-
         withContext(Dispatchers.IO) {
-
-            if (param.email.isNullOrEmpty()) throw NotExistsEmailException()
-
-            if (param.name.isNullOrEmpty()) throw NotExistsNameException()
-
-            if (param.googleAccountId.isNullOrEmpty()) throw NotExistsGoogleAccountIdException()
-
             authRepository.join(
                 email = param.email,
                 name = param.name,
@@ -38,18 +29,20 @@ class JoinUseCase @Inject constructor(
 
     data class Param(
 
-        val googleAccountId: String?,
+        val googleAccountId: String,
 
-        val email: String?,
+        val email: String,
 
-        val name: String?
+        val name: String,
     )
 
-    override fun handleException(exception: ErrorException) {
+    override fun handleException(exception: DataException) {
         super.handleException(exception)
 
-        when(exception.code) {
-            else -> throw JoinException()
+        when(exception) {
+            is JoinException -> throw JoinUseCaseException()
+
+            else -> throw JoinUseCaseException()
         }
     }
 }

@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.mongs.wear.core.enums.TrainingCode
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.MongResourceCode
 import com.mongs.wear.presentation.assets.NavItem
@@ -79,7 +80,7 @@ fun TrainingRunnerView(
                 if (trainingRunnerViewModel.uiState.trainingStartDialog) {
                     TrainingStartDialog(
                         firstText = "화면을 클릭하여",
-                        secondText = "장애물을 뛰어넘기!",
+                        secondText = "장애물을 뛰어넘기",
                         rewardPayPoint = runnerPayPoint.value,
                         trainingStart = { trainingRunnerViewModel.runnerStart() },
                         modifier = Modifier.zIndex(3f),
@@ -93,6 +94,7 @@ fun TrainingRunnerView(
                             )
                         },
                         rewardPayPoint = score.value * runnerPayPoint.value,
+                        trainingCode = TrainingCode.RUNNER,
                         modifier = Modifier.zIndex(3f),
                     )
                 }

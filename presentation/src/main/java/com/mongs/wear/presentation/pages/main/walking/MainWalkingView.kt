@@ -1,8 +1,6 @@
 package com.mongs.wear.presentation.pages.main.walking
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,8 +33,7 @@ import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
 import com.mongs.wear.presentation.component.common.button.BlueButton
-import com.mongs.wear.presentation.component.common.button.LeftButton
-import com.mongs.wear.presentation.component.common.button.RightButton
+import com.mongs.wear.presentation.component.common.button.SelectButton
 import com.mongs.wear.presentation.component.common.textbox.PayPoint
 import com.mongs.wear.presentation.dialog.common.ConfirmAndCancelDialog
 import com.mongs.wear.presentation.pages.main.walking.MainWalkingViewModel.UiState
@@ -48,7 +45,6 @@ fun MainWalkingView(
     mongVo: MongVo,
     mainWalkingViewModel: MainWalkingViewModel = hiltViewModel(),
 ) {
-
     val payPoint = mainWalkingViewModel.payPoint.observeAsState(0)
     val ratio = remember { mutableIntStateOf(0) }
     val steps = mainWalkingViewModel.steps.observeAsState(0)
@@ -62,7 +58,7 @@ fun MainWalkingView(
             ConfirmAndCancelDialog(
                 text = "$${chargePayPoint.value}\n환전하시겠습니까?",
                 confirm = {
-                    mainWalkingViewModel.chargePayPoint(
+                    mainWalkingViewModel.exchangeWalkingCount(
                         mongId = mongVo.mongId,
                         walkingCount = 1000 * ratio.intValue,
                     )
@@ -73,11 +69,13 @@ fun MainWalkingView(
         } else {
             MainWalkingContent(
                 mongVo = mongVo,
+                ratio = ratio.intValue,
+                steps = steps.value,
+                decreaseRatio = { ratio.intValue = max(ratio.intValue - 1, 0) },
+                increaseRatio = { ratio.intValue = min(ratio.intValue + 1, steps.value / 1000) },
                 chargePayPoint = chargePayPoint.value,
                 payPoint = payPoint.value,
                 remainingSteps = remainingSteps.value,
-                increaseRatio = { ratio.intValue = min(ratio.intValue + 1, steps.value / 1000) },
-                decreaseRatio = { ratio.intValue = max(ratio.intValue - 1, 0) },
                 modifier = Modifier.zIndex(1f),
                 uiState = mainWalkingViewModel.uiState,
             )
@@ -88,11 +86,13 @@ fun MainWalkingView(
 @Composable
 private fun MainWalkingContent(
     mongVo: MongVo?,
+    ratio: Int,
+    steps: Int,
+    decreaseRatio: (Int) -> Unit,
+    increaseRatio: (Int) -> Unit,
     chargePayPoint: Int,
     payPoint: Int,
     remainingSteps: Int,
-    increaseRatio: () -> Unit,
-    decreaseRatio: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
     uiState: UiState,
 ) {
@@ -117,52 +117,40 @@ private fun MainWalkingContent(
 
             Row(
                 horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(0.55f)
+                    .weight(0.2f)
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.Center,
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null,
-                            onClick = {},
-                        ),
+                Text(
+                    text = "$remainingSteps 걸음",
+                    textAlign = TextAlign.Center,
+                    fontFamily = DAL_MU_RI,
+                    fontWeight = FontWeight.Light,
+                    fontSize = 16.sp,
+                    color = MongsWhite,
+                    maxLines = 1,
+                )
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .weight(0.35f)
+            ) {
+                SelectButton(
+                    leftBtnDisabled = ratio == 0,
+                    rightBtnDisabled = ratio >= steps / 1000,
+                    leftBtnClick = { decreaseRatio(max(ratio - 1, 0)) },
+                    rightBtnClick = { increaseRatio(min(ratio + 1, steps / 1000)) },
                 ) {
-                    Spacer(modifier = Modifier.height(10.dp))
-
                     Row(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(0.3f)
+                        modifier = Modifier.fillMaxSize()
                     ) {
-                        Text(
-                            text = "$remainingSteps 걸음",
-                            textAlign = TextAlign.Center,
-                            fontFamily = DAL_MU_RI,
-                            fontWeight = FontWeight.Light,
-                            fontSize = 18.sp,
-                            color = MongsWhite,
-                            maxLines = 1,
-                        )
-                    }
-
-                    Row(
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .weight(0.7f)
-                    ) {
-                        LeftButton(onClick = decreaseRatio)
-
-                        Spacer(modifier = Modifier.width(30.dp))
-
                         Image(
                             painter = painterResource(R.drawable.pointlogo),
                             contentDescription = null,
@@ -172,7 +160,7 @@ private fun MainWalkingContent(
                             contentScale = ContentScale.FillBounds,
                         )
 
-                        Spacer(modifier = Modifier.width(10.dp))
+                        Spacer(modifier = Modifier.width(8.dp))
 
                         Text(
                             text = "+ $chargePayPoint",
@@ -183,13 +171,7 @@ private fun MainWalkingContent(
                             color = MongsWhite,
                             maxLines = 1,
                         )
-
-                        Spacer(modifier = Modifier.width(30.dp))
-
-                        RightButton(onClick = increaseRatio)
                     }
-
-                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
 

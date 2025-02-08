@@ -31,6 +31,7 @@ fun HelpAddPayPointContent() {
         modifier = Modifier.fillMaxHeight()
     ) {
         Spacer(modifier = Modifier.height(15.dp))
+
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -75,7 +76,9 @@ fun HelpAddPayPointContent() {
                     .width(20.dp),
                 contentScale = ContentScale.FillBounds,
             )
+
             Spacer(modifier = Modifier.width(5.dp))
+
             Text(
                 text = "훈련,",
                 textAlign = TextAlign.Center,
@@ -86,6 +89,8 @@ fun HelpAddPayPointContent() {
                 maxLines = 1,
             )
 
+            Spacer(modifier = Modifier.width(5.dp))
+
             Image(
                 painter = painterResource(R.drawable.battle),
                 contentDescription = null,
@@ -94,7 +99,9 @@ fun HelpAddPayPointContent() {
                     .width(20.dp),
                 contentScale = ContentScale.FillBounds,
             )
+
             Spacer(modifier = Modifier.width(5.dp))
+
             Text(
                 text = "배틀,",
                 textAlign = TextAlign.Center,
@@ -113,8 +120,19 @@ fun HelpAddPayPointContent() {
                 .fillMaxWidth()
                 .weight(0.25f)
         ) {
+            Image(
+                painter = painterResource(R.drawable.starpoint_logo),
+                contentDescription = null,
+                modifier = Modifier
+                    .height(20.dp)
+                    .width(20.dp),
+                contentScale = ContentScale.FillBounds,
+            )
+
+            Spacer(modifier = Modifier.width(5.dp))
+
             Text(
-                text = "걷기",
+                text = "환전,",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -122,8 +140,11 @@ fun HelpAddPayPointContent() {
                 color = MongsWhite,
                 maxLines = 1,
             )
+
+            Spacer(modifier = Modifier.width(5.dp))
+
             Text(
-                text = "를 통해",
+                text = "걸음 수 환전",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -141,7 +162,7 @@ fun HelpAddPayPointContent() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "획득 가능!",
+                text = "으로 획득 가능 해요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -150,6 +171,7 @@ fun HelpAddPayPointContent() {
                 maxLines = 1,
             )
         }
+
         Spacer(modifier = Modifier.height(35.dp))
     }
 }

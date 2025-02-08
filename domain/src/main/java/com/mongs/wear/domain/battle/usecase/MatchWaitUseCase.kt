@@ -2,13 +2,14 @@ package com.mongs.wear.domain.battle.usecase
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.map
-import com.mongs.wear.core.exception.ErrorException
-import com.mongs.wear.domain.battle.exception.MatchWaitException
+import com.mongs.wear.core.exception.data.CreateMatchException
+import com.mongs.wear.core.exception.global.DataException
+import com.mongs.wear.core.exception.usecase.MatchWaitUseCaseException
 import com.mongs.wear.domain.battle.repository.BattleRepository
 import com.mongs.wear.domain.battle.vo.MatchVo
 import com.mongs.wear.domain.device.repository.DeviceRepository
 import com.mongs.wear.domain.global.client.MqttClient
-import com.mongs.wear.domain.global.usecase.BaseNoParamUseCase
+import com.mongs.wear.core.usecase.BaseNoParamUseCase
 import com.mongs.wear.domain.management.repository.SlotRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,8 +22,11 @@ class MatchWaitUseCase @Inject constructor(
     private val battleRepository: BattleRepository,
 ) : BaseNoParamUseCase<LiveData<MatchVo?>>() {
 
+    /**
+     * 배틀 매칭 대기열 등록 UseCase
+     * @throws CreateMatchException
+     */
     override suspend fun execute(): LiveData<MatchVo?> {
-
         return withContext(Dispatchers.IO) {
 
             if (mqttClient.isConnected()) {
@@ -61,19 +65,21 @@ class MatchWaitUseCase @Inject constructor(
                         }
                     }
                 } ?: run {
-                    throw MatchWaitException()
+                    throw MatchWaitUseCaseException()
                 }
             } else {
-                throw MatchWaitException()
+                throw MatchWaitUseCaseException()
             }
         }
     }
 
-    override fun handleException(exception: ErrorException) {
+    override fun handleException(exception: DataException) {
         super.handleException(exception)
 
-        when(exception.code) {
-            else -> throw MatchWaitException()
+        when(exception) {
+            is CreateMatchException -> throw MatchWaitUseCaseException()
+
+            else -> throw MatchWaitUseCaseException()
         }
     }
 }

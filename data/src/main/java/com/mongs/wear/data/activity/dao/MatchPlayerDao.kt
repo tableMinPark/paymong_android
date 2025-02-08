@@ -12,6 +12,9 @@ import com.mongs.wear.data.activity.entity.MatchPlayerEntity
 @Dao
 interface MatchPlayerDao {
 
+    /**
+     * SELECT
+     */
     @Query("SELECT * FROM mongs_match_player WHERE playerId = :playerId")
     fun findByPlayerId(playerId: String) : MatchPlayerEntity?
 
@@ -24,21 +27,33 @@ interface MatchPlayerDao {
     @Query("SELECT * FROM mongs_match_player WHERE isMe = false")
     fun findLiveByPlayerIdIsMeFalse() : LiveData<MatchPlayerEntity?>
 
+    /**
+     * DELETE
+     */
     @Query("DELETE FROM mongs_match_player")
     fun deleteAll()
 
+    /**
+     * INSERT
+     */
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(matchPlayerEntity: MatchPlayerEntity) : Long
 
+    /**
+     * UPDATE
+     */
     @Update
     fun update(matchPlayerEntity: MatchPlayerEntity) : Int
 
+    /**
+     * INSERT & UPDATE
+     */
     @Transaction
     fun save(matchPlayerEntity: MatchPlayerEntity) : MatchPlayerEntity {
 
-        val isSuccess = this.insert(matchPlayerEntity = matchPlayerEntity)
-
-        if (isSuccess == -1L) this.update(matchPlayerEntity = matchPlayerEntity)
+        if (this.insert(matchPlayerEntity = matchPlayerEntity) == -1L) {
+            this.update(matchPlayerEntity = matchPlayerEntity)
+        }
 
         return matchPlayerEntity
     }

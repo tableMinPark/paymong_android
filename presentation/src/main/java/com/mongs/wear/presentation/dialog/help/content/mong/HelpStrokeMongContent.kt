@@ -54,7 +54,7 @@ fun HelpStrokeMongContent() {
                 .weight(0.2f)
         ) {
             Text(
-                text = "클릭하여 쓰다듬기!",
+                text = "클릭하여 쓰다듬기",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -90,7 +90,7 @@ fun HelpStrokeMongContent() {
                 .weight(0.2f)
         ) {
             Text(
-                text = "경험치 증가!",
+                text = "경험치가 증가해요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

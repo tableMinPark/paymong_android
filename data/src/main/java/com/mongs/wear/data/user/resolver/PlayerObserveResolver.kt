@@ -13,9 +13,10 @@ class PlayerObserveResolver @Inject constructor(
     private val playerDataStore: PlayerDataStore,
 ) {
 
-    fun updatePlayer(playerObserveResponseDto: PlayerObserveResponseDto) {
-        CoroutineScope(Dispatchers.IO).launch {
-            playerDataStore.setStarPoint(starPoint = playerObserveResponseDto.starPoint)
-        }
+    /**
+     * 플레이어 정보 옵저빙
+     */
+    fun updatePlayer(playerObserveResponseDto: PlayerObserveResponseDto) = CoroutineScope(Dispatchers.IO).launch {
+        playerDataStore.setStarPoint(starPoint = playerObserveResponseDto.starPoint)
     }
 }
