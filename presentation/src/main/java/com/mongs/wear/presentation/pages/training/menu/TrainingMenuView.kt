@@ -16,6 +16,7 @@ import androidx.navigation.NavController
 import androidx.wear.compose.foundation.lazy.ScalingLazyColumn
 import androidx.wear.compose.foundation.lazy.rememberScalingLazyListState
 import androidx.wear.compose.material.PositionIndicator
+import com.mongs.wear.core.errors.PresentationErrorCode
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.NavItem
 import com.mongs.wear.presentation.component.common.background.TrainingNestedBackground
@@ -33,7 +34,11 @@ fun TrainingMenuView(
                 navController.navigate(route = NavItem.TrainingJumping.route)
             },
             basketball = {
-                Toast.makeText(context, "업데이트 예정", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    PresentationErrorCode.PRESENTATION_UPDATE_SOON.getMessage(),
+                    Toast.LENGTH_SHORT
+                ).show()
             },
             modifier = Modifier.zIndex(1f),
         )

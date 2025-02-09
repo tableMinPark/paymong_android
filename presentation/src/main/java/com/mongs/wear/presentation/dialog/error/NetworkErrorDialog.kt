@@ -35,7 +35,7 @@ import com.mongs.wear.presentation.component.common.button.BlueButton
 @Composable
 fun NetworkErrorDialog (
     errorDialogLoadingBar: Boolean,
-    networkRetry: () -> Unit,
+    retryNetwork: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f)
 ) {
     Box(
@@ -90,7 +90,7 @@ fun NetworkErrorDialog (
             } else {
                 BlueButton(
                     text = "재시도",
-                    onClick = networkRetry,
+                    onClick = retryNetwork,
                 )
             }
         }
@@ -103,6 +103,6 @@ fun NetworkErrorDialog (
 private fun ConfirmDialogPreview() {
     NetworkErrorDialog(
         errorDialogLoadingBar = false,
-        networkRetry = {},
+        retryNetwork = {},
     )
 }

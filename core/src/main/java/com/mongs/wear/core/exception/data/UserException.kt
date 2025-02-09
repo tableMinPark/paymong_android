@@ -3,6 +3,11 @@ package com.mongs.wear.core.exception.data
 import com.mongs.wear.core.errors.DataErrorCode
 import com.mongs.wear.core.exception.global.DataException
 
+class CreateMapCollectionsException(result: Map<String, Any> = emptyMap()) : DataException(
+    code = DataErrorCode.DATA_USER_COLLECTION_CREATE_MAP_COLLECTIONS,
+    result = result,
+)
+
 class GetMapCollectionsException(result: Map<String, Any> = emptyMap()) : DataException(
     code = DataErrorCode.DATA_USER_COLLECTION_GET_MAP_COLLECTIONS,
     result = result,

@@ -45,6 +45,8 @@ class MqttClientImpl @Inject constructor(
      */
     override suspend fun connect() {
 
+        if (mqttState.connectPending) return
+
         if (mqttState.isDisConnect() || mqttState.isPauseDisConnect()) {
             try {
                 mqttState.connectPending = true

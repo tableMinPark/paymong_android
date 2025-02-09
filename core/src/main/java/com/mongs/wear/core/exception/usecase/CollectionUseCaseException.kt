@@ -4,6 +4,11 @@ import com.mongs.wear.core.errors.UseCaseErrorCode
 import com.mongs.wear.core.errors.ErrorCode
 import com.mongs.wear.core.exception.global.UseCaseException
 
+class CreateMapCollectionsUseCaseException(
+    override val code: ErrorCode = UseCaseErrorCode.USE_CASE_COLLECTION_CREATE_MAP_COLLECTIONS_FAILED,
+    override val message: String = code.getMessage()
+) : UseCaseException(code = code, message = message)
+
 class GetMapCollectionsUseCaseException(
     override val code: ErrorCode = UseCaseErrorCode.USE_CASE_COLLECTION_GET_MAP_COLLECTIONS_FAILED,
     override val message: String = code.getMessage()

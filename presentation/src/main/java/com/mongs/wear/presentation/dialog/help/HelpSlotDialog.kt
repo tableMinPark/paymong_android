@@ -14,13 +14,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
 import com.mongs.wear.presentation.component.common.pagenation.PageIndicator
-import com.mongs.wear.presentation.dialog.help.content.common.HelpCancelContent
-import com.mongs.wear.presentation.dialog.help.content.slot.HelpAddSlotContent
-import com.mongs.wear.presentation.dialog.help.content.slot.HelpBuySlotContent
-import com.mongs.wear.presentation.dialog.help.content.slot.HelpDeleteSlotContent
-import com.mongs.wear.presentation.dialog.help.content.slot.HelpDetailSlotContent
-import com.mongs.wear.presentation.dialog.help.content.slot.HelpGraduateSlotContent
-import com.mongs.wear.presentation.dialog.help.content.slot.HelpPickSlotContent
+import com.mongs.wear.presentation.component.help.content.slot.*
+import com.mongs.wear.presentation.component.help.content.common.*
 
 @Composable
 fun HelpSlotDialog(

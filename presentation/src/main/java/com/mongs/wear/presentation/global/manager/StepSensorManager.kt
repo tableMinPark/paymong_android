@@ -38,8 +38,6 @@ class StepSensorManager @Inject constructor(
                 CoroutineScope(Dispatchers.IO).launch {
                     val totalWalkingCount = event.values[0].toInt()
 
-                    Log.i(TAG, "[Manager] 총 걸음 수 : $totalWalkingCount")
-
                     try {
                         setLocalTotalWalkingCountUseCase(
                             SetLocalTotalWalkingCountUseCase.Param(
@@ -82,8 +80,6 @@ class StepSensorManager @Inject constructor(
                 override fun onSensorChanged(event: SensorEvent?) {
                     event?.let {
                         val totalWalkingCount = event.values[0].toInt()
-
-                        Log.i(TAG, "[Manager] 총 걸음 수 : $totalWalkingCount")
 
                         sensorOnceManager.unregisterListener(this)
 

@@ -7,6 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -32,10 +33,6 @@ class TokenDataStore @Inject constructor(
         CoroutineScope(Dispatchers.IO).launch {
             context.store.edit { preferences ->
 
-                if (!preferences.contains(ACCESS_TOKEN)) {
-                    preferences[ACCESS_TOKEN] = ""
-                }
-
                 if (!preferences.contains(REFRESH_TOKEN)) {
                     preferences[REFRESH_TOKEN] = ""
                 }
@@ -55,9 +52,14 @@ class TokenDataStore @Inject constructor(
     /**
      * access Token 조회
      */
-    fun getAccessToken() : String {
-        return runBlocking {
-            context.store.data.map { preferences ->
+    suspend fun getAccessToken() : String {
+        return context.store.let { store ->
+            store.edit { preferences ->
+                if (!preferences.contains(ACCESS_TOKEN)) {
+                    preferences[ACCESS_TOKEN] = ""
+                }
+            }
+            store.data.map { preferences ->
                 preferences[ACCESS_TOKEN]!!
             }.first()
         }
@@ -75,9 +77,14 @@ class TokenDataStore @Inject constructor(
     /**
      * refresh Token 조회
      */
-    fun getRefreshToken() : String {
-        return runBlocking {
-            context.store.data.map { preferences ->
+    suspend fun getRefreshToken() : String {
+        return context.store.let { store ->
+            store.edit { preferences ->
+                if (!preferences.contains(REFRESH_TOKEN)) {
+                    preferences[REFRESH_TOKEN] = ""
+                }
+            }
+            store.data.map { preferences ->
                 preferences[REFRESH_TOKEN]!!
             }.first()
         }

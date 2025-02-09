@@ -1,7 +1,14 @@
 package com.mongs.wear.presentation.pages.setting
 
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -27,6 +34,7 @@ import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Text
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.mongs.wear.core.errors.PresentationErrorCode
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.assets.NavItem
@@ -59,7 +67,11 @@ fun SettingView(
                         .addOnCompleteListener {
                             settingViewModel.logout()
                         }.addOnFailureListener {
-                            Toast.makeText(context, "잠시후 다시 시도", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(
+                                context,
+                                PresentationErrorCode.PRESENTATION_AUTH_LOGOUT.getMessage(),
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
                 },
                 cancel = {
@@ -70,13 +82,21 @@ fun SettingView(
 
             val notification = settingViewModel.notification.observeAsState(false)
 
+            val notificationPermission = settingViewModel.notificationPermission.observeAsState(false)
+            val activityPermission = settingViewModel.activityPermission.observeAsState(false)
+            val locationBackgroundPermission = settingViewModel.locationBackgroundPermission.observeAsState(false)
+
             SettingBackground()
             SettingContent(
                 notification = notification.value,
+                notificationPermission = notificationPermission.value,
+                activityPermission = activityPermission.value,
+                locationBackgroundPermission = locationBackgroundPermission.value,
                 toggleNotification = settingViewModel::toggleNotification,
-                logoutDialogOpen = {
-                    settingViewModel.uiState.logoutDialog = true
-                },
+                requestNotificationPermission = settingViewModel::requestNotificationPermission,
+                requestActivityPermission = settingViewModel::requestActivityPermission,
+                requestLocationBackgroundPermission = settingViewModel::requestLocationBackgroundPermission,
+                logoutDialogOpen = { settingViewModel.uiState.logoutDialog = true },
                 modifier = Modifier.zIndex(1f),
             )
         }
@@ -88,13 +108,36 @@ fun SettingView(
                 }
             }
         }
+
+        /**
+         * 권한 요청 설정 화면 이동
+         */
+        val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            settingViewModel.checkPermission()
+        }
+
+        LaunchedEffect(settingViewModel.uiState.requestPermissionEvent) {
+            settingViewModel.uiState.requestPermissionEvent.collect { _ ->
+                permissionLauncher.launch(
+                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                        data = Uri.parse("package:${context.packageName}")
+                    }
+                )
+            }
+        }
     }
 }
 
 @Composable
 private fun SettingContent(
     notification: Boolean,
+    notificationPermission: Boolean,
+    activityPermission: Boolean,
+    locationBackgroundPermission: Boolean,
     toggleNotification: (Boolean) -> Unit,
+    requestNotificationPermission: () -> Unit,
+    requestActivityPermission: () -> Unit,
+    requestLocationBackgroundPermission: () -> Unit,
     logoutDialogOpen: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
@@ -111,6 +154,9 @@ private fun SettingContent(
             state = listState,
             autoCentering = null,
         ) {
+            /**
+             * 앱 설정
+             */
             item {
                 Box(
                     contentAlignment = Alignment.Center,
@@ -136,6 +182,7 @@ private fun SettingContent(
                     backgroundColor = Color.Black,
                     label = "알림",
                     checked = notification,
+                    disabled = !notificationPermission,
                     onChanged = { notification ->
                         toggleNotification(notification)
                     },
@@ -149,6 +196,67 @@ private fun SettingContent(
                     label = "로그아웃",
                     secondaryLabel = "구글 계정 로그아웃",
                     onClick = logoutDialogOpen,
+                )
+            }
+
+            /**
+             * 권한 설정
+             */
+            item {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(15.dp)
+                ) {
+                    Text(
+                        text = "권한",
+                        textAlign = TextAlign.Center,
+                        fontFamily = DAL_MU_RI,
+                        fontWeight = FontWeight.Light,
+                        fontSize = 16.sp,
+                        color = MongsWhite,
+                        maxLines = 1,
+                    )
+                }
+            }
+
+            item {
+                ToggleChip(
+                    fontColor = Color.White,
+                    backgroundColor = Color.Black,
+                    label = "알림",
+                    checked = notificationPermission,
+                    disabled = false,
+                    onChanged = { _ ->
+                        requestNotificationPermission()
+                    },
+                )
+            }
+
+            item {
+                ToggleChip(
+                    fontColor = Color.White,
+                    backgroundColor = Color.Black,
+                    label = "활동",
+                    checked = activityPermission,
+                    disabled = false,
+                    onChanged = { _ ->
+                        requestActivityPermission()
+                    },
+                )
+            }
+
+            item {
+                ToggleChip(
+                    fontColor = Color.White,
+                    backgroundColor = Color.Black,
+                    label = "백그라운드 위치",
+                    checked = locationBackgroundPermission,
+                    disabled = false,
+                    onChanged = { _ ->
+                        requestLocationBackgroundPermission()
+                    },
                 )
             }
         }

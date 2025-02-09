@@ -136,6 +136,7 @@ private fun NormalMainPagerContent(
                     mongVo?.let {
                         MainWalkingView(
                             mongVo = mongVo,
+                            isPageChanging = isPageChanging,
                         )
                     }
                 }

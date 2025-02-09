@@ -26,6 +26,7 @@ class HelpMenuViewModel @Inject constructor() : BaseViewModel() {
         var helpMongDialog by mutableStateOf(false)
         var helpSlotDialog by mutableStateOf(false)
         var helpBattleDialog by mutableStateOf(false)
+        var helpTrainingDialog by mutableStateOf(false)
     }
 
     override suspend fun exceptionHandler(exception: Throwable) {}

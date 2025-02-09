@@ -18,6 +18,7 @@ import com.mongs.wear.domain.battle.usecase.MatchExitUseCase
 import com.mongs.wear.domain.battle.usecase.MatchOverUseCase
 import com.mongs.wear.domain.battle.usecase.MatchPickUseCase
 import com.mongs.wear.domain.battle.usecase.MatchStartUseCase
+import com.mongs.wear.domain.battle.vo.BattleRewardVo
 import com.mongs.wear.domain.battle.vo.MatchPlayerVo
 import com.mongs.wear.domain.battle.vo.MatchVo
 import com.mongs.wear.domain.device.usecase.GetNetworkUseCase
@@ -52,8 +53,8 @@ class BattleMatchViewModel @Inject constructor(
     val network: LiveData<Boolean> get() = _network
     private val _network = MediatorLiveData(true)
 
-    private val _battlePayPoint = MediatorLiveData<Int>(0)
-    val battlePayPoint: LiveData<Int> get() = _battlePayPoint
+    private val _battleRewardVo = MediatorLiveData<BattleRewardVo?>(null)
+    val battleRewardVo: LiveData<BattleRewardVo?> get() = _battleRewardVo
 
     private val _matchVo = MediatorLiveData<MatchVo?>()
     val matchVo: LiveData<MatchVo?> get() = _matchVo
@@ -69,12 +70,12 @@ class BattleMatchViewModel @Inject constructor(
 
             uiState.loadingBar = true
 
+            _battleRewardVo.postValue(getBattlePayPointUseCase())
+
             // network flag 옵저버 객체 조회
             _network.addSource(withContext(Dispatchers.IO) { getNetworkUseCase() }) {
                 _network.value = it
             }
-
-            _battlePayPoint.postValue(getBattlePayPointUseCase())
 
             _matchVo.addSource(withContext(Dispatchers.IO) { getMatchUseCase() }) { matchVo ->
                 _matchVo.value = matchVo

@@ -4,6 +4,9 @@ import android.content.Context
 import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.mongs.wear.core.utils.TimeUtil
 import com.mongs.wear.domain.auth.repository.AuthRepository
@@ -11,6 +14,7 @@ import com.mongs.wear.domain.device.repository.DeviceRepository
 import com.mongs.wear.presentation.global.manager.StepSensorManager
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import java.util.concurrent.TimeUnit
 
 @HiltWorker
 class StepSensorWorker @AssistedInject constructor(
@@ -22,7 +26,7 @@ class StepSensorWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, workerParams) {
 
     companion object {
-        private const val TAG = "StepsWorker"
+        private const val TAG = "StepSensorWorker"
         const val WORKER_NAME = "MONGS_STEPS_SYNC_WORKER"
     }
 

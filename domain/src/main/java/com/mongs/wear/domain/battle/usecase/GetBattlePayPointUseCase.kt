@@ -5,21 +5,28 @@ import com.mongs.wear.core.exception.global.DataException
 import com.mongs.wear.core.exception.usecase.GetBattlePayPointUseCaseException
 import com.mongs.wear.domain.battle.repository.BattleRepository
 import com.mongs.wear.core.usecase.BaseNoParamUseCase
+import com.mongs.wear.domain.battle.vo.BattleRewardVo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class GetBattlePayPointUseCase @Inject constructor(
     private val battleRepository: BattleRepository,
-) : BaseNoParamUseCase<Int>() {
+) : BaseNoParamUseCase<BattleRewardVo>() {
 
     /**
      * 배틀 보상 페이 포인트 조회 UseCase
      * @throws GetBattleRewardException
      */
-    override suspend fun execute(): Int {
+    override suspend fun execute(): BattleRewardVo {
         return withContext(Dispatchers.IO) {
-            battleRepository.getBattleReward().payPoint
+
+            val battleRewardModel = battleRepository.getBattleReward()
+
+            BattleRewardVo(
+                rewardPayPoint = battleRewardModel.rewardPayPoint,
+                bettingPayPoint = battleRewardModel.bettingPayPoint,
+            )
         }
     }
 

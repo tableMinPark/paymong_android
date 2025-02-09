@@ -28,6 +28,7 @@ import com.mongs.wear.presentation.dialog.help.HelpInfoDialog
 import com.mongs.wear.presentation.dialog.help.HelpMongDialog
 import com.mongs.wear.presentation.dialog.help.HelpPointDialog
 import com.mongs.wear.presentation.dialog.help.HelpSlotDialog
+import com.mongs.wear.presentation.dialog.help.HelpTrainingDialog
 
 @Composable
 fun HelpMenuView(
@@ -42,6 +43,7 @@ fun HelpMenuView(
             helpMongDialog = { helpMenuViewModel.uiState.helpMongDialog = true },
             helpSlotDialog = { helpMenuViewModel.uiState.helpSlotDialog = true },
             helpBattleDialog = { helpMenuViewModel.uiState.helpBattleDialog = true },
+            helpTrainingDialog = { helpMenuViewModel.uiState.helpTrainingDialog = true },
             modifier = Modifier.zIndex(1f)
         )
 
@@ -70,6 +72,11 @@ fun HelpMenuView(
                 cancel = { helpMenuViewModel.uiState.helpBattleDialog = false },
                 modifier = Modifier.zIndex(2f),
             )
+        } else if (helpMenuViewModel.uiState.helpTrainingDialog) {
+            HelpTrainingDialog(
+                cancel = { helpMenuViewModel.uiState.helpTrainingDialog = false },
+                modifier = Modifier.zIndex(2f),
+            )
         }
     }
 }
@@ -81,6 +88,7 @@ private fun HelpMenuContent(
     helpMongDialog: () -> Unit,
     helpSlotDialog: () -> Unit,
     helpBattleDialog: () -> Unit,
+    helpTrainingDialog: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
     val listState = rememberScalingLazyListState(initialCenterItemIndex = 1)
@@ -160,8 +168,18 @@ private fun HelpMenuContent(
                     fontColor = Color.White,
                     backgroundColor = Color.Black,
                     label = "배틀",
-                    secondaryLabel = "매칭,매치,승리보상",
+                    secondaryLabel = "매칭,매치,보상",
                     onClick = helpBattleDialog,
+                )
+            }
+
+            item {
+                Chip(
+                    fontColor = Color.White,
+                    backgroundColor = Color.Black,
+                    label = "훈련 - Runner",
+                    secondaryLabel = "플레이 방법,보상",
+                    onClick = helpTrainingDialog,
                 )
             }
         }

@@ -1,5 +1,7 @@
 package com.mongs.wear.presentation.pages.battle.menu
 
+import android.content.Context
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -22,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,6 +40,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.wear.compose.material.Text
 import com.mongs.wear.core.enums.MatchStateCode
+import com.mongs.wear.core.errors.PresentationErrorCode
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsPink200
@@ -50,9 +54,11 @@ import com.mongs.wear.presentation.component.common.button.BlueButton
 fun BattleMenuView(
     navController: NavController,
     battleMenuViewModel: BattleMenuViewModel = hiltViewModel(),
+    context: Context = LocalContext.current,
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
 ) {
-    val battlePayPoint = battleMenuViewModel.battlePayPoint.observeAsState(0)
+    val payPoint = battleMenuViewModel.payPoint.observeAsState(0)
+    val battleRewardVo = battleMenuViewModel.battleRewardVo.observeAsState()
     val matchVo = battleMenuViewModel.matchVo.observeAsState()
 
     Box {
@@ -60,20 +66,29 @@ fun BattleMenuView(
             BattleMenuBackground()
             BattleMenuLoadingBar(
                 matchStateCode = matchVo.value?.stateCode,
-                matchWaitCancel = {
-                    battleMenuViewModel.matchWaitCancel()
-                },
+                matchWaitCancel = { battleMenuViewModel.matchWaitCancel() },
                 modifier = Modifier.zIndex(1f)
             )
         } else {
             BattleMenuBackground()
-            BattleMenuContent(
-                battle = {
-                    battleMenuViewModel.createMatchWait()
-                },
-                battlePayPoint = battlePayPoint.value,
-                modifier = Modifier.zIndex(1f),
-            )
+
+            battleRewardVo.value?.let { battleRewardVo ->
+                BattleMenuContent(
+                    battle = {
+                        if (payPoint.value >= battleRewardVo.bettingPayPoint) {
+                            battleMenuViewModel.createMatchWait()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                PresentationErrorCode.PRESENTATION_BATTLE_NOT_ENOUGH_PAY_POINT.getMessage(),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    },
+                    bettingPayPoint = battleRewardVo.bettingPayPoint,
+                    modifier = Modifier.zIndex(1f),
+                )
+            }
         }
 
         LaunchedEffect(matchVo.value?.stateCode) {
@@ -169,7 +184,7 @@ private fun BattleMenuLoadingBar(
 
 @Composable
 private fun BattleMenuContent(
-    battlePayPoint: Int,
+    bettingPayPoint: Int,
     battle: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
@@ -258,7 +273,7 @@ private fun BattleMenuContent(
                 Spacer(modifier = Modifier.width(10.dp))
 
                 Text(
-                    text = "+ $battlePayPoint",
+                    text = "- $bettingPayPoint",
                     textAlign = TextAlign.Center,
                     fontFamily = DAL_MU_RI,
                     fontWeight = FontWeight.Light,

@@ -52,6 +52,7 @@ enum class DataErrorCode(
     // USER-DEVICE
     DATA_USER_DEVICE_EXCHANGE_WALKING("걸음 수 환전 실패했습니다.", false),
     // USER-COLLECTION
+    DATA_USER_COLLECTION_CREATE_MAP_COLLECTIONS("컬렉션 맵 등록 실패했습니다.", false),
     DATA_USER_COLLECTION_GET_MAP_COLLECTIONS("컬렉션 맵 조회 실패했습니다.", false),
     DATA_USER_COLLECTION_GET_MONG_COLLECTIONS("컬렉션 맵 조회 실패했습니다.", false),
     // USER-FEEDBACK

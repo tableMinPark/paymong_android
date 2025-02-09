@@ -21,7 +21,6 @@ abstract class BaseNoParamUseCase<R> {
             // 메서드 실행
             execute()
         } catch (exception: Exception) {
-
             when (exception) {
                 is UseCaseException -> throw exception
 
@@ -32,6 +31,7 @@ abstract class BaseNoParamUseCase<R> {
 
                     // handlerException 에서 throw 하지 않을 시에 기본 예외 발생
                     throw UseCaseException(
+                        exception = exception,
                         code = UseCaseErrorCode.USE_CASE_GLOBAL_DATA_ERROR,
                         message = exception.message
                     )
@@ -41,6 +41,7 @@ abstract class BaseNoParamUseCase<R> {
                     Log.e(TAG, "[Exception] ${exception.javaClass.name} ${exception.message ?: ""}")
 
                     throw UseCaseException(
+                        exception = exception,
                         code = UseCaseErrorCode.USE_CASE_GLOBAL_UNKNOWN_ERROR,
                         message = exception.message ?: ""
                     )

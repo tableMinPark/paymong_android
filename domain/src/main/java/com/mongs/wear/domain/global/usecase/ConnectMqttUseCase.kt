@@ -32,9 +32,7 @@ class ConnectMqttUseCase @Inject constructor(
             mqttClient.connect()
 
             if (mqttClient.isConnected()) {
-
                 if (authRepository.isLogin()) {
-
                     // 현재 플레이어 정보 구독
                     deviceRepository.getAccountId().let { accountId ->
                         mqttClient.subPlayer(accountId = accountId)

@@ -11,7 +11,6 @@ import com.mongs.wear.domain.player.usecase.UpdatePlayerUseCase
 import com.mongs.wear.presentation.global.manager.StepSensorManager
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -99,7 +98,7 @@ class MainActivityViewModel @Inject constructor(
     /**
      * 브로커 연결 해제
      */
-    fun disConnectMqtt() = CoroutineScope(Dispatchers.IO).launch {
+    fun disConnectMqtt() = viewModelScopeWithHandler.launch(Dispatchers.IO) {
         disConnectMqttUseCase()
     }
 

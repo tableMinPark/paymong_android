@@ -10,7 +10,9 @@ import com.mongs.wear.domain.battle.usecase.GetBattlePayPointUseCase
 import com.mongs.wear.domain.battle.usecase.MatchEnterUseCase
 import com.mongs.wear.domain.battle.usecase.MatchWaitCancelUseCase
 import com.mongs.wear.domain.battle.usecase.MatchWaitUseCase
+import com.mongs.wear.domain.battle.vo.BattleRewardVo
 import com.mongs.wear.domain.battle.vo.MatchVo
+import com.mongs.wear.domain.management.usecase.GetCurrentSlotUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -23,6 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BattleMenuViewModel @Inject constructor(
     private val getBattlePayPointUseCase: GetBattlePayPointUseCase,
+    private val getCurrentSlotUseCase: GetCurrentSlotUseCase,
     private val matchWaitUseCase: MatchWaitUseCase,
     private val matchWaitCancelUseCase: MatchWaitCancelUseCase,
     private val matchEnterUseCase: MatchEnterUseCase,
@@ -35,15 +38,24 @@ class BattleMenuViewModel @Inject constructor(
     private val _matchVo = MediatorLiveData<MatchVo?>(null)
     val matchVo: LiveData<MatchVo?> get() = _matchVo
 
-    private val _battlePayPoint = MediatorLiveData<Int>(0)
-    val battlePayPoint: LiveData<Int> get() = _battlePayPoint
+    private val _payPoint = MediatorLiveData<Int>(0)
+    val payPoint: LiveData<Int> get() = _payPoint
+
+    private val _battleRewardVo = MediatorLiveData<BattleRewardVo?>(null)
+    val battleRewardVo: LiveData<BattleRewardVo?> get() = _battleRewardVo
 
     init {
         viewModelScopeWithHandler.launch(Dispatchers.Main) {
 
             uiState.loadingBar = true
 
-            _battlePayPoint.postValue(getBattlePayPointUseCase())
+            _battleRewardVo.postValue(getBattlePayPointUseCase())
+
+            _payPoint.addSource(withContext(Dispatchers.IO) { getCurrentSlotUseCase() }) {
+                it?.let { mongVo ->
+                    _payPoint.value = mongVo.payPoint
+                } ?: run { _payPoint.value = 0 }
+            }
 
             uiState.loadingBar = false
         }

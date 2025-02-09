@@ -4,6 +4,8 @@ import android.content.Context
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.pager.rememberPagerState
@@ -50,9 +52,8 @@ fun MainView (
     context: Context = LocalContext.current,
     mainViewModel: MainViewModel = hiltViewModel(),
 ) {
-
     Box {
-        if (mainViewModel.uiState.loadingBar) {
+        if (mainViewModel.uiState.loadingBar || mainViewModel.uiState.permissionLoadingBar) {
             MainBackground()
             MainLoadingBar()
         } else {
@@ -64,7 +65,7 @@ fun MainView (
         if (!networkFlag.value) {
             NetworkErrorDialog(
                 errorDialogLoadingBar = mainViewModel.uiState.errorDialogLoadingBar,
-                networkRetry = mainViewModel::networkRetry,
+                retryNetwork = mainViewModel::retryNetwork,
                 modifier = Modifier.zIndex(1f),
             )
         }
@@ -93,6 +94,19 @@ fun MainView (
                 successMessage,
                 Toast.LENGTH_SHORT
             ).show()
+        }
+    }
+
+    /**
+     * 필수 권한 요청
+     */
+    val permissionLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { _ ->
+        mainViewModel.checkPermission()
+    }
+
+    LaunchedEffect(mainViewModel.uiState.requestPermissionEvent) {
+        mainViewModel.uiState.requestPermissionEvent.collect { permissions ->
+            permissionLauncher.launch(permissions)
         }
     }
 }
@@ -291,7 +305,7 @@ fun NavContent(
 
 
 @Composable
-private fun MainLoadingBar(
+fun MainLoadingBar(
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
     Box(

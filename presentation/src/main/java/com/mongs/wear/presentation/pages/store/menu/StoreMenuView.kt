@@ -34,6 +34,7 @@ import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.wear.compose.material.Text
+import com.mongs.wear.core.errors.PresentationErrorCode
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
@@ -54,21 +55,30 @@ fun StoreMenuView(
             StoreMenuLoadingBar()
         } else {
             val mongVo = storeMenuViewModel.mongVo.observeAsState()
+            val isBillingDevice = storeMenuViewModel.isBillingDevice.observeAsState(false)
 
             StoreMenuContent(
-                exchange = {
+                navExchangePayPoint = {
                     mongVo.value?.let {
                         navController.navigate(NavItem.StoreExchangePayPoint.route)
                     } ?: run {
                         Toast.makeText(
                             context,
-                            "선택된 슬롯이 없습니다.",
+                            PresentationErrorCode.PRESENTATION_MANAGEMENT_NOT_PICK_SLOT.getMessage(),
                             Toast.LENGTH_SHORT,
                         ).show()
                     }
                 },
-                charge = {
-                    navController.navigate(NavItem.StoreChargeStarPoint.route)
+                navChargeStarPoint = {
+                    if (isBillingDevice.value) {
+                        navController.navigate(NavItem.StoreChargeStarPoint.route)
+                    } else {
+                        Toast.makeText(
+                            context,
+                            PresentationErrorCode.PRESENTATION_USER_BILLING_NOT_SUPPORT.getMessage(),
+                            Toast.LENGTH_SHORT,
+                        ).show()
+                    }
                 },
                 modifier = Modifier.zIndex(1f)
             )
@@ -78,8 +88,8 @@ fun StoreMenuView(
 
 @Composable
 private fun StoreMenuContent(
-    exchange: () -> Unit,
-    charge: () -> Unit,
+    navExchangePayPoint: () -> Unit,
+    navChargeStarPoint: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
     Box(
@@ -99,7 +109,7 @@ private fun StoreMenuContent(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                        onClick = exchange
+                        onClick = navExchangePayPoint
                     ),
             ) {
                 Image(
@@ -119,6 +129,7 @@ private fun StoreMenuContent(
                     maxLines = 1,
                 )
             }
+
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.weight(0.02f)
@@ -129,6 +140,7 @@ private fun StoreMenuContent(
                     .height(2.dp)
                 )
             }
+
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center,
@@ -138,7 +150,7 @@ private fun StoreMenuContent(
                     .clickable(
                         interactionSource = remember { MutableInteractionSource() },
                         indication = null,
-                        onClick = charge
+                        onClick = navChargeStarPoint,
                     ),
             ) {
                 Image(
@@ -161,7 +173,6 @@ private fun StoreMenuContent(
         }
     }
 }
-
 
 @Composable
 private fun StoreMenuLoadingBar(

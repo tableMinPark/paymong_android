@@ -65,7 +65,7 @@ fun BattleMatchView(
     lifecycleOwner: LifecycleOwner = LocalLifecycleOwner.current,
 ) {
     val network = battleMatchViewModel.network.observeAsState(true)
-    val battlePayPoint = battleMatchViewModel.battlePayPoint.observeAsState(0)
+    val battleRewardVo = battleMatchViewModel.battleRewardVo.observeAsState()
     val matchVo = battleMatchViewModel.matchVo.observeAsState()
     val myMatchPlayerVo = battleMatchViewModel.myMatchPlayerVo.observeAsState()
     val otherMatchPlayerVo = battleMatchViewModel.otherMatchPlayerVo.observeAsState()
@@ -130,12 +130,14 @@ fun BattleMatchView(
                         modifier = Modifier.zIndex(1f),
                     )
                 } else if (battleMatchViewModel.uiState.matchOverDialog) {
-                    MatchOverDialog(
-                        battlePayPoint = battlePayPoint.value,
-                        matchEnd = battleMatchViewModel::matchEnd,
-                        myMatchPlayerVo = myMatchPlayerVo.value,
-                        modifier = Modifier.zIndex(1f),
-                    )
+                    battleRewardVo.value?.let { battleRewardVo ->
+                        MatchOverDialog(
+                            battlePayPoint = battleRewardVo.rewardPayPoint,
+                            matchEnd = battleMatchViewModel::matchEnd,
+                            myMatchPlayerVo = myMatchPlayerVo.value,
+                            modifier = Modifier.zIndex(1f),
+                        )
+                    }
                 } else if (matchVo.stateCode == MatchStateCode.MATCH_ENTER) {
                     BattleMatchEnterContent(
                         myMatchPlayerVo = myMatchPlayerVo.value,

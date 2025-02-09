@@ -28,6 +28,7 @@ fun ToggleChip(
     backgroundColor: Color,
     label: String,
     checked: Boolean,
+    disabled: Boolean,
     onChanged: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -60,7 +61,8 @@ fun ToggleChip(
                 Switch(
                     checked = checked,
                     onCheckedChange = { onChanged(!checked) },
-                    modifier = Modifier.weight(0.2f)
+                    modifier = Modifier.weight(0.2f),
+                    enabled = !disabled
                 )
             }
         },
@@ -74,6 +76,7 @@ private fun ToggleChipPreview() {
         fontColor = MongsWhite,
         label = "테스트",
         checked = false,
+        disabled = false,
         onChanged = {  },
         backgroundColor = Color.Black,
     )

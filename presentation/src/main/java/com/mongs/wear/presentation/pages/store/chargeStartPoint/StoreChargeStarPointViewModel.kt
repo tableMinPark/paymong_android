@@ -160,6 +160,9 @@ class StoreChargeStarPointViewModel @Inject constructor(
                     )
                     // 소비 성공
                     getProducts()
+
+                    toastEvent("소비 성공")
+
                     break
                 }
             }

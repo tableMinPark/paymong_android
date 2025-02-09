@@ -1,8 +1,12 @@
 package com.mongs.wear.presentation.pages.main.walking
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.mongs.wear.core.exception.usecase.ExchangeWalkingCountUseCaseException
@@ -14,6 +18,7 @@ import com.mongs.wear.domain.device.usecase.GetStepsUseCase
 import com.mongs.wear.domain.management.usecase.GetCurrentSlotUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -21,6 +26,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainWalkingViewModel @Inject constructor(
+    @ApplicationContext private val context: Context,
     private val getCurrentSlotUseCase: GetCurrentSlotUseCase,
     private val getStepsUseCase: GetStepsUseCase,
     private val exchangeWalkingCountUseCase: ExchangeWalkingCountUseCase,
@@ -31,6 +37,9 @@ class MainWalkingViewModel @Inject constructor(
 
     private val _steps = MediatorLiveData<Int>()
     val steps: LiveData<Int> get() = _steps
+
+    val activityPermission: LiveData<Boolean> get() = _activityPermission
+    private val _activityPermission = MediatorLiveData(false)
 
     init {
         viewModelScopeWithHandler.launch (Dispatchers.Main) {
@@ -47,7 +56,18 @@ class MainWalkingViewModel @Inject constructor(
                 _steps.value = steps
             }
 
+            _activityPermission.postValue(verifyActivityPermission().isEmpty())
+
             uiState.loadingBar = false
+        }
+    }
+
+    /**
+     * 활동 권한 부여 여부 갱신
+     */
+    fun refreshActivityPermission() {
+        viewModelScopeWithHandler.launch (Dispatchers.IO) {
+            _activityPermission.postValue(verifyActivityPermission().isEmpty())
         }
     }
 
@@ -73,6 +93,17 @@ class MainWalkingViewModel @Inject constructor(
             toastEvent("환전 성공")
 
             uiState.loadingBar = false
+        }
+    }
+
+    /**
+     * 활동 권한 체크
+     */
+    private fun verifyActivityPermission() : Array<String> {
+        return if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACTIVITY_RECOGNITION) == PackageManager.PERMISSION_DENIED) {
+            arrayOf(Manifest.permission.ACTIVITY_RECOGNITION)
+        } else {
+            emptyArray()
         }
     }
 

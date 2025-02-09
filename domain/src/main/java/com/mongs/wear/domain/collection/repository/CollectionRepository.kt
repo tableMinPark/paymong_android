@@ -5,6 +5,12 @@ import com.mongs.wear.domain.collection.model.CollectionModel
 interface CollectionRepository {
 
     /**
+     * 컬렉션 맵 등록
+     * @throws CreateMapCollectionsException
+     */
+    suspend fun createMapCollection(latitude: Double, longitude: Double)
+
+    /**
      * 컬렉션 맵 목록 조회
      * @throws GetMapCollectionsException
      */

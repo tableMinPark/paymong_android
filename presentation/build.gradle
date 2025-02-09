@@ -79,4 +79,7 @@ dependencies {
 
     // fcm
     implementation 'com.google.firebase:firebase-messaging-ktx:24.1.0'
+
+    // gps
+    implementation 'com.google.android.gms:play-services-location:21.3.0'
 }

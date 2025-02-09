@@ -47,7 +47,6 @@ abstract class BaseViewModel : ViewModel() {
      */
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
         CoroutineScope(Dispatchers.IO).launch {
-
             if (exception is UseCaseException) {
                 Log.e(TAG, "[Exception] ${exception.javaClass.simpleName} ${exception.message} ===> ${exception.result}")
 

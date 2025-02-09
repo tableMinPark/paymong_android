@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import androidx.annotation.ChecksSdkIntAtLeast
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClient.BillingResponseCode
 import com.android.billingclient.api.BillingClient.ConnectionState
@@ -124,6 +125,14 @@ class BillingManager @Inject constructor(
         } else {
             cont.resume(billingClient)
         }
+    }
+
+    /**
+     * Billing 가능 기기 여부 확인
+     */
+    @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.TIRAMISU)
+    fun verifyBilling() : Boolean {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
     }
 
     /**

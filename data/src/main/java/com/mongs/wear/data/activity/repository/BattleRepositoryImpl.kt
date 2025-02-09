@@ -87,7 +87,8 @@ class BattleRepositoryImpl @Inject constructor(
         if (response.isSuccessful) {
             response.body()?.let { body ->
                 return BattleRewardModel(
-                    payPoint = body.result.payPoint
+                    rewardPayPoint = body.result.rewardPayPoint,
+                    bettingPayPoint = body.result.bettingPayPoint,
                 )
             }
         }

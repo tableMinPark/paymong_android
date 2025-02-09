@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
@@ -36,6 +37,8 @@ import com.mongs.wear.presentation.component.common.button.BlueButton
 import com.mongs.wear.presentation.component.common.button.SelectButton
 import com.mongs.wear.presentation.component.common.textbox.PayPoint
 import com.mongs.wear.presentation.dialog.common.ConfirmAndCancelDialog
+import com.mongs.wear.presentation.dialog.error.NeedPermissionDialog
+import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import com.mongs.wear.presentation.pages.main.walking.MainWalkingViewModel.UiState
 import kotlin.math.max
 import kotlin.math.min
@@ -43,6 +46,7 @@ import kotlin.math.min
 @Composable
 fun MainWalkingView(
     mongVo: MongVo,
+    isPageChanging: State<Boolean>,
     mainWalkingViewModel: MainWalkingViewModel = hiltViewModel(),
 ) {
     val payPoint = mainWalkingViewModel.payPoint.observeAsState(0)
@@ -50,6 +54,7 @@ fun MainWalkingView(
     val steps = mainWalkingViewModel.steps.observeAsState(0)
     val remainingSteps = remember { derivedStateOf { steps.value - 1000 * ratio.intValue }}
     val chargePayPoint = remember { derivedStateOf { 100 * ratio.intValue }}
+    val activityPermission = mainWalkingViewModel.activityPermission.observeAsState(true)
 
     Box {
         if (mainWalkingViewModel.uiState.loadingBar) {
@@ -79,6 +84,14 @@ fun MainWalkingView(
                 modifier = Modifier.zIndex(1f),
                 uiState = mainWalkingViewModel.uiState,
             )
+
+            if (!isPageChanging.value && !activityPermission.value) {
+                NeedPermissionDialog(
+                    permissionName = "활동",
+                    permissionSettingEndEvent = mainWalkingViewModel::refreshActivityPermission,
+                    modifier = Modifier.zIndex(2f)
+                )
+            }
         }
     }
 }
