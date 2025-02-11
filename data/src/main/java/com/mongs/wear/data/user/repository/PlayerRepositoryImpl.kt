@@ -31,8 +31,6 @@ class PlayerRepositoryImpl @Inject constructor(
             response.body()?.let { body ->
                 playerDataStore.setStarPoint(starPoint = body.result.starPoint)
             }
-        } else {
-            throw GetPlayerException(result = HttpUtil.getErrorResult(response.errorBody()))
         }
     }
 

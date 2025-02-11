@@ -16,7 +16,7 @@ import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 @Composable
 fun NormalContent(
     mongVo: MongVo,
-    stroke: () -> Unit,
+    onMongClick: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
     Box(
@@ -29,7 +29,7 @@ fun NormalContent(
             isEating = BaseViewModel.effectState.isEating,
             isSleeping = mongVo.isSleeping,
             mong = MongResourceCode.valueOf(mongVo.mongTypeCode),
-            onClick = stroke,
+            onClick = onMongClick,
             modifier = Modifier
                 .padding(bottom = 20.dp)
                 .zIndex(1f)

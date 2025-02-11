@@ -34,7 +34,7 @@ import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongResourceCode
 import com.mongs.wear.presentation.assets.MongsWhite
-import com.mongs.wear.presentation.component.common.background.CollectionNestedBackground
+import com.mongs.wear.presentation.component.background.CollectionNestedBackground
 import com.mongs.wear.presentation.component.common.charactor.Mong
 
 @Composable

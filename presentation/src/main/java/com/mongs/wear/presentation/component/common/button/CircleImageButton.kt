@@ -27,6 +27,7 @@ fun CircleImageButton(
     icon: Int,
     border: Int,
     size: Int = 54,
+    iconSize: Int = size / 2,
     onClick: () -> Unit,
     disable: Boolean = false,
     modifier: Modifier = Modifier
@@ -49,7 +50,6 @@ fun CircleImageButton(
                 }
             )
     ) {
-
         Image(
             alpha = 0.55f,
             painter = painterResource(R.drawable.interaction_bnt),
@@ -62,7 +62,7 @@ fun CircleImageButton(
             painter = painterResource(icon),
             contentDescription = null,
             modifier = Modifier
-                .size((size / 2).dp)
+                .size(iconSize.dp)
                 .zIndex(if (disable) -1f else 1f)
         )
 
@@ -71,7 +71,7 @@ fun CircleImageButton(
                 painter = painterResource(R.drawable.locker),
                 contentDescription = null,
                 modifier = Modifier
-                    .size((size / 2).dp)
+                    .size(iconSize.dp)
                     .zIndex(2f)
             )
         }

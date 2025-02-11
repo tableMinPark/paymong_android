@@ -32,7 +32,7 @@ class AuthRepositoryImpl @Inject constructor(
      * 로그인 여부 조회
      */
     override suspend fun isLogin() : Boolean {
-        return tokenDataStore.getAccessToken().isNotEmpty()
+        return tokenDataStore.getAccessToken().isNotBlank()
     }
 
     /**

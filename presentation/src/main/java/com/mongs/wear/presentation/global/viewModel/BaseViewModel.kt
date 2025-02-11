@@ -48,21 +48,21 @@ abstract class BaseViewModel : ViewModel() {
     private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
         CoroutineScope(Dispatchers.IO).launch {
             if (exception is UseCaseException) {
-                Log.e(TAG, "[Exception] ${exception.javaClass.simpleName} ${exception.message} ===> ${exception.result}")
+                Log.e(TAG, "[ViewModel Exception] ${exception.javaClass.simpleName} ${exception.message} ===> ${exception.result}")
 
                 // 알림 표출
                 if (exception.code.isMessageShow()) {
                     _errorEvent.emit(exception.message)
                 }
             } else if (exception is PresentationException) {
-                Log.e(TAG, "[Exception] ${exception.javaClass.simpleName} ${exception.message} ===> ${exception.result}")
+                Log.e(TAG, "[ViewModel Exception] ${exception.javaClass.simpleName} ${exception.message} ===> ${exception.result}")
 
                 // 알림 표출
                 if (exception.code.isMessageShow()) {
                     _errorEvent.emit(exception.message)
                 }
             } else {
-                Log.e(TAG, "[Exception] ${exception.javaClass.name} ${exception.message ?: ""}")
+                Log.e(TAG, "[ViewModel Exception] ${exception.javaClass.name} ${exception.message ?: ""}")
             }
 
             // 자식 클래스 exception handler 실행

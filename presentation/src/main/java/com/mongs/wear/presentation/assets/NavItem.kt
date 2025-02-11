@@ -3,49 +3,64 @@ package com.mongs.wear.presentation.assets
 sealed class NavItem(val route: String) {
 
     /* Login */
-    object Login: NavItem("Login")
+    data object Login: NavItem("Login")
 
     /* MainPager */
-    object MainPager: NavItem("MainPager")
+    data object MainPager: NavItem("MainPager")
 
     /* Feed */
-    object FeedNested: NavItem("FeedNested")
-    object FeedMenu: NavItem("FeedMenu")
-    object FeedFoodPick: NavItem("FeedFoodPick")
-    object FeedSnackPick: NavItem("FeedSnackPick")
+    data object FeedNested: NavItem("FeedNested")
+    data object FeedMenu: NavItem("FeedMenu")
+    data object FeedFoodPick: NavItem("FeedFoodPick")
+    data object FeedSnackPick: NavItem("FeedSnackPick")
 
     /* Collection */
-    object CollectionNested: NavItem("CollectionNested")
-    object CollectionMenu: NavItem("CollectionMenu")
-    object CollectionMapPick: NavItem("CollectionMapPick")
-    object CollectionMongPick: NavItem("CollectionMongPick")
+    data object CollectionNested: NavItem("CollectionNested")
+    data object CollectionMenu: NavItem("CollectionMenu")
+    data object CollectionMapPick: NavItem("CollectionMapPick")
+    data object CollectionMongPick: NavItem("CollectionMongPick")
 
     /* SlotPick */
-    object SlotPick: NavItem("SlotPick")
+    data object SlotPick: NavItem("SlotPick")
 
-    /* Payment */
-    object StoreNested: NavItem("StoreNested")
-    object StoreMenu: NavItem("StoreMenu")
-    object StoreChargeStarPoint: NavItem("StoreChargeStarPoint")
-    object StoreExchangePayPoint: NavItem("StoreExchangePayPoint")
+    /* Store */
+    data object StoreNested: NavItem("StoreNested")
+    data object StoreMenu: NavItem("StoreMenu")
+    data object StoreChargeStarPoint: NavItem("StoreChargeStarPoint")
+    data object StoreExchangePayPoint: NavItem("StoreExchangePayPoint")
 
     /* Feedback */
-    object Feedback: NavItem("Feedback")
+    data object Feedback: NavItem("Feedback")
 
     /* Training */
-    object TrainingNested: NavItem("TrainingNested")
-    object TrainingMenu: NavItem("TrainingMenu")
-    object TrainingJumping: NavItem("TrainingJumping")
+    data object TrainingNested: NavItem("TrainingNested")
+    data object TrainingMenu: NavItem("TrainingMenu")
+    data object TrainingJumping: NavItem("TrainingJumping")
 
     /* Battle */
-    object BattleNested: NavItem("BattleNested")
-    object BattleMenu: NavItem("BattleMenu")
-    object BattleMatch: NavItem("BattleMatch")
+    data object BattleNested: NavItem("BattleNested")
+    data object BattleMenu: NavItem("BattleMenu")
+    data object BattleMatch: NavItem("BattleMatch")
 
     /* Help */
-    object HelpNested: NavItem("HelpNested")
-    object HelpMenu: NavItem("HelpMenu")
+    data object HelpNested: NavItem("HelpNested")
+    data object HelpMenu: NavItem("HelpMenu")
 
     /* Setting */
-    object Setting: NavItem("Setting")
+    data object Setting: NavItem("Setting")
+
+    /* Exchange Walking */
+    data object ExchangeWalking: NavItem("ExchangeWalking")
+
+    /* Inventory */
+    data object Inventory: NavItem("Inventory")
+
+    /* Search Map */
+    data object SearchMap: NavItem("SearchMap")
+
+    /* Lucky Draw */
+    data object LuckyDraw: NavItem("LuckyDraw")
+
+    /* Walking */
+    data object Walking: NavItem("Walking")
 }

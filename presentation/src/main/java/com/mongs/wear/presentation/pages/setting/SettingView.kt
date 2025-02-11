@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
-import android.util.Log
 import android.widget.Toast
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
@@ -38,7 +36,7 @@ import com.mongs.wear.core.errors.PresentationErrorCode
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.assets.NavItem
-import com.mongs.wear.presentation.component.common.background.SettingBackground
+import com.mongs.wear.presentation.component.background.SettingBackground
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
 import com.mongs.wear.presentation.component.common.chip.Chip
 import com.mongs.wear.presentation.component.common.chip.ToggleChip
@@ -67,11 +65,15 @@ fun SettingView(
                         .addOnCompleteListener {
                             settingViewModel.logout()
                         }.addOnFailureListener {
-                            Toast.makeText(
-                                context,
-                                PresentationErrorCode.PRESENTATION_AUTH_LOGOUT.getMessage(),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            PresentationErrorCode.PRESENTATION_AUTH_LOGOUT.let { errorCode ->
+                                if (errorCode.isMessageShow()) {
+                                    Toast.makeText(
+                                        context,
+                                        errorCode.getMessage(),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
                         }
                 },
                 cancel = {
@@ -84,18 +86,18 @@ fun SettingView(
 
             val notificationPermission = settingViewModel.notificationPermission.observeAsState(false)
             val activityPermission = settingViewModel.activityPermission.observeAsState(false)
-            val locationBackgroundPermission = settingViewModel.locationBackgroundPermission.observeAsState(false)
+            val locationPermission = settingViewModel.locationPermission.observeAsState(false)
 
             SettingBackground()
             SettingContent(
                 notification = notification.value,
                 notificationPermission = notificationPermission.value,
                 activityPermission = activityPermission.value,
-                locationBackgroundPermission = locationBackgroundPermission.value,
+                locationPermission = locationPermission.value,
                 toggleNotification = settingViewModel::toggleNotification,
                 requestNotificationPermission = settingViewModel::requestNotificationPermission,
                 requestActivityPermission = settingViewModel::requestActivityPermission,
-                requestLocationBackgroundPermission = settingViewModel::requestLocationBackgroundPermission,
+                requestLocationPermission = settingViewModel::requestLocationBackgroundPermission,
                 logoutDialogOpen = { settingViewModel.uiState.logoutDialog = true },
                 modifier = Modifier.zIndex(1f),
             )
@@ -133,11 +135,11 @@ private fun SettingContent(
     notification: Boolean,
     notificationPermission: Boolean,
     activityPermission: Boolean,
-    locationBackgroundPermission: Boolean,
+    locationPermission: Boolean,
     toggleNotification: (Boolean) -> Unit,
     requestNotificationPermission: () -> Unit,
     requestActivityPermission: () -> Unit,
-    requestLocationBackgroundPermission: () -> Unit,
+    requestLocationPermission: () -> Unit,
     logoutDialogOpen: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
@@ -225,7 +227,7 @@ private fun SettingContent(
                 ToggleChip(
                     fontColor = Color.White,
                     backgroundColor = Color.Black,
-                    label = "알림",
+                    label = "알림 권한",
                     checked = notificationPermission,
                     disabled = false,
                     onChanged = { _ ->
@@ -238,7 +240,7 @@ private fun SettingContent(
                 ToggleChip(
                     fontColor = Color.White,
                     backgroundColor = Color.Black,
-                    label = "활동",
+                    label = "활동 권한",
                     checked = activityPermission,
                     disabled = false,
                     onChanged = { _ ->
@@ -251,11 +253,11 @@ private fun SettingContent(
                 ToggleChip(
                     fontColor = Color.White,
                     backgroundColor = Color.Black,
-                    label = "백그라운드 위치",
-                    checked = locationBackgroundPermission,
+                    label = "위치 권한",
+                    checked = locationPermission,
                     disabled = false,
                     onChanged = { _ ->
-                        requestLocationBackgroundPermission()
+                        requestLocationPermission()
                     },
                 )
             }

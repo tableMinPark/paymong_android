@@ -5,9 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.mongs.wear.core.exception.usecase.EvolutionMongUseCaseException
 import com.mongs.wear.core.exception.usecase.GraduateCheckUseCaseException
+import com.mongs.wear.core.exception.usecase.PoopCleanMongUseCaseException
+import com.mongs.wear.core.exception.usecase.SleepingMongUseCaseException
 import com.mongs.wear.core.exception.usecase.StrokeMongUseCaseException
 import com.mongs.wear.domain.management.usecase.EvolutionMongUseCase
 import com.mongs.wear.domain.management.usecase.GraduateCheckMongUseCase
+import com.mongs.wear.domain.management.usecase.PoopCleanMongUseCase
+import com.mongs.wear.domain.management.usecase.SleepingMongUseCase
 import com.mongs.wear.domain.management.usecase.StrokeMongUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +24,8 @@ class MainSlotViewModel @Inject constructor(
     private val strokeMongUseCase: StrokeMongUseCase,
     private val evolutionMongUseCase: EvolutionMongUseCase,
     private val graduateCheckMongUseCase: GraduateCheckMongUseCase,
+    private val sleepingMongUseCase: SleepingMongUseCase,
+    private val poopCleanMongUseCase: PoopCleanMongUseCase,
 ): BaseViewModel() {
 
     init {
@@ -36,6 +42,9 @@ class MainSlotViewModel @Inject constructor(
         if (effectState.isHappy) return
 
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
+
+            uiState.slotInteractionDialog = false
+
             strokeMongUseCase(
                 StrokeMongUseCase.Param(
                     mongId = mongId
@@ -51,7 +60,6 @@ class MainSlotViewModel @Inject constructor(
      */
     fun evolution(mongId: Long) {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
-
             evolutionMongUseCase(
                 EvolutionMongUseCase.Param(
                     mongId = mongId
@@ -65,6 +73,7 @@ class MainSlotViewModel @Inject constructor(
      */
     fun graduationReady(mongId: Long) {
         viewModelScopeWithHandler.launch (Dispatchers.IO) {
+
             graduateCheckMongUseCase(
                 GraduateCheckMongUseCase.Param(
                     mongId = mongId
@@ -73,23 +82,70 @@ class MainSlotViewModel @Inject constructor(
         }
     }
 
+    /**
+     * 몽 수면/기상
+     */
+    fun sleeping(mongId: Long) {
+        viewModelScopeWithHandler.launch (Dispatchers.IO) {
+
+            uiState.slotInteractionDialog = false
+
+            sleepingMongUseCase(
+                SleepingMongUseCase.Param(
+                    mongId = mongId
+                )
+            )
+
+            scrollPageMainPagerView()
+        }
+    }
+
+    /**
+     * 몽 청소
+     */
+    fun poopClean(mongId: Long) {
+        viewModelScopeWithHandler.launch(Dispatchers.IO) {
+
+            uiState.slotInteractionDialog = false
+
+            poopCleanMongUseCase(
+                PoopCleanMongUseCase.Param(
+                    mongId = mongId
+                )
+            )
+
+            effectState.poopCleaningEffect()
+        }
+    }
+
     val uiState: UiState = UiState()
 
     class UiState : BaseUiState() {
         var isEvolution by mutableStateOf(false)
+        var slotInteractionDialog by mutableStateOf(false)
     }
 
     override suspend fun exceptionHandler(exception: Throwable) {
         when(exception) {
             is StrokeMongUseCaseException -> {
                 uiState.loadingBar = false
+                uiState.slotInteractionDialog = false
             }
 
             is EvolutionMongUseCaseException -> {
                 uiState.loadingBar = false
             }
 
-            is GraduateCheckUseCaseException -> {
+            is GraduateCheckUseCaseException -> {}
+
+            is SleepingMongUseCaseException -> {
+                uiState.loadingBar = false
+                uiState.slotInteractionDialog = false
+            }
+
+            is PoopCleanMongUseCaseException -> {
+                uiState.loadingBar = false
+                uiState.slotInteractionDialog = false
             }
 
             else -> {

@@ -26,7 +26,7 @@ import androidx.wear.compose.material.PositionIndicator
 import com.mongs.wear.domain.collection.vo.MongCollectionVo
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.MongResourceCode
-import com.mongs.wear.presentation.component.common.background.CollectionNestedBackground
+import com.mongs.wear.presentation.component.background.CollectionNestedBackground
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
 import com.mongs.wear.presentation.component.common.button.CircleImageButton
 import com.mongs.wear.presentation.component.common.button.CircleTextButton

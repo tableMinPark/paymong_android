@@ -18,7 +18,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainPagerViewModel @Inject constructor(
-    private val stepSensorManager: StepSensorManager,
     private val getCurrentSlotUseCase: GetCurrentSlotUseCase,
     private val getBackgroundMapCodeUseCase: GetBackgroundMapCodeUseCase,
 ): BaseViewModel() {
@@ -44,20 +43,6 @@ class MainPagerViewModel @Inject constructor(
 
             uiState.loadingBar = false
         }
-    }
-
-    /**
-     * 걸음 센서 연결
-     */
-    fun connectSensor() = CoroutineScope(Dispatchers.IO).launch {
-        stepSensorManager.listen()
-    }
-
-    /**
-     * 걸음 센서 연결 해제
-     */
-    fun disconnectSensor() = CoroutineScope(Dispatchers.IO).launch {
-        stepSensorManager.stop()
     }
 
     val uiState = UiState()

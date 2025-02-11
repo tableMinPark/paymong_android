@@ -19,7 +19,7 @@ import androidx.wear.compose.material.PositionIndicator
 import com.mongs.wear.core.errors.PresentationErrorCode
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.NavItem
-import com.mongs.wear.presentation.component.common.background.TrainingNestedBackground
+import com.mongs.wear.presentation.component.background.TrainingNestedBackground
 import com.mongs.wear.presentation.component.common.chip.IconChip
 
 @Composable
@@ -34,11 +34,15 @@ fun TrainingMenuView(
                 navController.navigate(route = NavItem.TrainingJumping.route)
             },
             basketball = {
-                Toast.makeText(
-                    context,
-                    PresentationErrorCode.PRESENTATION_UPDATE_SOON.getMessage(),
-                    Toast.LENGTH_SHORT
-                ).show()
+                PresentationErrorCode.PRESENTATION_UPDATE_SOON.let { errorCode ->
+                    if (errorCode.isMessageShow()) {
+                        Toast.makeText(
+                            context,
+                            errorCode.getMessage(),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             },
             modifier = Modifier.zIndex(1f),
         )

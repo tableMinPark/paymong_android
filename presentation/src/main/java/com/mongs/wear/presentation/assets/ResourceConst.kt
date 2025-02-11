@@ -73,11 +73,11 @@ enum class MapResourceCode (
     MP018(R.drawable.mp018),
     MP019(R.drawable.mp019),
     MP020(R.drawable.mp020),
-    MP021(R.drawable.mp021),
-    MP022(R.drawable.mp022),
+//    MP021(R.drawable.mp021),
+//    MP022(R.drawable.mp022),
     MP023(R.drawable.mp023),
-    MP024(R.drawable.mp024),
-    MP025(R.drawable.mp025),
+//    MP024(R.drawable.mp024),
+//    MP025(R.drawable.mp025),
     MP026(R.drawable.mp026),
     MP027(R.drawable.mp027),
     MP028(R.drawable.mp028),
@@ -85,17 +85,17 @@ enum class MapResourceCode (
     MP030(R.drawable.mp030),
     MP031(R.drawable.mp031),
     MP032(R.drawable.mp032),
-    MP033(R.drawable.mp033),
-    MP034(R.drawable.mp034),
-    MP035(R.drawable.mp035),
-    MP036(R.drawable.mp036),
+//    MP033(R.drawable.mp033),
+//    MP034(R.drawable.mp034),
+//    MP035(R.drawable.mp035),
+//    MP036(R.drawable.mp036),
     MP037(R.drawable.mp037),
-    MP038(R.drawable.mp038),
-    MP039(R.drawable.mp039),
-    MP040(R.drawable.mp040),
-    MP041(R.drawable.mp041),
+//    MP038(R.drawable.mp038),
+//    MP039(R.drawable.mp039),
+//    MP040(R.drawable.mp040),
+//    MP041(R.drawable.mp041),
     MP042(R.drawable.mp042),
-    MP043(R.drawable.mp043)
+//    MP043(R.drawable.mp043),
 }
 
 enum class FeedResourceCode (
@@ -117,4 +117,17 @@ enum class FeedResourceCode (
     SN011(R.drawable.sn011),
     SN012(R.drawable.sn012),
     SN013(R.drawable.sn013)
+}
+
+enum class SoundResourceCode (
+    val code: Int,
+) {
+    BUTTON_CLICK(R.raw.button_sound),
+    TRAINING_END(R.raw.win_sound),
+    BATTLE_MATCHING(R.raw.battle_find_sound),
+    BATTLE_WIN(R.raw.win_sound),
+    BATTLE_LOSE(R.raw.lose_sound),
+    BATTLE_ATTACK(R.raw.attack_sound),
+    BATTLE_DEFENCE(R.raw.defence_sound),
+    COIN(R.raw.coin_sound),
 }

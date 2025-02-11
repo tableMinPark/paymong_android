@@ -15,7 +15,7 @@ abstract class BaseParamUseCase<P, R> {
 
     suspend operator fun invoke(param: P): R {
 
-        Log.i(TAG, "[UseCase] ${this.javaClass.name} $param")
+        Log.i(TAG, "[UseCase Invoke] ${this.javaClass.name} $param")
 
         return try {
             // 메서드 실행
@@ -26,7 +26,7 @@ abstract class BaseParamUseCase<P, R> {
                 is UseCaseException -> throw exception
 
                 is DataException -> {
-                    Log.e(TAG, "[Exception] ${exception.javaClass.name} ${exception.message} ${exception.result}")
+                    Log.e(TAG, "[UseCase Exception] ${exception.javaClass.name} ${exception.message} ${exception.result}")
 
                     handleException(exception = exception)
 
@@ -38,7 +38,7 @@ abstract class BaseParamUseCase<P, R> {
                 }
 
                 else -> {
-                    Log.e(TAG, "[Exception] ${exception.javaClass.name} ${exception.message ?: ""}")
+                    Log.e(TAG, "[UseCase Exception] ${exception.javaClass.name} ${exception.message ?: ""}")
 
                     throw UseCaseException(
                         code = UseCaseErrorCode.USE_CASE_GLOBAL_UNKNOWN_ERROR,

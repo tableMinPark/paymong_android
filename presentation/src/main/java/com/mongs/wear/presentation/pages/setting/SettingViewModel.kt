@@ -44,8 +44,8 @@ class SettingViewModel @Inject constructor(
     val activityPermission: LiveData<Boolean> get() = _activityPermission
     private val _activityPermission = MediatorLiveData(false)
 
-    val locationBackgroundPermission: LiveData<Boolean> get() = _locationBackgroundPermission
-    private val _locationBackgroundPermission = MediatorLiveData(false)
+    val locationPermission: LiveData<Boolean> get() = _locationPermission
+    private val _locationPermission = MediatorLiveData(false)
 
     init {
         viewModelScopeWithHandler.launch(Dispatchers.Main) {
@@ -61,7 +61,7 @@ class SettingViewModel @Inject constructor(
 
             _activityPermission.postValue(verifyActivityPermission().isEmpty())
 
-            _locationBackgroundPermission.postValue(verifyLocationBackgroundPermission().isEmpty())
+            _locationPermission.postValue(verifyLocationPermission().isEmpty())
 
             uiState.loadingBar = false
         }
@@ -77,7 +77,7 @@ class SettingViewModel @Inject constructor(
 
             _activityPermission.postValue(verifyActivityPermission().isEmpty())
 
-            _locationBackgroundPermission.postValue(verifyLocationBackgroundPermission().isEmpty())
+            _locationPermission.postValue(verifyLocationPermission().isEmpty())
 
             uiState.loadingBar = false
         }
@@ -109,7 +109,7 @@ class SettingViewModel @Inject constructor(
     fun requestLocationBackgroundPermission() {
         viewModelScopeWithHandler.launch(Dispatchers.IO) {
             uiState.loadingBar = true
-            uiState.requestPermissionEvent.emit(verifyLocationBackgroundPermission())
+            uiState.requestPermissionEvent.emit(verifyLocationPermission())
         }
     }
 
@@ -167,14 +167,20 @@ class SettingViewModel @Inject constructor(
     }
 
     /**
-     * 백그라운드 위치 권한 체크
+     * 위치 권한 체크
      */
-    private fun verifyLocationBackgroundPermission() : Array<String> {
-        return if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_DENIED) {
-            arrayOf(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
-        } else {
-            emptyArray()
+    private fun verifyLocationPermission() : Array<String> {
+        val permissions = ArrayList<String>()
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+            permissions.add(Manifest.permission.ACCESS_FINE_LOCATION)
         }
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED) {
+            permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION)
+        }
+
+        return permissions.toTypedArray()
     }
 
     val uiState = UiState()

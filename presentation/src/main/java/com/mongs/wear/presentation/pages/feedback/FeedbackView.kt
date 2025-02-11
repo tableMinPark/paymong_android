@@ -24,7 +24,7 @@ import androidx.wear.compose.material.Text
 import com.mongs.wear.core.enums.FeedbackCode
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
-import com.mongs.wear.presentation.component.common.background.FeedbackBackground
+import com.mongs.wear.presentation.component.background.FeedbackBackground
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
 import com.mongs.wear.presentation.component.common.chip.Chip
 import com.mongs.wear.presentation.dialog.common.ConfirmAndCancelDialog

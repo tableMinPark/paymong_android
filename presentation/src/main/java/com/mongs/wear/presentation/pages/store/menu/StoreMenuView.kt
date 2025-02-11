@@ -39,7 +39,7 @@ import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.assets.NavItem
-import com.mongs.wear.presentation.component.common.background.StoreNestedBackground
+import com.mongs.wear.presentation.component.background.StoreNestedBackground
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
 
 @Composable
@@ -62,22 +62,30 @@ fun StoreMenuView(
                     mongVo.value?.let {
                         navController.navigate(NavItem.StoreExchangePayPoint.route)
                     } ?: run {
-                        Toast.makeText(
-                            context,
-                            PresentationErrorCode.PRESENTATION_MANAGEMENT_NOT_PICK_SLOT.getMessage(),
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                        PresentationErrorCode.PRESENTATION_MANAGEMENT_NOT_PICK_SLOT.let { errorCode ->
+                            if (errorCode.isMessageShow()) {
+                                Toast.makeText(
+                                    context,
+                                    errorCode.getMessage(),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
+                            }
+                        }
                     }
                 },
                 navChargeStarPoint = {
                     if (isBillingDevice.value) {
                         navController.navigate(NavItem.StoreChargeStarPoint.route)
                     } else {
-                        Toast.makeText(
-                            context,
-                            PresentationErrorCode.PRESENTATION_USER_BILLING_NOT_SUPPORT.getMessage(),
-                            Toast.LENGTH_SHORT,
-                        ).show()
+                        PresentationErrorCode.PRESENTATION_USER_BILLING_NOT_SUPPORT.let { errorCode ->
+                            if (errorCode.isMessageShow()) {
+                                Toast.makeText(
+                                    context,
+                                    errorCode.getMessage(),
+                                    Toast.LENGTH_SHORT,
+                                ).show()
+                            }
+                        }
                     }
                 },
                 modifier = Modifier.zIndex(1f)

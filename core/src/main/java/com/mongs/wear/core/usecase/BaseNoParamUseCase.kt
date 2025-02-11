@@ -25,7 +25,7 @@ abstract class BaseNoParamUseCase<R> {
                 is UseCaseException -> throw exception
 
                 is DataException -> {
-                    Log.e(TAG, "[Exception] ${exception.javaClass.name} ${exception.message} ${exception.result}")
+                    Log.e(TAG, "[UseCase Exception] ${exception.javaClass.name} ${exception.message} ${exception.result}")
 
                     handleException(exception = exception)
 
@@ -38,7 +38,7 @@ abstract class BaseNoParamUseCase<R> {
                 }
 
                 else -> {
-                    Log.e(TAG, "[Exception] ${exception.javaClass.name} ${exception.message ?: ""}")
+                    Log.e(TAG, "[UseCase Exception] ${exception.javaClass.name} ${exception.message ?: ""}")
 
                     throw UseCaseException(
                         exception = exception,

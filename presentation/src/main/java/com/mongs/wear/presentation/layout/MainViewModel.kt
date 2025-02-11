@@ -23,7 +23,6 @@ import com.mongs.wear.domain.global.usecase.ConnectMqttUseCase
 import com.mongs.wear.domain.management.usecase.UpdateCurrentSlotUseCase
 import com.mongs.wear.domain.player.usecase.UpdatePlayerUseCase
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
-import com.mongs.wear.presentation.global.worker.LocationSensorWorker
 import com.mongs.wear.presentation.global.worker.StepSensorWorker
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -62,14 +61,6 @@ class MainViewModel @Inject constructor(
              */
             uiState.permissionLoadingBar = true
 
-            /**
-             * 백그라운드 위치 권한 확인
-             * TODO: 삭제
-              */
-//            if (verifyBackgroundLocationPermission().isNotEmpty()) {
-//                toastEvent("위치 권한 필요")
-//            }
-
             val permissions = verifyNotificationPermission() + verifyActivityPermission() + verifyLocationPermission()
 
             if (permissions.isNotEmpty()) {
@@ -100,13 +91,6 @@ class MainViewModel @Inject constructor(
                 StepSensorWorker.WORKER_NAME,
                 ExistingPeriodicWorkPolicy.UPDATE,
                 PeriodicWorkRequestBuilder<StepSensorWorker>(15, TimeUnit.MINUTES).build()
-            )
-
-            // 15분 간격 GPS 수신 워커 실행
-            workerManager.enqueueUniquePeriodicWork(
-                LocationSensorWorker.WORKER_NAME,
-                ExistingPeriodicWorkPolicy.UPDATE,
-                PeriodicWorkRequestBuilder<LocationSensorWorker>(15, TimeUnit.MINUTES).build()
             )
 
             uiState.loadingBar = false
@@ -184,20 +168,6 @@ class MainViewModel @Inject constructor(
 
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED) {
             permissions.add(Manifest.permission.ACCESS_COARSE_LOCATION)
-        }
-
-        return permissions
-    }
-
-
-    /**
-     * 백그라운드 위치 권한 체크
-     */
-    private fun verifyBackgroundLocationPermission() : ArrayList<String> {
-        val permissions = ArrayList<String>()
-
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_DENIED) {
-            permissions.add(Manifest.permission.ACCESS_BACKGROUND_LOCATION)
         }
 
         return permissions

@@ -26,7 +26,7 @@ import androidx.wear.compose.material.Text
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.assets.NavItem
-import com.mongs.wear.presentation.component.common.background.CollectionNestedBackground
+import com.mongs.wear.presentation.component.background.CollectionNestedBackground
 
 @Composable
 fun CollectionMenuView(

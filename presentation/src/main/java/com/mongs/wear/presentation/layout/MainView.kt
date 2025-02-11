@@ -23,29 +23,35 @@ import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.mongs.wear.presentation.assets.NavItem
-import com.mongs.wear.presentation.component.common.background.MainBackground
+import com.mongs.wear.presentation.component.background.MainBackground
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
 import com.mongs.wear.presentation.dialog.error.NetworkErrorDialog
+import com.mongs.wear.presentation.global.constValue.MainPagerConst
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import com.mongs.wear.presentation.pages.battle.match.BattleMatchView
 import com.mongs.wear.presentation.pages.battle.menu.BattleMenuView
 import com.mongs.wear.presentation.pages.collection.map.CollectionMapPickView
 import com.mongs.wear.presentation.pages.collection.menu.CollectionMenuView
 import com.mongs.wear.presentation.pages.collection.mong.CollectionMongPickView
+import com.mongs.wear.presentation.pages.exchangeWalking.ExchangeWalkingView
 import com.mongs.wear.presentation.pages.feed.food.FeedFoodPickView
 import com.mongs.wear.presentation.pages.feed.menu.FeedMenuView
 import com.mongs.wear.presentation.pages.feed.snack.FeedSnackPickView
 import com.mongs.wear.presentation.pages.feedback.FeedbackView
 import com.mongs.wear.presentation.pages.help.menu.HelpMenuView
+import com.mongs.wear.presentation.pages.inventory.InventoryView
 import com.mongs.wear.presentation.pages.login.LoginView
+import com.mongs.wear.presentation.pages.luckyDraw.LuckyDrawView
 import com.mongs.wear.presentation.pages.main.layout.MainPagerView
+import com.mongs.wear.presentation.pages.searchMap.SearchMapView
 import com.mongs.wear.presentation.pages.setting.SettingView
-import com.mongs.wear.presentation.pages.slot.SlotPickView
+import com.mongs.wear.presentation.pages.slotPick.SlotPickView
 import com.mongs.wear.presentation.pages.store.chargeStartPoint.StoreChargeStarPointView
 import com.mongs.wear.presentation.pages.store.exchangePayPoint.StoreExchangePayPointView
 import com.mongs.wear.presentation.pages.store.menu.StoreMenuView
 import com.mongs.wear.presentation.pages.training.menu.TrainingMenuView
 import com.mongs.wear.presentation.pages.training.runner.TrainingRunnerView
+import com.mongs.wear.presentation.pages.walking.WalkingView
 
 @Composable
 fun MainView (
@@ -121,16 +127,16 @@ fun NavContent(
 ) {
     val navController = rememberSwipeDismissableNavController()
 
-    val emptyPagerState = rememberPagerState(0, 0f) { 3 }
-    val pagerState = rememberPagerState(2, 0f) { 5 }
+    val emptyPagerState = rememberPagerState(MainPagerConst.EMPTY_PAGER_STATE_INIT, 0f) { MainPagerConst.EMPTY_PAGER_STATE_SIZE }
+    val pagerState = rememberPagerState(MainPagerConst.NORMAL_PAGER_STATE_INIT, 0f) { MainPagerConst.NORMAL_PAGER_STATE_SIZE }
 
     /**
      * 메인 페이지 스크롤 이벤트
      */
     LaunchedEffect(BaseViewModel.animatePageScrollMainPagerViewEvent) {
         BaseViewModel.animatePageScrollMainPagerViewEvent.collect {
-            emptyPagerState.animateScrollToPage(0)
-            pagerState.animateScrollToPage(2)
+            emptyPagerState.animateScrollToPage(MainPagerConst.EMPTY_PAGER_STATE_INIT)
+            pagerState.animateScrollToPage(MainPagerConst.NORMAL_PAGER_STATE_INIT)
         }
     }
 
@@ -299,6 +305,26 @@ fun NavContent(
 
         composable(route = NavItem.Setting.route) {
             SettingView(navController = navController)
+        }
+
+        composable(route = NavItem.ExchangeWalking.route) {
+            ExchangeWalkingView(navController = navController)
+        }
+
+        composable(route = NavItem.Inventory.route) {
+            InventoryView()
+        }
+
+        composable(route = NavItem.SearchMap.route) {
+            SearchMapView()
+        }
+
+        composable(route = NavItem.LuckyDraw.route) {
+            LuckyDrawView()
+        }
+
+        composable(route = NavItem.Walking.route) {
+            WalkingView()
         }
     }
 }

@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.wear.compose.material.Text
+import com.mongs.wear.core.errors.PresentationErrorCode
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsLightGray
 import com.mongs.wear.presentation.component.common.button.BlueButton
@@ -186,7 +187,15 @@ fun SlotAddDialog(
                                 if (name.value.length <= 6) {
                                     addDialog.value = true
                                 } else {
-                                    Toast.makeText(context, "이름은 6자 제한!", Toast.LENGTH_SHORT).show()
+                                    PresentationErrorCode.PRESENTATION_MONG_NAME.let { errorCode ->
+                                        if (errorCode.isMessageShow()) {
+                                            Toast.makeText(
+                                                context,
+                                                errorCode.getMessage(),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
                                 }
                             },
                             height = 26,
@@ -218,14 +227,22 @@ fun SlotAddDialog(
 
     if (addDialog.value) {
         ConfirmAndCancelDialog(
-            text = "새로운 몽을\n생성하시겠습니까?\n(시간은 수정불가)",
+            text = "새로운 몽을\n생성하시겠습니까?",
             confirm = {
                 if (name.value.length <= 6) {
                     val sleepStart = "%02d:%02d".format(sleepStartHour.intValue, sleepStartMinute.intValue)
                     val sleepEnd = "%02d:%02d".format(sleepEndHour.intValue, sleepEndMinute.intValue)
                     addBtnClick(name.value, sleepStart, sleepEnd)
                 } else {
-                    Toast.makeText(context, "이름은 6자 제한!", Toast.LENGTH_SHORT).show()
+                    PresentationErrorCode.PRESENTATION_MONG_NAME.let { errorCode ->
+                        if (errorCode.isMessageShow()) {
+                            Toast.makeText(
+                                context,
+                                errorCode.getMessage(),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
                 }
             },
             cancel = {

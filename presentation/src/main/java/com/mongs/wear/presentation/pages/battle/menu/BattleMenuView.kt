@@ -46,7 +46,7 @@ import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsPink200
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.assets.NavItem
-import com.mongs.wear.presentation.component.common.background.BattleMenuBackground
+import com.mongs.wear.presentation.component.background.BattleMenuBackground
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
 import com.mongs.wear.presentation.component.common.button.BlueButton
 
@@ -78,11 +78,15 @@ fun BattleMenuView(
                         if (payPoint.value >= battleRewardVo.bettingPayPoint) {
                             battleMenuViewModel.createMatchWait()
                         } else {
-                            Toast.makeText(
-                                context,
-                                PresentationErrorCode.PRESENTATION_BATTLE_NOT_ENOUGH_PAY_POINT.getMessage(),
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            PresentationErrorCode.PRESENTATION_BATTLE_NOT_ENOUGH_PAY_POINT.let { errorCode ->
+                                if (errorCode.isMessageShow()) {
+                                    Toast.makeText(
+                                        context,
+                                        errorCode.getMessage(),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
                         }
                     },
                     bettingPayPoint = battleRewardVo.bettingPayPoint,

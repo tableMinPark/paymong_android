@@ -48,7 +48,7 @@ import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongResourceCode
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.assets.NavItem
-import com.mongs.wear.presentation.component.common.background.BattleMatchBackground
+import com.mongs.wear.presentation.component.background.BattleMatchBackground
 import com.mongs.wear.presentation.component.common.bar.HpBar
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
 import com.mongs.wear.presentation.component.common.charactor.Mong

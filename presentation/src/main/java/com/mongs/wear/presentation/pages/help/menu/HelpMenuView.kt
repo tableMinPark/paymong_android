@@ -21,7 +21,7 @@ import androidx.wear.compose.material.PositionIndicator
 import androidx.wear.compose.material.Text
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
-import com.mongs.wear.presentation.component.common.background.HelpNestedBackground
+import com.mongs.wear.presentation.component.background.HelpNestedBackground
 import com.mongs.wear.presentation.component.common.chip.Chip
 import com.mongs.wear.presentation.dialog.help.HelpBattleDialog
 import com.mongs.wear.presentation.dialog.help.HelpInfoDialog

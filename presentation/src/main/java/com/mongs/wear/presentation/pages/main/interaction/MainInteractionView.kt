@@ -1,21 +1,28 @@
 package com.mongs.wear.presentation.pages.main.interaction
 
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.mongs.wear.core.enums.MongStateCode
+import com.mongs.wear.core.errors.PresentationErrorCode
 import com.mongs.wear.domain.management.vo.MongVo
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.MongResourceCode
@@ -26,29 +33,21 @@ import com.mongs.wear.presentation.component.common.button.CircleImageButton
 fun MainInteractionView(
     navController: NavController,
     mongVo: MongVo?,
-    mainInteractionViewModel: MainInteractionViewModel = hiltViewModel(),
 ) {
     Box {
         MainInteractionContent(
             mongVo = mongVo,
-            feed = {
-                navController.navigate(NavItem.FeedNested.route)
-            },
             collection = {
                 navController.navigate(NavItem.CollectionNested.route)
             },
-            sleeping = {
-                mongVo?.let {
-                    mainInteractionViewModel.sleeping(mongId = mongVo.mongId)
-                }
+            walking = {
+                navController.navigate(NavItem.Walking.route)
             },
-            slotPick = {
-                navController.navigate(NavItem.SlotPick.route)
+            searchMap = {
+                navController.navigate(NavItem.SearchMap.route)
             },
-            poopClean = {
-                mongVo?.let {
-                    mainInteractionViewModel.poopClean(mongId = mongVo.mongId)
-                }
+            luckyDraw = {
+                navController.navigate(NavItem.LuckyDraw.route)
             },
             training = {
                 navController.navigate(NavItem.TrainingNested.route)
@@ -64,11 +63,10 @@ fun MainInteractionView(
 @Composable
 private fun MainInteractionContent(
     mongVo: MongVo?,
-    feed: () -> Unit,
+    walking: () -> Unit,
     collection: () -> Unit,
-    sleeping: () -> Unit,
-    slotPick: () -> Unit,
-    poopClean: () -> Unit,
+    searchMap: () -> Unit,
+    luckyDraw: () -> Unit,
     training: () -> Unit,
     battle: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
@@ -86,22 +84,17 @@ private fun MainInteractionContent(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 CircleImageButton(
-                    icon = R.drawable.feed,
-                    border = R.drawable.interaction_bnt_yellow,
-                    disable = mongVo?.let {
-                        MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg ||
-                        mongVo.isSleeping ||
-                        mongVo.stateCode == MongStateCode.DEAD
-                    } ?: true,
-                    onClick = feed,
+                    icon = R.drawable.collection,
+                    border = R.drawable.interaction_bnt_orange,
+                    onClick = collection,
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
                 CircleImageButton(
-                    icon = R.drawable.collection,
-                    border = R.drawable.interaction_bnt_orange,
-                    onClick = collection,
+                    icon = R.drawable.locker,
+                    border = R.drawable.interaction_bnt_red,
+                    onClick = walking,
                 )
             }
 
@@ -110,34 +103,30 @@ private fun MainInteractionContent(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 CircleImageButton(
-                    icon = R.drawable.sleep,
+                    icon = R.drawable.map_search,
                     border = R.drawable.interaction_bnt_blue,
-                    disable = mongVo?.let {
-                        MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg ||
-                        mongVo.stateCode == MongStateCode.DEAD
-                    } ?: true,
-                    onClick = sleeping,
+                    onClick = searchMap,
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                CircleImageButton(
-                    icon = R.drawable.slot,
-                    border = R.drawable.interaction_bnt_red,
-                    onClick = slotPick,
-                )
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = modifier.size(54.dp)
+                ) {
+                    Image(
+                        painter = painterResource(R.drawable.logo_not_open),
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
 
                 Spacer(modifier = Modifier.width(8.dp))
 
                 CircleImageButton(
-                    icon = R.drawable.poop,
+                    icon = R.drawable.locker,
                     border = R.drawable.interaction_bnt_purple,
-                    disable = mongVo?.let {
-                        MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg ||
-                        mongVo.stateCode == MongStateCode.DEAD ||
-                        mongVo.isSleeping
-                    } ?: true,
-                    onClick = poopClean,
+                    onClick = luckyDraw,
                 )
             }
 

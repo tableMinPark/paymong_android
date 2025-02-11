@@ -33,7 +33,7 @@ import com.mongs.wear.core.enums.TrainingCode
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.MongResourceCode
 import com.mongs.wear.presentation.assets.NavItem
-import com.mongs.wear.presentation.component.common.background.TrainingNestedBackground
+import com.mongs.wear.presentation.component.background.TrainingNestedBackground
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
 import com.mongs.wear.presentation.component.common.textbox.PayPoint
 import com.mongs.wear.presentation.dialog.training.TrainingEndDialog
