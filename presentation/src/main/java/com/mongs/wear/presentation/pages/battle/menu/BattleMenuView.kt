@@ -16,9 +16,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -32,12 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.wear.compose.material.Text
 import com.mongs.wear.core.enums.MatchStateCode
 import com.mongs.wear.core.errors.PresentationErrorCode
@@ -49,6 +44,7 @@ import com.mongs.wear.presentation.assets.NavItem
 import com.mongs.wear.presentation.component.background.BattleMenuBackground
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
 import com.mongs.wear.presentation.component.common.button.BlueButton
+import com.mongs.wear.presentation.global.view.OnLeavePage
 
 @Composable
 fun BattleMenuView(
@@ -116,21 +112,11 @@ fun BattleMenuView(
         }
     }
 
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-
-    DisposableEffect(currentBackStackEntry) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_DESTROY) {
-                if (matchVo.value == null || matchVo.value?.stateCode == MatchStateCode.NONE) {
-                    battleMenuViewModel.matchExit()
-                }
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
-        }
-    }
+    OnLeavePage(
+        navController = navController,
+        lifecycleOwner = lifecycleOwner,
+        onLeavePage = battleMenuViewModel::matchExit
+    )
 }
 
 @Composable

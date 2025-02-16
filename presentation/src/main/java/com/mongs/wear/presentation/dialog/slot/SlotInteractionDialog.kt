@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -24,14 +25,13 @@ import com.mongs.wear.domain.management.vo.MongVo
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.MongResourceCode
 import com.mongs.wear.presentation.component.common.button.CircleImageButton
+import com.mongs.wear.presentation.component.common.textbox.PayPoint
 
 @Composable
 fun SlotInteractionDialog(
     mongVo: MongVo,
     feed: () -> Unit,
-    slotPick: () -> Unit,
     sleeping: () -> Unit,
-    exchange: () -> Unit,
     poopClean: () -> Unit,
     stroke: () -> Unit,
     inventory: () -> Unit,
@@ -58,30 +58,20 @@ fun SlotInteractionDialog(
         ) {
             Row(
                 horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
+                    .weight(0.4f),
             ) {
-                CircleImageButton(
-                    icon = R.drawable.btn_icon_feed,
-                    border = R.drawable.btn_border_yellow,
-                    iconSize = 34f,
-                    disable = isEgg || mongVo.isSleeping || mongVo.stateCode == MongStateCode.DEAD,
-                    onClick = feed,
-                )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                CircleImageButton(
-                    icon = R.drawable.btn_icon_stroke,
-                    border = R.drawable.btn_border_pink,
-                    iconSize = 34f,
-                    disable = isEgg || mongVo.stateCode == MongStateCode.DEAD || mongVo.isSleeping,
-                    onClick = stroke,
+                PayPoint(
+                    payPoint = mongVo.payPoint,
+                    width = 100,
                 )
             }
 
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
+                    .weight(0.3f)
             ) {
                 CircleImageButton(
                     icon = R.drawable.btn_icon_sleep,
@@ -94,10 +84,11 @@ fun SlotInteractionDialog(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 CircleImageButton(
-                    icon = R.drawable.btn_icon_slot_pick,
-                    border = R.drawable.btn_border_red,
+                    icon = R.drawable.btn_icon_stroke,
+                    border = R.drawable.btn_border_pink,
                     iconSize = 34f,
-                    onClick = slotPick,
+                    disable = isEgg || mongVo.stateCode == MongStateCode.DEAD || mongVo.isSleeping,
+                    onClick = stroke,
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
@@ -114,23 +105,27 @@ fun SlotInteractionDialog(
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
+                    .weight(0.3f)
             ) {
+                CircleImageButton(
+                    icon = R.drawable.btn_icon_feed,
+                    border = R.drawable.btn_border_yellow,
+                    iconSize = 34f,
+                    disable = isEgg || mongVo.isSleeping || mongVo.stateCode == MongStateCode.DEAD,
+                    onClick = feed,
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
                 CircleImageButton(
                     icon = R.drawable.btn_icon_inventory,
                     border = R.drawable.btn_border_green,
                     iconSize = 34f,
                     onClick = inventory,
                 )
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                CircleImageButton(
-                    icon = R.drawable.point_icon_pay,
-                    border = R.drawable.btn_border_purple_dark,
-                    disable = mongVo.stateCode == MongStateCode.DEAD || mongVo.stateCode == MongStateCode.DELETE,
-                    onClick = exchange,
-                )
             }
+
+            Spacer(modifier = Modifier.height(20.dp))
         }
     }
 }

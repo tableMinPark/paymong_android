@@ -22,6 +22,7 @@ import androidx.wear.compose.material.Text
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
+import com.mongs.wear.presentation.global.constValue.HelpConst
 
 
 @Composable
@@ -30,7 +31,7 @@ fun HelpPointContent_0() {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxHeight()
     ) {
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_TOP_PADDING.dp))
 
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -48,7 +49,7 @@ fun HelpPointContent_0() {
                 contentScale = ContentScale.FillBounds,
             )
 
-            Spacer(modifier = Modifier.width(5.dp))
+            Spacer(modifier = Modifier.width(HelpConst.CONTENT_IMAGE_PADDING.dp))
 
             Text(
                 text = "는",
@@ -77,7 +78,7 @@ fun HelpPointContent_0() {
                 contentScale = ContentScale.FillBounds,
             )
 
-            Spacer(modifier = Modifier.width(5.dp))
+            Spacer(modifier = Modifier.width(HelpConst.CONTENT_IMAGE_PADDING.dp))
 
             Text(
                 text = "훈련,",
@@ -89,7 +90,7 @@ fun HelpPointContent_0() {
                 maxLines = 1,
             )
 
-            Spacer(modifier = Modifier.width(5.dp))
+            Spacer(modifier = Modifier.width(HelpConst.CONTENT_IMAGE_PADDING.dp))
 
             Image(
                 painter = painterResource(R.drawable.btn_icon_battle),
@@ -100,7 +101,7 @@ fun HelpPointContent_0() {
                 contentScale = ContentScale.FillBounds,
             )
 
-            Spacer(modifier = Modifier.width(5.dp))
+            Spacer(modifier = Modifier.width(HelpConst.CONTENT_IMAGE_PADDING.dp))
 
             Text(
                 text = "배틀,",
@@ -129,7 +130,7 @@ fun HelpPointContent_0() {
                 contentScale = ContentScale.FillBounds,
             )
 
-            Spacer(modifier = Modifier.width(5.dp))
+            Spacer(modifier = Modifier.width(HelpConst.CONTENT_IMAGE_PADDING.dp))
 
             Text(
                 text = "환전,",
@@ -141,7 +142,7 @@ fun HelpPointContent_0() {
                 maxLines = 1,
             )
 
-            Spacer(modifier = Modifier.width(5.dp))
+            Spacer(modifier = Modifier.width(HelpConst.CONTENT_IMAGE_PADDING.dp))
 
             Text(
                 text = "걸음 수 환전",
@@ -172,6 +173,6 @@ fun HelpPointContent_0() {
             )
         }
 
-        Spacer(modifier = Modifier.height(35.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_BOTTOM_PADDING.dp))
     }
 }

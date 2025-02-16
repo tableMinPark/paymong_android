@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.wear.compose.material.Text
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
+import com.mongs.wear.presentation.global.constValue.HelpConst
 
 @Composable
 fun HelpInfoContent_0() {
@@ -24,7 +25,7 @@ fun HelpInfoContent_0() {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxHeight()
     ) {
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_TOP_PADDING.dp))
 
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -98,6 +99,6 @@ fun HelpInfoContent_0() {
             )
         }
 
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_BOTTOM_PADDING.dp))
     }
 }

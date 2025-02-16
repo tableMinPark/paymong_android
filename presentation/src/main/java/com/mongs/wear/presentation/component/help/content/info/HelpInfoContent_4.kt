@@ -1,4 +1,4 @@
-package com.mongs.wear.presentation.component.help.content.mong
+package com.mongs.wear.presentation.component.help.content.info
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,8 +22,7 @@ import com.mongs.wear.presentation.component.common.button.CircleImageButton
 import com.mongs.wear.presentation.global.constValue.HelpConst
 
 @Composable
-fun HelpMongContent_7() {
-    
+fun HelpInfoContent_4() {
     Column (
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxHeight()
@@ -37,8 +36,8 @@ fun HelpMongContent_7() {
                 .weight(0.25f)
         ) {
             CircleImageButton(
-                icon = R.drawable.btn_icon_poop_clean,
-                border = R.drawable.btn_border_purple,
+                icon = R.drawable.btn_icon_map_search,
+                border = R.drawable.btn_border_blue,
                 onClick = {}
             )
         }
@@ -51,7 +50,7 @@ fun HelpMongContent_7() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "클릭해 배변 청소",
+                text = "클릭해 주변 맵 탐색",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -69,7 +68,7 @@ fun HelpMongContent_7() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "배변 수에 따라",
+                text = "맵을 탐색하여 컬렉션을",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -87,7 +86,7 @@ fun HelpMongContent_7() {
                 .weight(0.25f)
         ) {
             Text(
-                text = "경험치가 증가해요",
+                text = "채워보세요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,

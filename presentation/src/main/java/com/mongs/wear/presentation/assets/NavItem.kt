@@ -61,9 +61,6 @@ sealed class NavItem(val route: String) {
     /* Lucky Draw */
     data object LuckyDraw: NavItem("LuckyDraw")
 
-    /* Walking */
-    data object Walking: NavItem("Walking")
-
     /* Notice */
     data object Notice: NavItem("Notice")
 }

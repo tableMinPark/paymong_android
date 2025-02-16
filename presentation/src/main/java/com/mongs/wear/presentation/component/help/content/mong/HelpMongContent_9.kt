@@ -23,6 +23,7 @@ import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.component.common.button.CircleImageButton
+import com.mongs.wear.presentation.global.constValue.HelpConst
 
 @Composable
 fun HelpMongContent_9() {
@@ -31,13 +32,13 @@ fun HelpMongContent_9() {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxHeight()
     ) {
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_TOP_PADDING.dp))
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.4f)
+                .weight(0.25f)
         ) {
             CircleImageButton(
                 icon = R.drawable.btn_icon_exchange,
@@ -51,7 +52,7 @@ fun HelpMongContent_9() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.2f)
+                .weight(0.25f)
         ) {
             Text(
                 text = "클릭해",
@@ -62,7 +63,9 @@ fun HelpMongContent_9() {
                 color = MongsWhite,
                 maxLines = 1,
             )
-            Spacer(modifier = Modifier.width(7.dp))
+
+            Spacer(modifier = Modifier.width(HelpConst.CONTENT_IMAGE_PADDING.dp))
+
             Image(
                 painter = painterResource(R.drawable.point_icon_pay),
                 contentDescription = null,
@@ -71,7 +74,9 @@ fun HelpMongContent_9() {
                     .width(20.dp),
                 contentScale = ContentScale.FillBounds,
             )
-            Spacer(modifier = Modifier.width(7.dp))
+
+            Spacer(modifier = Modifier.width(HelpConst.CONTENT_IMAGE_PADDING.dp))
+
             Text(
                 text = "환전",
                 textAlign = TextAlign.Center,
@@ -88,7 +93,7 @@ fun HelpMongContent_9() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.2f)
+                .weight(0.25f)
         ) {
             Text(
                 text = "걸음 수, 스타포인트",
@@ -106,7 +111,7 @@ fun HelpMongContent_9() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.2f)
+                .weight(0.25f)
         ) {
             Text(
                 text = "환전이 가능해요",
@@ -118,6 +123,6 @@ fun HelpMongContent_9() {
                 maxLines = 1,
             )
         }
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_BOTTOM_PADDING.dp))
     }
 }

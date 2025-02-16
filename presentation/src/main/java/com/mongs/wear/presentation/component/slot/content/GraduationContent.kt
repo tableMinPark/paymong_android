@@ -1,4 +1,4 @@
-package com.mongs.wear.presentation.component.main.slot.content
+package com.mongs.wear.presentation.component.slot.content
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,7 +24,7 @@ import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.component.common.charactor.Mong
 
 @Composable
-fun GraduatedContent(
+fun GraduationContent(
     mongVo: MongVo,
     isPageChanging: Boolean,
     onClick: () -> Unit = {},
@@ -62,7 +62,7 @@ fun GraduatedContent(
                     .fillMaxSize()
             ) {
                 Text(
-                    text = "졸업한 몽입니다\n\n슬롯을 변경해주세요",
+                    text = "졸업을 위해\n\n화면을 터치해주세요",
                     textAlign = TextAlign.Center,
                     fontFamily = DAL_MU_RI,
                     fontWeight = FontWeight.Light,

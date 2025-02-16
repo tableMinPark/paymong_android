@@ -12,9 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -29,12 +27,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.wear.compose.material.Text
 import coil.ImageLoader
 import coil.compose.rememberAsyncImagePainter
@@ -55,6 +50,7 @@ import com.mongs.wear.presentation.component.common.charactor.Mong
 import com.mongs.wear.presentation.dialog.battle.MatchOverDialog
 import com.mongs.wear.presentation.dialog.battle.MatchPickDialog
 import com.mongs.wear.presentation.global.constValue.BattleConst
+import com.mongs.wear.presentation.global.view.OnLeavePage
 import kotlinx.coroutines.delay
 import kotlin.math.max
 
@@ -174,23 +170,16 @@ fun BattleMatchView(
         }
     }
 
-    val currentBackStackEntry by navController.currentBackStackEntryAsState()
-
-    DisposableEffect(currentBackStackEntry) {
-        val observer = LifecycleEventObserver { _, event ->
-            if (event == Lifecycle.Event.ON_DESTROY) {
-                matchVo.value?.let {
-                    if (it.stateCode == MatchStateCode.MATCH_OVER) {
-                        battleMatchViewModel.matchEnd()
-                    } else {
-                        battleMatchViewModel.matchExit(roomId = it.roomId)
-                    }
-                }
+    OnLeavePage(
+        navController = navController,
+        lifecycleOwner = lifecycleOwner,
+    ) {
+        matchVo.value?.let {
+            if (it.stateCode == MatchStateCode.MATCH_OVER) {
+                battleMatchViewModel.matchEnd()
+            } else {
+                battleMatchViewModel.matchExit(roomId = it.roomId)
             }
-        }
-        lifecycleOwner.lifecycle.addObserver(observer)
-        onDispose {
-            lifecycleOwner.lifecycle.removeObserver(observer)
         }
     }
 }

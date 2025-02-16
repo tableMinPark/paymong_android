@@ -19,6 +19,7 @@ import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongResourceCode
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.component.common.charactor.Mong
+import com.mongs.wear.presentation.global.constValue.HelpConst
 
 @Composable
 fun HelpSlotContent_5() {
@@ -26,7 +27,7 @@ fun HelpSlotContent_5() {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxHeight()
     ) {
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_TOP_PADDING.dp))
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -93,6 +94,6 @@ fun HelpSlotContent_5() {
                 maxLines = 1,
             )
         }
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_BOTTOM_PADDING.dp))
     }
 }

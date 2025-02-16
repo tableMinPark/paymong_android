@@ -113,7 +113,12 @@ fun FeedbackAddDialog(
 
                 BlueButton(
                     text = "확인",
-                    onClick = confirm,
+                    disable = feedbackCode.needMessage && text.isEmpty(),
+                    onClick = {
+                        if (!(feedbackCode.needMessage && text.isEmpty())) {
+                            confirm()
+                        }
+                    },
                 )
             }
         }

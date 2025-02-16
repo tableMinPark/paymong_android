@@ -18,6 +18,7 @@ import androidx.wear.compose.material.Text
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.component.common.button.YellowButton
+import com.mongs.wear.presentation.global.constValue.HelpConst
 
 @Composable
 fun HelpSlotContent_4() {
@@ -26,7 +27,7 @@ fun HelpSlotContent_4() {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxHeight()
     ) {
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_TOP_PADDING.dp))
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -93,6 +94,6 @@ fun HelpSlotContent_4() {
                 maxLines = 1,
             )
         }
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_BOTTOM_PADDING.dp))
     }
 }

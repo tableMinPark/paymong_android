@@ -19,6 +19,7 @@ import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.component.common.button.CircleImageButton
+import com.mongs.wear.presentation.global.constValue.HelpConst
 
 @Composable
 fun HelpInfoContent_2() {
@@ -26,7 +27,7 @@ fun HelpInfoContent_2() {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxHeight()
     ) {
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_TOP_PADDING.dp))
 
         Row(
             horizontalArrangement = Arrangement.Center,
@@ -38,7 +39,6 @@ fun HelpInfoContent_2() {
             CircleImageButton(
                 icon = R.drawable.btn_icon_collection,
                 border = R.drawable.btn_border_orange,
-                iconSize = 34f,
                 onClick = {}
             )
         }
@@ -97,6 +97,6 @@ fun HelpInfoContent_2() {
             )
         }
 
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_BOTTOM_PADDING.dp))
     }
 }

@@ -23,7 +23,6 @@ import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.mongs.wear.presentation.assets.NavItem
-import com.mongs.wear.presentation.pages.charge.ChargeStarPointView
 import com.mongs.wear.presentation.component.background.MainBackground
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
 import com.mongs.wear.presentation.dialog.error.NetworkErrorDialog
@@ -31,6 +30,7 @@ import com.mongs.wear.presentation.global.constValue.MainPagerConst
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import com.mongs.wear.presentation.pages.battle.match.BattleMatchView
 import com.mongs.wear.presentation.pages.battle.menu.BattleMenuView
+import com.mongs.wear.presentation.pages.charge.ChargeStarPointView
 import com.mongs.wear.presentation.pages.collection.map.CollectionMapPickView
 import com.mongs.wear.presentation.pages.collection.menu.CollectionMenuView
 import com.mongs.wear.presentation.pages.collection.mong.CollectionMongPickView
@@ -51,7 +51,6 @@ import com.mongs.wear.presentation.pages.setting.SettingView
 import com.mongs.wear.presentation.pages.slotPick.SlotPickView
 import com.mongs.wear.presentation.pages.training.menu.TrainingMenuView
 import com.mongs.wear.presentation.pages.training.runner.TrainingRunnerView
-import com.mongs.wear.presentation.pages.walking.WalkingView
 
 @Composable
 fun MainView (
@@ -364,13 +363,6 @@ fun NavContent(
          */
         composable(route = NavItem.LuckyDraw.route) {
             LuckyDrawView()
-        }
-
-        /**
-         * 산책
-         */
-        composable(route = NavItem.Walking.route) {
-            WalkingView()
         }
     }
 }

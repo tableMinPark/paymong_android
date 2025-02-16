@@ -23,6 +23,7 @@ import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.component.common.button.CircleImageButton
+import com.mongs.wear.presentation.global.constValue.HelpConst
 
 @Composable
 fun HelpInfoContent_3() {
@@ -30,7 +31,7 @@ fun HelpInfoContent_3() {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxHeight()
     ) {
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_TOP_PADDING.dp))
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -39,9 +40,8 @@ fun HelpInfoContent_3() {
                 .weight(0.25f)
         ) {
             CircleImageButton(
-                icon = R.drawable.btn_icon_exchange,
-                border = R.drawable.btn_border_purple_dark,
-                iconSize = 34f,
+                icon = R.drawable.btn_icon_walking,
+                border = R.drawable.btn_border_red,
                 onClick = {}
             )
         }
@@ -51,10 +51,10 @@ fun HelpInfoContent_3() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.2f)
+                .weight(0.25f)
         ) {
             Text(
-                text = "클릭해 걸음수를",
+                text = "클릭해 산책",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -69,7 +69,25 @@ fun HelpInfoContent_3() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.2f)
+                .weight(0.25f)
+        ) {
+            Text(
+                text = "산책하여 걸음 수와",
+                textAlign = TextAlign.Center,
+                fontFamily = DAL_MU_RI,
+                fontWeight = FontWeight.Light,
+                fontSize = 14.sp,
+                color = MongsWhite,
+                maxLines = 1,
+            )
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(0.25f)
         ) {
             Image(
                 painter = painterResource(R.drawable.point_icon_pay),
@@ -79,45 +97,11 @@ fun HelpInfoContent_3() {
                     .width(20.dp),
                 contentScale = ContentScale.FillBounds,
             )
-            Spacer(modifier = Modifier.width(7.dp))
-            Text(
-                text = "로 환전!",
-                textAlign = TextAlign.Center,
-                fontFamily = DAL_MU_RI,
-                fontWeight = FontWeight.Light,
-                fontSize = 14.sp,
-                color = MongsWhite,
-                maxLines = 1,
-            )
-        }
 
-        Row(
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(0.2f)
-        ) {
+            Spacer(modifier = Modifier.width(HelpConst.CONTENT_IMAGE_PADDING.dp))
+
             Text(
-                text = "1000걸음 = ",
-                textAlign = TextAlign.Center,
-                fontFamily = DAL_MU_RI,
-                fontWeight = FontWeight.Light,
-                fontSize = 14.sp,
-                color = MongsWhite,
-                maxLines = 1,
-            )
-            Image(
-                painter = painterResource(R.drawable.point_icon_pay),
-                contentDescription = null,
-                modifier = Modifier
-                    .height(15.dp)
-                    .width(15.dp),
-                contentScale = ContentScale.FillBounds,
-            )
-            Spacer(modifier = Modifier.width(5.dp))
-            Text(
-                text = "100개",
+                text = "를 채워보세요",
                 textAlign = TextAlign.Center,
                 fontFamily = DAL_MU_RI,
                 fontWeight = FontWeight.Light,
@@ -126,6 +110,6 @@ fun HelpInfoContent_3() {
                 maxLines = 1,
             )
         }
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_BOTTOM_PADDING.dp))
     }
 }

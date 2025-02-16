@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -34,18 +35,7 @@ fun MainInteractionView(
     Box {
         MainInteractionContent(
             mongVo = mongVo,
-            collection = {
-                navController.navigate(NavItem.CollectionNested.route)
-            },
-            walking = {
-                Toast.makeText(
-                    context,
-                    "산책 ${PresentationErrorCode.PRESENTATION_UPDATE_SOON.getMessage()}",
-                    Toast.LENGTH_SHORT
-                ).show()
-                //navController.navigate(NavItem.Walking.route)
-            },
-            searchMap = {
+            mapSearch = {
                 Toast.makeText(
                     context,
                     "맵 탐색 ${PresentationErrorCode.PRESENTATION_UPDATE_SOON.getMessage()}",
@@ -61,14 +51,20 @@ fun MainInteractionView(
                 ).show()
                 // navController.navigate(NavItem.LuckyDraw.route)
             },
+            slotPick = {
+                navController.navigate(NavItem.SlotPick.route)
+            },
+            collection = {
+                navController.navigate(NavItem.CollectionNested.route)
+            },
             training = {
                 navController.navigate(NavItem.TrainingNested.route)
             },
             battle = {
                 navController.navigate(NavItem.BattleNested.route)
             },
-            help = {
-                navController.navigate(NavItem.HelpNested.route)
+            exchange = {
+                navController.navigate(NavItem.ExchangeNested.route)
             },
             modifier = Modifier.zIndex(1f)
         )
@@ -78,18 +74,18 @@ fun MainInteractionView(
 @Composable
 private fun MainInteractionContent(
     mongVo: MongVo?,
-    walking: () -> Unit,
+    slotPick: () -> Unit,
+    exchange: () -> Unit,
     collection: () -> Unit,
-    searchMap: () -> Unit,
+    mapSearch: () -> Unit,
     luckyDraw: () -> Unit,
     training: () -> Unit,
     battle: () -> Unit,
-    help: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
     Box(
         contentAlignment = Alignment.Center,
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier.fillMaxSize()
     ) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -109,10 +105,12 @@ private fun MainInteractionContent(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 CircleImageButton(
-                    icon = R.drawable.btn_icon_walking,
-                    border = R.drawable.btn_border_red,
-                    iconSize = 34f,
-                    onClick = walking,
+                    icon = R.drawable.point_icon_pay,
+                    border = R.drawable.btn_border_purple_dark,
+                    disable = mongVo?.let {
+                        mongVo.stateCode == MongStateCode.DEAD || mongVo.stateCode == MongStateCode.DELETE
+                    } ?: true,
+                    onClick = exchange,
                 )
             }
 
@@ -124,16 +122,16 @@ private fun MainInteractionContent(
                     icon = R.drawable.btn_icon_map_search,
                     border = R.drawable.btn_border_blue,
                     iconSize = 34f,
-                    onClick = searchMap,
+                    onClick = mapSearch,
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
                 CircleImageButton(
-                    icon = R.drawable.btn_icon_help,
-                    border = R.drawable.btn_border_purple_dark,
-                    iconSize = 32f,
-                    onClick = help,
+                    icon = R.drawable.btn_icon_slot_pick,
+                    border = R.drawable.btn_border_red,
+                    iconSize = 34f,
+                    onClick = slotPick,
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))

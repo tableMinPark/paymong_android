@@ -22,6 +22,7 @@ import androidx.wear.compose.material.Text
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
+import com.mongs.wear.presentation.global.constValue.HelpConst
 
 
 @Composable
@@ -30,7 +31,7 @@ fun HelpPointContent_2() {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxHeight()
     ) {
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_TOP_PADDING.dp))
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
@@ -46,7 +47,9 @@ fun HelpPointContent_2() {
                     .width(20.dp),
                 contentScale = ContentScale.FillBounds,
             )
-            Spacer(modifier = Modifier.width(5.dp))
+
+            Spacer(modifier = Modifier.width(HelpConst.CONTENT_IMAGE_PADDING.dp))
+
             Text(
                 text = "는",
                 textAlign = TextAlign.Center,
@@ -91,7 +94,9 @@ fun HelpPointContent_2() {
                     .width(20.dp),
                 contentScale = ContentScale.FillBounds,
             )
-            Spacer(modifier = Modifier.width(5.dp))
+
+            Spacer(modifier = Modifier.width(HelpConst.CONTENT_IMAGE_PADDING.dp))
+
             Text(
                 text = "는",
                 textAlign = TextAlign.Center,
@@ -120,6 +125,6 @@ fun HelpPointContent_2() {
                 maxLines = 1,
             )
         }
-        Spacer(modifier = Modifier.height(35.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_BOTTOM_PADDING.dp))
     }
 }

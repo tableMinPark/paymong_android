@@ -29,6 +29,7 @@ import androidx.wear.compose.material.Text
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
+import com.mongs.wear.presentation.component.background.FeedNestedBackground
 
 @Composable
 fun FeedItemDetailDialog(
@@ -43,7 +44,7 @@ fun FeedItemDetailDialog(
     Box(
         contentAlignment = Alignment.Center,
         modifier = modifier
-            .background(color = Color.Black.copy(alpha = 0.85f))
+            .background(color = Color.Black.copy(alpha = 0.9f))
             .fillMaxSize()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
@@ -176,6 +177,7 @@ private fun TextDetail(
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, showSystemUi = true, device = Devices.WEAR_OS_SMALL_ROUND)
 @Composable
 private fun SmallFeedItemDetailPreview() {
+    FeedNestedBackground()
     FeedItemDetailDialog(
         addHealthyValue = 10.0,
         addSatietyValue = 10.0,
@@ -188,6 +190,7 @@ private fun SmallFeedItemDetailPreview() {
 @Preview(showBackground = true, backgroundColor = 0xFFFFFFFF, showSystemUi = true, device = Devices.WEAR_OS_LARGE_ROUND)
 @Composable
 private fun LargeFeedItemDetailPreview() {
+    FeedNestedBackground()
     FeedItemDetailDialog(
         addHealthyValue = 10.0,
         addSatietyValue = 10.0,

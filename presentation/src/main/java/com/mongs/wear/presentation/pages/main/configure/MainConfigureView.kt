@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -23,6 +23,7 @@ import com.mongs.wear.core.errors.PresentationErrorCode
 import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.NavItem
 import com.mongs.wear.presentation.component.common.button.CircleImageButton
+import com.mongs.wear.presentation.component.common.button.CircleTextButton
 
 @Composable
 fun MainConfigureView(
@@ -45,8 +46,11 @@ fun MainConfigureView(
             feedback = {
                 navController.navigate(NavItem.Feedback.route)
             },
-            logout = {
+            setting = {
                 navController.navigate(NavItem.Setting.route)
+            },
+            help = {
+                navController.navigate(NavItem.HelpNested.route)
             },
             modifier = Modifier.zIndex(1f)
         )
@@ -59,7 +63,8 @@ private fun MainConfigureContent(
     notice: () -> Unit,
     chargeStarPoint: () -> Unit,
     feedback: () -> Unit,
-    logout: () -> Unit,
+    setting: () -> Unit,
+    help: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
     Box(
@@ -74,13 +79,25 @@ private fun MainConfigureContent(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
             ) {
+                CircleTextButton(
+                    text = "i",
+                    border = R.drawable.btn_border_purple_dark,
+                    onClick = help,
+                )
+            }
+
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                modifier = Modifier.fillMaxWidth()
+                    .offset(y = (-14).dp)
+            ) {
                 CircleImageButton(
                     icon = R.drawable.btn_icon_charge,
                     border = R.drawable.btn_border_purple_dark,
                     onClick = chargeStarPoint,
                 )
 
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(48.dp))
 
                 CircleImageButton(
                     icon = R.drawable.btn_icon_notice,
@@ -89,11 +106,10 @@ private fun MainConfigureContent(
                 )
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
-
             Row(
                 horizontalArrangement = Arrangement.Center,
                 modifier = Modifier.fillMaxWidth()
+                    .offset(y = (-8).dp)
             ) {
                 CircleImageButton(
                     icon = R.drawable.btn_icon_feedback,
@@ -101,12 +117,12 @@ private fun MainConfigureContent(
                     onClick = feedback,
                 )
 
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(10.dp))
 
                 CircleImageButton(
                     icon = R.drawable.btn_icon_setting,
                     border = R.drawable.btn_border_purple_dark,
-                    onClick = logout,
+                    onClick = setting,
                 )
             }
         }

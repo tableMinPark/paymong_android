@@ -19,6 +19,7 @@ import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.component.common.button.CircleImageButton
+import com.mongs.wear.presentation.global.constValue.HelpConst
 
 @Composable
 fun HelpMongContent_2() {
@@ -27,13 +28,13 @@ fun HelpMongContent_2() {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxHeight()
     ) {
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_TOP_PADDING.dp))
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.4f)
+                .weight(0.25f)
         ) {
             CircleImageButton(
                 icon = R.drawable.btn_icon_feed,
@@ -47,7 +48,7 @@ fun HelpMongContent_2() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.2f)
+                .weight(0.25f)
         ) {
             Text(
                 text = "클릭해 먹이주기",
@@ -65,7 +66,7 @@ fun HelpMongContent_2() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.2f)
+                .weight(0.25f)
         ) {
             Text(
                 text = "밥/간식에 따라",
@@ -83,7 +84,7 @@ fun HelpMongContent_2() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.2f)
+                .weight(0.25f)
         ) {
             Text(
                 text = "스텟이 증가해요",
@@ -95,6 +96,6 @@ fun HelpMongContent_2() {
                 maxLines = 1,
             )
         }
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_BOTTOM_PADDING.dp))
     }
 }

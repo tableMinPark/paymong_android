@@ -23,6 +23,7 @@ import androidx.wear.compose.material.Text
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.component.common.bar.ProgressIndicator
+import com.mongs.wear.presentation.global.constValue.HelpConst
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 
@@ -44,7 +45,7 @@ fun HelpInfoContent_1() {
                 .fillMaxHeight()
                 .zIndex(1f)
         ) {
-            Spacer(modifier = Modifier.height(25.dp))
+            Spacer(modifier = Modifier.height(HelpConst.CONTENT_TOP_PADDING.dp))
             Row(
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically,
@@ -116,7 +117,8 @@ fun HelpInfoContent_1() {
                     maxLines = 1,
                 )
             }
-            Spacer(modifier = Modifier.height(35.dp))
+
+            Spacer(modifier = Modifier.height(HelpConst.CONTENT_BOTTOM_PADDING.dp))
         }
 
         ProgressIndicator(

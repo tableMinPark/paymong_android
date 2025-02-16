@@ -1,4 +1,4 @@
-package com.mongs.wear.presentation.component.main.slot.effect
+package com.mongs.wear.presentation.component.slot.effect
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

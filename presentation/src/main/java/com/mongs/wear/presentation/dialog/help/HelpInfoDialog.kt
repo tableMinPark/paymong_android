@@ -22,7 +22,7 @@ fun HelpInfoDialog(
     cancel: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val pagerState = rememberPagerState(initialPage = 0) { 5 }
+    val pagerState = rememberPagerState(initialPage = 0) { 9 }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -60,6 +60,22 @@ fun HelpInfoDialog(
                     }
 
                     4 -> {
+                        HelpInfoContent_4()
+                    }
+
+                    5 -> {
+                        HelpInfoContent_5()
+                    }
+
+                    6 -> {
+                        HelpInfoContent_6()
+                    }
+
+                    7 -> {
+                        HelpInfoContent_7()
+                    }
+
+                    8 -> {
                         HelpCancelContent(cancel = cancel)
                     }
                 }

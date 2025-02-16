@@ -78,16 +78,6 @@ fun FeedFoodPickView(
                 confirm = { feedFoodPickViewModel.buyFood(feedItemVoList.value[feedItemVoIndex.intValue].foodTypeCode) },
                 cancel = { feedFoodPickViewModel.uiState.buyDialog = false }
             )
-        } else if (feedFoodPickViewModel.uiState.detailDialog) {
-            FeedItemDetailDialog(
-                onClick = { feedFoodPickViewModel.uiState.detailDialog = false },
-                addWeightValue = feedItemVoList.value[feedItemVoIndex.intValue].addWeightValue,
-                addStrengthValue = feedItemVoList.value[feedItemVoIndex.intValue].addStrengthValue,
-                addSatietyValue = feedItemVoList.value[feedItemVoIndex.intValue].addSatietyValue,
-                addHealthyValue = feedItemVoList.value[feedItemVoIndex.intValue].addHealthyValue,
-                addFatigueValue = feedItemVoList.value[feedItemVoIndex.intValue].addFatigueValue,
-                modifier = Modifier.zIndex(3f)
-            )
         } else {
             FeedNestedBackground()
             PageIndicator(
@@ -110,6 +100,18 @@ fun FeedFoodPickView(
                 rightBtnClick = { feedItemVoIndex.intValue = min(feedItemVoIndex.intValue + 1, feedItemVoList.value.size - 1) },
                 modifier = Modifier.zIndex(3f)
             )
+
+            if (feedFoodPickViewModel.uiState.detailDialog) {
+                FeedItemDetailDialog(
+                    onClick = { feedFoodPickViewModel.uiState.detailDialog = false },
+                    addWeightValue = feedItemVoList.value[feedItemVoIndex.intValue].addWeightValue,
+                    addStrengthValue = feedItemVoList.value[feedItemVoIndex.intValue].addStrengthValue,
+                    addSatietyValue = feedItemVoList.value[feedItemVoIndex.intValue].addSatietyValue,
+                    addHealthyValue = feedItemVoList.value[feedItemVoIndex.intValue].addHealthyValue,
+                    addFatigueValue = feedItemVoList.value[feedItemVoIndex.intValue].addFatigueValue,
+                    modifier = Modifier.zIndex(3f)
+                )
+            }
         }
 
         LaunchedEffect(feedFoodPickViewModel.uiState.navMainEvent) {

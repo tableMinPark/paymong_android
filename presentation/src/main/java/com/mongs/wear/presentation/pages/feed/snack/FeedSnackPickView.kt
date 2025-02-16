@@ -78,16 +78,6 @@ fun FeedSnackPickView(
                 confirm = { feedSnackPickViewModel.buySnack(foodTypeCode = feedItemVoList.value[feedItemVoIndex.intValue].foodTypeCode) },
                 cancel = { feedSnackPickViewModel.uiState.buyDialog = false }
             )
-        } else if (feedSnackPickViewModel.uiState.detailDialog) {
-            FeedItemDetailDialog(
-                onClick = { feedSnackPickViewModel.uiState.detailDialog = false },
-                addWeightValue = feedItemVoList.value[feedItemVoIndex.intValue].addWeightValue,
-                addStrengthValue = feedItemVoList.value[feedItemVoIndex.intValue].addStrengthValue,
-                addSatietyValue = feedItemVoList.value[feedItemVoIndex.intValue].addSatietyValue,
-                addHealthyValue = feedItemVoList.value[feedItemVoIndex.intValue].addHealthyValue,
-                addFatigueValue = feedItemVoList.value[feedItemVoIndex.intValue].addFatigueValue,
-                modifier = Modifier.zIndex(3f)
-            )
         } else {
             FeedNestedBackground()
             PageIndicator(
@@ -110,6 +100,18 @@ fun FeedSnackPickView(
                 rightBtnClick = { feedItemVoIndex.intValue = min(feedItemVoIndex.intValue + 1, feedItemVoList.value.size - 1) },
                 modifier = Modifier.zIndex(3f)
             )
+
+            if (feedSnackPickViewModel.uiState.detailDialog) {
+                FeedItemDetailDialog(
+                    onClick = { feedSnackPickViewModel.uiState.detailDialog = false },
+                    addWeightValue = feedItemVoList.value[feedItemVoIndex.intValue].addWeightValue,
+                    addStrengthValue = feedItemVoList.value[feedItemVoIndex.intValue].addStrengthValue,
+                    addSatietyValue = feedItemVoList.value[feedItemVoIndex.intValue].addSatietyValue,
+                    addHealthyValue = feedItemVoList.value[feedItemVoIndex.intValue].addHealthyValue,
+                    addFatigueValue = feedItemVoList.value[feedItemVoIndex.intValue].addFatigueValue,
+                    modifier = Modifier.zIndex(3f)
+                )
+            }
         }
     }
 

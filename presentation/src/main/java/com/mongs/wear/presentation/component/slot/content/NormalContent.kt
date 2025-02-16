@@ -1,4 +1,4 @@
-package com.mongs.wear.presentation.component.main.slot.content
+package com.mongs.wear.presentation.component.slot.content
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

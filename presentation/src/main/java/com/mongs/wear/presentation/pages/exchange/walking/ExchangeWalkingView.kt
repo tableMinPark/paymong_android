@@ -12,10 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -29,12 +27,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.wear.compose.material.Text
 import com.mongs.wear.domain.management.vo.MongVo
 import com.mongs.wear.presentation.R
@@ -47,6 +42,7 @@ import com.mongs.wear.presentation.component.common.button.SelectButton
 import com.mongs.wear.presentation.component.common.textbox.PayPoint
 import com.mongs.wear.presentation.dialog.common.ConfirmAndCancelDialog
 import com.mongs.wear.presentation.dialog.error.NeedPermissionDialog
+import com.mongs.wear.presentation.global.view.OnLeavePage
 import com.mongs.wear.presentation.pages.exchange.walking.ExchangeWalkingViewModel.UiState
 import kotlin.math.max
 import kotlin.math.min
@@ -115,19 +111,11 @@ fun ExchangeWalkingView(
             exchangeWalkingViewModel.connectSensor()
         }
 
-        val currentBackStackEntry by navController.currentBackStackEntryAsState()
-
-        DisposableEffect(currentBackStackEntry) {
-            val observer = LifecycleEventObserver { _, event ->
-                if (event == Lifecycle.Event.ON_DESTROY) {
-                    exchangeWalkingViewModel.disconnectSensor()
-                }
-            }
-            lifecycleOwner.lifecycle.addObserver(observer)
-            onDispose {
-                lifecycleOwner.lifecycle.removeObserver(observer)
-            }
-        }
+        OnLeavePage(
+            navController = navController,
+            lifecycleOwner = lifecycleOwner,
+            onLeavePage = exchangeWalkingViewModel::disconnectSensor
+        )
     }
 }
 

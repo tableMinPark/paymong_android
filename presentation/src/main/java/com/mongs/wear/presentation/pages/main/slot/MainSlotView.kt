@@ -15,18 +15,18 @@ import com.mongs.wear.core.enums.MongStateCode
 import com.mongs.wear.core.errors.PresentationErrorCode
 import com.mongs.wear.domain.management.vo.MongVo
 import com.mongs.wear.presentation.assets.NavItem
-import com.mongs.wear.presentation.component.main.slot.content.DeadContent
-import com.mongs.wear.presentation.component.main.slot.content.DeleteContent
-import com.mongs.wear.presentation.component.main.slot.content.EmptyContent
-import com.mongs.wear.presentation.component.main.slot.content.GraduatedContent
-import com.mongs.wear.presentation.component.main.slot.content.NormalContent
-import com.mongs.wear.presentation.component.main.slot.effect.EvolutionEffect
-import com.mongs.wear.presentation.component.main.slot.effect.GraduatedEffect
-import com.mongs.wear.presentation.component.main.slot.effect.GraduationEffect
-import com.mongs.wear.presentation.component.main.slot.effect.HeartEffect
-import com.mongs.wear.presentation.component.main.slot.effect.PoopCleanEffect
-import com.mongs.wear.presentation.component.main.slot.effect.PoopEffect
-import com.mongs.wear.presentation.component.main.slot.effect.SleepEffect
+import com.mongs.wear.presentation.component.slot.content.DeadContent
+import com.mongs.wear.presentation.component.slot.content.DeleteContent
+import com.mongs.wear.presentation.component.slot.content.EmptyContent
+import com.mongs.wear.presentation.component.slot.content.GraduatedContent
+import com.mongs.wear.presentation.component.slot.content.NormalContent
+import com.mongs.wear.presentation.component.slot.effect.EvolutionEffect
+import com.mongs.wear.presentation.component.slot.effect.GraduatedEffect
+import com.mongs.wear.presentation.component.slot.effect.GraduationEffect
+import com.mongs.wear.presentation.component.slot.effect.HeartEffect
+import com.mongs.wear.presentation.component.slot.effect.PoopCleanEffect
+import com.mongs.wear.presentation.component.slot.effect.PoopEffect
+import com.mongs.wear.presentation.component.slot.effect.SleepEffect
 import com.mongs.wear.presentation.dialog.slot.SlotInteractionDialog
 import com.mongs.wear.presentation.global.viewModel.BaseViewModel
 import com.mongs.wear.presentation.pages.main.slot.MainSlotViewModel.UiState
@@ -68,24 +68,6 @@ fun MainSlotView(
             if (mainSlotViewModel.uiState.slotInteractionDialog && !isPageChanging.value) {
                 SlotInteractionDialog(
                     mongVo = mongVo,
-                    feed = {
-                        mainSlotViewModel.uiState.slotInteractionDialog = false
-                        navController.navigate(NavItem.FeedNested.route)
-                    },
-                    slotPick = {
-                        mainSlotViewModel.uiState.slotInteractionDialog = false
-                        navController.navigate(NavItem.SlotPick.route)
-                    },
-                    sleeping = {
-                        mainSlotViewModel.sleeping(mongId = mongVo.mongId)
-                    },
-                    exchange = {
-                        mainSlotViewModel.uiState.slotInteractionDialog = false
-                        navController.navigate(NavItem.ExchangeNested.route)
-                    },
-                    poopClean = {
-                        mainSlotViewModel.poopClean(mongId = mongVo.mongId)
-                    },
                     inventory = {
                         Toast.makeText(
                             context,
@@ -94,6 +76,16 @@ fun MainSlotView(
                         ).show()
                         // mainSlotViewModel.uiState.slotInteractionDialog = false
                         // navController.navigate(NavItem.Inventory.route)
+                    },
+                    feed = {
+                        mainSlotViewModel.uiState.slotInteractionDialog = false
+                        navController.navigate(NavItem.FeedNested.route)
+                    },
+                    sleeping = {
+                        mainSlotViewModel.sleeping(mongId = mongVo.mongId)
+                    },
+                    poopClean = {
+                        mainSlotViewModel.poopClean(mongId = mongVo.mongId)
                     },
                     stroke = {
                         mainSlotViewModel.stroke(mongId = mongVo.mongId)

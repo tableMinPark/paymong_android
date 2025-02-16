@@ -43,41 +43,6 @@ fun FeedbackView(
         if (feedbackViewModel.uiState.loadingBar) {
             FeedbackBackground()
             FeedbackLoadingBar()
-        } else if(feedbackViewModel.uiState.inputDialog) {
-            FeedbackAddDialog(
-                feedbackCode = feedbackCode.value,
-                text = content.value,
-                changeText = { content.value = it },
-                confirm = {
-                    feedbackViewModel.uiState.inputDialog = false
-                    feedbackViewModel.uiState.addDialog = true
-                },
-                cancel = {
-                    feedbackViewModel.uiState.inputDialog = false
-                    content.value = ""
-                }
-            )
-
-        } else if (feedbackViewModel.uiState.addDialog) {
-            ConfirmAndCancelDialog(
-                text = "\"${feedbackCode.value.message}\" 오류를\n전송 하시겠습니까?",
-                confirm = {
-                    feedbackViewModel.createFeedback(
-                        feedbackCode = feedbackCode.value,
-                        content = content.value)
-
-                    content.value = ""
-                },
-                cancel = {
-                    feedbackViewModel.uiState.addDialog = false
-                    content.value = ""
-                }
-            )
-        } else if (feedbackViewModel.uiState.confirmDialog) {
-            ConfirmDialog(
-                text = "신고되었습니다.\n처리결과는 메일로\n전달드리겠습니다.",
-                confirm = { feedbackViewModel.uiState.confirmDialog = false }
-            )
         } else {
             FeedbackBackground()
             FeedbackContent(
@@ -87,6 +52,47 @@ fun FeedbackView(
                 },
                 modifier = Modifier.zIndex(1f)
             )
+
+            if(feedbackViewModel.uiState.inputDialog) {
+                FeedbackAddDialog(
+                    feedbackCode = feedbackCode.value,
+                    text = content.value,
+                    changeText = { content.value = it },
+                    confirm = {
+                        feedbackViewModel.uiState.inputDialog = false
+                        feedbackViewModel.uiState.addDialog = true
+                    },
+                    cancel = {
+                        feedbackViewModel.uiState.inputDialog = false
+                        content.value = ""
+                    },
+                    modifier = Modifier.zIndex(2f),
+                )
+
+            } else if (feedbackViewModel.uiState.addDialog) {
+                ConfirmAndCancelDialog(
+                    text = "\"${feedbackCode.value.message}\" 오류를\n전송 하시겠습니까?",
+                    confirm = {
+                        feedbackViewModel.createFeedback(
+                            feedbackCode = feedbackCode.value,
+                            content = content.value)
+
+                        content.value = ""
+                    },
+                    cancel = {
+                        feedbackViewModel.uiState.inputDialog = true
+                        feedbackViewModel.uiState.addDialog = false
+                        content.value = ""
+                    },
+                    modifier = Modifier.zIndex(2f),
+                )
+            } else if (feedbackViewModel.uiState.confirmDialog) {
+                ConfirmDialog(
+                    text = "신고되었습니다.\n처리결과는 메일로\n전달드리겠습니다.",
+                    confirm = { feedbackViewModel.uiState.confirmDialog = false },
+                    modifier = Modifier.zIndex(2f),
+                )
+            }
         }
     }
 }

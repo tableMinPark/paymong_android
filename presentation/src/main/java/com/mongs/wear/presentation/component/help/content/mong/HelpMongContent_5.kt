@@ -23,6 +23,7 @@ import com.mongs.wear.presentation.R
 import com.mongs.wear.presentation.assets.DAL_MU_RI
 import com.mongs.wear.presentation.assets.MongsWhite
 import com.mongs.wear.presentation.component.common.button.CircleImageButton
+import com.mongs.wear.presentation.global.constValue.HelpConst
 
 @Composable
 fun HelpMongContent_5() {
@@ -31,13 +32,13 @@ fun HelpMongContent_5() {
         verticalArrangement = Arrangement.Center,
         modifier = Modifier.fillMaxHeight()
     ) {
-        Spacer(modifier = Modifier.height(15.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_TOP_PADDING.dp))
         Row(
             horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.4f)
+                .weight(0.25f)
         ) {
             CircleImageButton(
                 icon = R.drawable.btn_icon_sleep,
@@ -51,7 +52,7 @@ fun HelpMongContent_5() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.2f)
+                .weight(0.25f)
         ) {
             Text(
                 text = "기상 상태에는",
@@ -69,7 +70,7 @@ fun HelpMongContent_5() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.2f)
+                .weight(0.25f)
         ) {
             Image(
                 painter = painterResource(R.drawable.icon_healthy),
@@ -79,7 +80,9 @@ fun HelpMongContent_5() {
                     .width(20.dp),
                 contentScale = ContentScale.FillBounds,
             )
-            Spacer(modifier = Modifier.width(7.dp))
+
+            Spacer(modifier = Modifier.width(HelpConst.CONTENT_IMAGE_PADDING.dp))
+
             Image(
                 painter = painterResource(R.drawable.icon_strength),
                 contentDescription = null,
@@ -88,7 +91,9 @@ fun HelpMongContent_5() {
                     .width(20.dp),
                 contentScale = ContentScale.FillBounds,
             )
-            Spacer(modifier = Modifier.width(7.dp))
+
+            Spacer(modifier = Modifier.width(HelpConst.CONTENT_IMAGE_PADDING.dp))
+
             Image(
                 painter = painterResource(R.drawable.icon_satiety),
                 contentDescription = null,
@@ -97,7 +102,9 @@ fun HelpMongContent_5() {
                     .width(20.dp),
                 contentScale = ContentScale.FillBounds,
             )
-            Spacer(modifier = Modifier.width(7.dp))
+
+            Spacer(modifier = Modifier.width(HelpConst.CONTENT_IMAGE_PADDING.dp))
+
             Image(
                 painter = painterResource(R.drawable.icon_fatigue),
                 contentDescription = null,
@@ -113,7 +120,7 @@ fun HelpMongContent_5() {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .fillMaxWidth()
-                .weight(0.2f)
+                .weight(0.25f)
         ) {
             Text(
                 text = "이 감소해요",
@@ -125,6 +132,6 @@ fun HelpMongContent_5() {
                 maxLines = 1,
             )
         }
-        Spacer(modifier = Modifier.height(25.dp))
+        Spacer(modifier = Modifier.height(HelpConst.CONTENT_BOTTOM_PADDING.dp))
     }
 }
