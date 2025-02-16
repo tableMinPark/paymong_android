@@ -11,15 +11,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.wear.compose.material.MaterialTheme
-import coil.ImageLoader
-import coil.decode.ImageDecoderDecoder
 import com.mongs.wear.presentation.R
 
 @Composable
@@ -27,7 +24,7 @@ fun CircleImageButton(
     icon: Int,
     border: Int,
     size: Int = 54,
-    iconSize: Int = size / 2,
+    iconSize: Float = size / 2f,
     onClick: () -> Unit,
     disable: Boolean = false,
     modifier: Modifier = Modifier
@@ -52,7 +49,7 @@ fun CircleImageButton(
     ) {
         Image(
             alpha = 0.55f,
-            painter = painterResource(R.drawable.interaction_bnt),
+            painter = painterResource(R.drawable.btn_bg_circle),
             contentDescription = null,
             modifier = Modifier.zIndex(0f)
         )
@@ -68,10 +65,10 @@ fun CircleImageButton(
 
         if (disable) {
             Image(
-                painter = painterResource(R.drawable.locker),
+                painter = painterResource(R.drawable.btn_icon_locker),
                 contentDescription = null,
                 modifier = Modifier
-                    .size(iconSize.dp)
+                    .size((size / 2).dp)
                     .zIndex(2f)
             )
         }
@@ -88,8 +85,8 @@ fun CircleImageButton(
 @Composable
 private fun LongBlueButtonPreview() {
     CircleImageButton(
-        icon = R.drawable.basketball,
-        border = R.drawable.interaction_bnt_yellow,
+        icon = R.drawable.btn_icon_basketball,
+        border = R.drawable.btn_border_yellow,
         disable = true,
         onClick = {},
     )

@@ -40,9 +40,9 @@ import com.mongs.wear.presentation.component.common.charactor.Mong
 import kotlinx.coroutines.delay
 
 private val imageList = listOf(
-    R.drawable.create_effect_1,
-    R.drawable.create_effect_2,
-    R.drawable.create_effect_3,
+    R.drawable.effect_evolution_1,
+    R.drawable.effect_evolution_2,
+    R.drawable.effect_evolution_3,
 )
 
 private val delayList = listOf(
@@ -139,7 +139,7 @@ fun EvolutionEffect(
             Image(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(160.dp),
+                    .fillMaxHeight(),
                 painter = painterResource(imageList[nowStep]),
                 contentDescription = null,
                 contentScale = ContentScale.FillBounds,

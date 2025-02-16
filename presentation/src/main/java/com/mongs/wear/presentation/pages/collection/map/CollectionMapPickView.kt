@@ -108,7 +108,7 @@ private fun CollectionMapPickContent(
                             if (!mapCollectionVo.isIncluded) {
                                 CircleTextButton(
                                     text = "?",
-                                    border = R.drawable.interaction_bnt_darkpurple,
+                                    border = R.drawable.btn_border_purple_dark,
                                     onClick = {},
                                     modifier = Modifier
                                         .offset(
@@ -119,7 +119,7 @@ private fun CollectionMapPickContent(
                             } else {
                                 CircleImageButton(
                                     icon = MapResourceCode.valueOf(mapCollectionVo.code).code,
-                                    border = R.drawable.interaction_bnt_darkpurple,
+                                    border = R.drawable.btn_border_purple_dark,
                                     onClick = { mapCollectionPick(index - 1) },
                                     modifier = Modifier
                                         .offset(

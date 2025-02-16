@@ -44,19 +44,19 @@ fun HelpInfoDialog(
             HorizontalPager(state = pagerState) { page ->
                 when (page) {
                     0 -> {
-                        HelpCharacterInfoContent()
+                        HelpInfoContent_0()
                     }
 
                     1 -> {
-                        HelpCollectionInfoContent()
+                        HelpInfoContent_1()
                     }
 
                     2 -> {
-                        HelpEvolutionInfoContent()
+                        HelpInfoContent_2()
                     }
 
                     3 -> {
-                        HelpWalkingRewardInfoContent()
+                        HelpInfoContent_3()
                     }
 
                     4 -> {

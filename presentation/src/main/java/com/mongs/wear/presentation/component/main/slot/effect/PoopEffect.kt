@@ -35,7 +35,7 @@ fun PoopEffect(
                 modifier = Modifier
                     .padding(poopPadding[count - 1])
                     .size(25.dp),
-                painter = painterResource(R.drawable.poops),
+                painter = painterResource(R.drawable.icon_poop),
                 contentDescription = null
             )
         }

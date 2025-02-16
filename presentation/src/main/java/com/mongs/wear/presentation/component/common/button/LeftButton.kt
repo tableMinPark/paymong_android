@@ -36,7 +36,7 @@ fun LeftButton(
                 onClick = onClick,
             ),
     ) {
-        val buttonImage = R.drawable.leftbnt
+        val buttonImage = R.drawable.btn_icon_left
 
         Image(
             painter = painterResource(buttonImage),

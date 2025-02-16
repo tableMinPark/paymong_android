@@ -58,28 +58,28 @@ fun FeedItemDetailDialog(
             Spacer(modifier = Modifier.height(35.dp))
             if (addHealthyValue > 0) {
                 ImageDetail(
-                    image = R.drawable.health,
+                    image = R.drawable.icon_healthy,
                     value = addHealthyValue,
                     modifier = Modifier.weight(0.2f)
                 )
             }
             if (addSatietyValue > 0) {
                 ImageDetail(
-                    image = R.drawable.satiety,
+                    image = R.drawable.icon_satiety,
                     value = addSatietyValue,
                     modifier = Modifier.weight(0.2f)
                 )
             }
             if (addStrengthValue > 0) {
                 ImageDetail(
-                    image = R.drawable.strength,
+                    image = R.drawable.icon_strength,
                     value = addStrengthValue,
                     modifier = Modifier.weight(0.2f)
                 )
             }
             if (addFatigueValue > 0) {
                 ImageDetail(
-                    image = R.drawable.sleep,
+                    image = R.drawable.icon_fatigue,
                     value = addFatigueValue,
                     modifier = Modifier.weight(0.2f)
                 )

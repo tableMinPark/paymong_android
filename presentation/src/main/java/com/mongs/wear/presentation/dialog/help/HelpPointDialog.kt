@@ -44,15 +44,15 @@ fun HelpPointDialog(
             HorizontalPager(state = pagerState) { page ->
                 when (page) {
                     0 -> {
-                        HelpAddPayPointContent()
+                        HelpPointContent_0()
                     }
 
                     1 -> {
-                        HelpAddStarPointContent()
+                        HelpPointContent_1()
                     }
 
                     2 -> {
-                        HelpWarningPointContent()
+                        HelpPointContent_2()
                     }
 
                     3 -> {

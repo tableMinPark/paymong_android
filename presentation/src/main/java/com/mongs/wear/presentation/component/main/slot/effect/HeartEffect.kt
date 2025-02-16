@@ -25,7 +25,7 @@ fun HeartEffect(
             modifier = Modifier
                 .padding(top = 25.dp)
                 .size(17.dp),
-            painter = painterResource(R.drawable.heart),
+            painter = painterResource(R.drawable.icon_heart),
             contentDescription = null
         )
     }

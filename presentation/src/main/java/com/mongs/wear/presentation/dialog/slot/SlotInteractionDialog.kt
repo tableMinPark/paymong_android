@@ -31,7 +31,7 @@ fun SlotInteractionDialog(
     feed: () -> Unit,
     slotPick: () -> Unit,
     sleeping: () -> Unit,
-    exchangeWalking: () -> Unit,
+    exchange: () -> Unit,
     poopClean: () -> Unit,
     stroke: () -> Unit,
     inventory: () -> Unit,
@@ -61,8 +61,9 @@ fun SlotInteractionDialog(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 CircleImageButton(
-                    icon = R.drawable.feed,
-                    border = R.drawable.interaction_bnt_yellow,
+                    icon = R.drawable.btn_icon_feed,
+                    border = R.drawable.btn_border_yellow,
+                    iconSize = 34f,
                     disable = isEgg || mongVo.isSleeping || mongVo.stateCode == MongStateCode.DEAD,
                     onClick = feed,
                 )
@@ -70,11 +71,11 @@ fun SlotInteractionDialog(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 CircleImageButton(
-                    icon = R.drawable.pointlogo,
-                    iconSize = 22,
-                    border = R.drawable.interaction_bnt_darkpurple,
-                    disable = mongVo.stateCode == MongStateCode.DEAD || mongVo.stateCode == MongStateCode.DELETE,
-                    onClick = exchangeWalking,
+                    icon = R.drawable.btn_icon_stroke,
+                    border = R.drawable.btn_border_pink,
+                    iconSize = 34f,
+                    disable = isEgg || mongVo.stateCode == MongStateCode.DEAD || mongVo.isSleeping,
+                    onClick = stroke,
                 )
             }
 
@@ -83,8 +84,9 @@ fun SlotInteractionDialog(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 CircleImageButton(
-                    icon = R.drawable.sleep,
-                    border = R.drawable.interaction_bnt_blue,
+                    icon = R.drawable.btn_icon_sleep,
+                    border = R.drawable.btn_border_blue,
+                    iconSize = 34f,
                     disable = isEgg || mongVo.stateCode == MongStateCode.DEAD,
                     onClick = sleeping,
                 )
@@ -92,16 +94,18 @@ fun SlotInteractionDialog(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 CircleImageButton(
-                    icon = R.drawable.slot,
-                    border = R.drawable.interaction_bnt_red,
+                    icon = R.drawable.btn_icon_slot_pick,
+                    border = R.drawable.btn_border_red,
+                    iconSize = 34f,
                     onClick = slotPick,
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
                 CircleImageButton(
-                    icon = R.drawable.poop,
-                    border = R.drawable.interaction_bnt_purple,
+                    icon = R.drawable.btn_icon_poop_clean,
+                    border = R.drawable.btn_border_purple,
+                    iconSize = 34f,
                     disable = isEgg || mongVo.stateCode == MongStateCode.DEAD || mongVo.isSleeping,
                     onClick = poopClean,
                 )
@@ -112,19 +116,19 @@ fun SlotInteractionDialog(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 CircleImageButton(
-                    icon = R.drawable.locker,
-                    border = R.drawable.interaction_bnt_green,
+                    icon = R.drawable.btn_icon_inventory,
+                    border = R.drawable.btn_border_green,
+                    iconSize = 34f,
                     onClick = inventory,
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
                 CircleImageButton(
-                    icon = R.drawable.heart,
-                    iconSize = 22,
-                    border = R.drawable.interaction_bnt_pink,
-                    disable = isEgg || mongVo.stateCode == MongStateCode.DEAD || mongVo.isSleeping,
-                    onClick = stroke,
+                    icon = R.drawable.point_icon_pay,
+                    border = R.drawable.btn_border_purple_dark,
+                    disable = mongVo.stateCode == MongStateCode.DEAD || mongVo.stateCode == MongStateCode.DELETE,
+                    onClick = exchange,
                 )
             }
         }

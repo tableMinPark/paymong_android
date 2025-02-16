@@ -36,7 +36,7 @@ fun RightButton(
                 onClick = onClick,
             ),
     ) {
-        val buttonImage = R.drawable.rightbnt
+        val buttonImage = R.drawable.btn_icon_right
 
         Image(
             painter = painterResource(buttonImage),

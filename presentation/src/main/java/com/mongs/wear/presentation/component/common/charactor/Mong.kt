@@ -71,18 +71,18 @@ fun Mong(
                 modifier = Modifier.zIndex(1f)
             ) {
                 val expression = when (state) {
-                    MongStatusCode.SICK -> R.drawable.sad
-                    MongStatusCode.SOMNOLENCE -> R.drawable.depressed
-                    MongStatusCode.HUNGRY -> R.drawable.sulky
+                    MongStatusCode.SICK -> R.drawable.mong_face_sad
+                    MongStatusCode.SOMNOLENCE -> R.drawable.mong_face_depressed
+                    MongStatusCode.HUNGRY -> R.drawable.mong_face_sulky
                     else -> {
                         if (isHappy) {
-                            R.drawable.happy
+                            R.drawable.mong_face_happy
                         } else if (isEating) {
-                            R.drawable.eating
+                            R.drawable.mong_face_eating
                         } else if (isSleeping) {
-                            R.drawable.sleeping
+                            R.drawable.mong_face_sleeping
                         } else {
-                            R.drawable.smile
+                            R.drawable.mong_face_smile
                         }
                     }
                 }

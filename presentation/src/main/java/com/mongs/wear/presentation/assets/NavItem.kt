@@ -23,11 +23,14 @@ sealed class NavItem(val route: String) {
     /* SlotPick */
     data object SlotPick: NavItem("SlotPick")
 
-    /* Store */
-    data object StoreNested: NavItem("StoreNested")
-    data object StoreMenu: NavItem("StoreMenu")
-    data object StoreChargeStarPoint: NavItem("StoreChargeStarPoint")
-    data object StoreExchangePayPoint: NavItem("StoreExchangePayPoint")
+    /* ExchangePayPoint */
+    data object ExchangeNested: NavItem("ExchangeNested")
+    data object ExchangeMenu: NavItem("ExchangeMenu")
+    data object ExchangeWalking: NavItem("ExchangeWalking")
+    data object ExchangeStarPoint: NavItem("ExchangeStarPoint")
+
+    /* ChargeStarPoint */
+    data object ChargeStarPoint: NavItem("ChargeStarPoint")
 
     /* Feedback */
     data object Feedback: NavItem("Feedback")
@@ -49,9 +52,6 @@ sealed class NavItem(val route: String) {
     /* Setting */
     data object Setting: NavItem("Setting")
 
-    /* Exchange Walking */
-    data object ExchangeWalking: NavItem("ExchangeWalking")
-
     /* Inventory */
     data object Inventory: NavItem("Inventory")
 
@@ -63,4 +63,7 @@ sealed class NavItem(val route: String) {
 
     /* Walking */
     data object Walking: NavItem("Walking")
+
+    /* Notice */
+    data object Notice: NavItem("Notice")
 }

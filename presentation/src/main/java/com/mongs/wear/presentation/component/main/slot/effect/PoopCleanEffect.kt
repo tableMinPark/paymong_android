@@ -31,7 +31,7 @@ fun PoopCleanEffect(
     ) {
         Image(
             painter = rememberAsyncImagePainter(
-                model = R.drawable.move_vacuum,
+                model = R.drawable.effect_vacuum,
                 imageLoader = imageLoader
             ),
             contentDescription = "PoopCleanEffect",

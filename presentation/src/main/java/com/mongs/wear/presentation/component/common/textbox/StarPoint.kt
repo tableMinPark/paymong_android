@@ -38,7 +38,7 @@ fun StarPoint(
             .width(width.dp)
     ) {
         Image(
-            painter = painterResource(R.drawable.pointbackground),
+            painter = painterResource(R.drawable.point_bg),
             contentDescription = null,
             modifier = Modifier
                 .matchParentSize()
@@ -56,7 +56,7 @@ fun StarPoint(
                 modifier = Modifier.weight(0.2f),
             ) {
                 Image(
-                    painter = painterResource(R.drawable.starpoint_logo),
+                    painter = painterResource(R.drawable.point_icon_star),
                     contentDescription = null,
                     modifier = Modifier
                         .height(12.dp)

@@ -34,7 +34,7 @@ fun TrainingNestedBackground(
     modifier: Modifier = Modifier.zIndex(0f)
 ) {
     if (!isMoving) {
-        val background = R.drawable.training_bg
+        val background = R.drawable.bg_training
 
         Box(
             contentAlignment = Alignment.Center,
@@ -49,9 +49,9 @@ fun TrainingNestedBackground(
     } else {
 
         val backgrounds = arrayOf(
-            ImageBitmap.imageResource(R.drawable.training_bg),
-            ImageBitmap.imageResource(R.drawable.training_bg_mirror),
-            ImageBitmap.imageResource(R.drawable.training_bg),
+            ImageBitmap.imageResource(R.drawable.bg_training),
+            ImageBitmap.imageResource(R.drawable.bg_training_mirror),
+            ImageBitmap.imageResource(R.drawable.bg_training),
         )
 
         BoxWithConstraints(modifier = Modifier.fillMaxSize()) {

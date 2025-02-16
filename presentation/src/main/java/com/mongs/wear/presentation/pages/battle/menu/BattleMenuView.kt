@@ -231,7 +231,7 @@ private fun BattleMenuContent(
                     .weight(0.4f)
             ) {
                 Image(
-                    painter = painterResource(R.drawable.battle_title),
+                    painter = painterResource(R.drawable.txt_battle),
                     contentDescription = null,
                     modifier = Modifier
                         .height(45.dp)
@@ -266,7 +266,7 @@ private fun BattleMenuContent(
                     .weight(0.2f)
             ) {
                 Image(
-                    painter = painterResource(R.drawable.pointlogo),
+                    painter = painterResource(R.drawable.point_icon_pay),
                     contentDescription = null,
                     modifier = Modifier
                         .height(20.dp)

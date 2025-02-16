@@ -38,7 +38,7 @@ fun PayPoint(
             .width(width.dp),
     ) {
         Image(
-            painter = painterResource(R.drawable.pointbackground),
+            painter = painterResource(R.drawable.point_bg),
             contentDescription = null,
             modifier = Modifier
                 .matchParentSize()
@@ -56,7 +56,7 @@ fun PayPoint(
                 modifier = Modifier.weight(0.2f),
             ) {
                 Image(
-                    painter = painterResource(R.drawable.pointlogo),
+                    painter = painterResource(R.drawable.point_icon_pay),
                     contentDescription = null,
                     modifier = Modifier
                         .height(12.dp)

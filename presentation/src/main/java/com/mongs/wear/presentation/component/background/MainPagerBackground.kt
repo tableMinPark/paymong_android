@@ -104,7 +104,7 @@ fun MainPagerBackground(
             if (mapResourceCode == MapResourceCode.MP000.code) {
                 Image(
                     painter = rememberAsyncImagePainter(
-                        model = R.drawable.bg_gif,
+                        model = R.drawable.map_mp000_gif,
                         imageLoader = imageLoader,
                         placeholder = painterResource(mapResourceCode),
                     ),

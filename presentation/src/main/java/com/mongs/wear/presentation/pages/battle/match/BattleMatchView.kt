@@ -236,7 +236,7 @@ private fun BattleMatchEnterContent(
                     .weight(0.2f)
             ) {
                 Image(
-                    painter = painterResource(R.drawable.battle),
+                    painter = painterResource(R.drawable.txt_vs),
                     contentDescription = null,
                     modifier = Modifier
                         .height(35.dp)
@@ -264,7 +264,7 @@ private fun BattleMatchEnterContent(
                 Spacer(modifier = Modifier.width(15.dp))
 
                 Image(
-                    painter = painterResource(R.drawable.battle_me),
+                    painter = painterResource(R.drawable.txt_me),
                     contentDescription = null,
                     modifier = Modifier
                         .height(20.dp)
@@ -360,7 +360,7 @@ private fun BattleMatchContent(
                 Spacer(modifier = Modifier.width(15.dp))
 
                 Image(
-                    painter = painterResource(R.drawable.battle_me),
+                    painter = painterResource(R.drawable.txt_me),
                     contentDescription = null,
                     modifier = Modifier
                         .height(20.dp)
@@ -400,7 +400,7 @@ private fun MatchPlayer(
                     MatchRoundCode.MATCH_HEAL -> {
                         Image(
                             painter = rememberAsyncImagePainter(
-                                model = R.drawable.health,
+                                model = R.drawable.icon_healthy,
                                 imageLoader = imageLoader
                             ),
                             contentDescription = null,
@@ -415,7 +415,7 @@ private fun MatchPlayer(
                     MatchRoundCode.MATCH_ATTACKED_HEAL -> {
                         Image(
                             painter = rememberAsyncImagePainter(
-                                model = R.drawable.health,
+                                model = R.drawable.icon_healthy,
                                 imageLoader = imageLoader
                             ),
                             contentDescription = null,
@@ -427,7 +427,7 @@ private fun MatchPlayer(
                         )
                         Image(
                             painter = rememberAsyncImagePainter(
-                                model = R.drawable.attack_motion,
+                                model = R.drawable.effect_attack,
                                 imageLoader = imageLoader
                             ),
                             contentDescription = null,
@@ -442,7 +442,7 @@ private fun MatchPlayer(
                     MatchRoundCode.MATCH_ATTACKED -> {
                         Image(
                             painter = rememberAsyncImagePainter(
-                                model = R.drawable.attack_motion,
+                                model = R.drawable.effect_attack,
                                 imageLoader = imageLoader
                             ),
                             contentDescription = null,
@@ -457,7 +457,7 @@ private fun MatchPlayer(
                     MatchRoundCode.MATCH_DEFENCE -> {
                         Image(
                             painter = rememberAsyncImagePainter(
-                                model = R.drawable.defence_motion,
+                                model = R.drawable.effect_defence,
                                 imageLoader = imageLoader
                             ),
                             contentDescription = null,

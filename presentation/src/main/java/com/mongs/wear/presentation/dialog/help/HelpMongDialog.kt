@@ -14,15 +14,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
 import com.mongs.wear.presentation.component.common.pagenation.PageIndicator
-import com.mongs.wear.presentation.component.help.content.mong.*
-import com.mongs.wear.presentation.component.help.content.common.*
+import com.mongs.wear.presentation.component.help.content.common.HelpCancelContent
+import com.mongs.wear.presentation.component.help.content.mong.HelpMongContent_0
+import com.mongs.wear.presentation.component.help.content.mong.HelpMongContent_1
+import com.mongs.wear.presentation.component.help.content.mong.HelpMongContent_2
+import com.mongs.wear.presentation.component.help.content.mong.HelpMongContent_3
+import com.mongs.wear.presentation.component.help.content.mong.HelpMongContent_4
+import com.mongs.wear.presentation.component.help.content.mong.HelpMongContent_5
+import com.mongs.wear.presentation.component.help.content.mong.HelpMongContent_6
+import com.mongs.wear.presentation.component.help.content.mong.HelpMongContent_7
+import com.mongs.wear.presentation.component.help.content.mong.HelpMongContent_8
+import com.mongs.wear.presentation.component.help.content.mong.HelpMongContent_9
 
 @Composable
 fun HelpMongDialog(
     cancel: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val pagerState = rememberPagerState(initialPage = 0) { 7 }
+    val pagerState = rememberPagerState(initialPage = 0) { 11 }
 
     Box(
         contentAlignment = Alignment.Center,
@@ -44,30 +53,46 @@ fun HelpMongDialog(
             HorizontalPager(state = pagerState) { page ->
                 when (page) {
                     0 -> {
-                        HelpStrokeMongContent()
+                        HelpMongContent_0()
                     }
 
                     1 -> {
-                        HelpSleepingSleepMongContent()
+                        HelpMongContent_1()
                     }
 
                     2 -> {
-                        HelpSleepingWakeUpMongContent()
+                        HelpMongContent_2()
                     }
 
                     3 -> {
-                        HelpPoopCleanMongContent()
+                        HelpMongContent_3()
                     }
 
                     4 -> {
-                        HelpFeedMongContent()
+                        HelpMongContent_4()
                     }
 
                     5 -> {
-                        HelpFeedDetailContent()
+                        HelpMongContent_5()
                     }
 
                     6 -> {
+                        HelpMongContent_6()
+                    }
+
+                    7 -> {
+                        HelpMongContent_7()
+                    }
+
+                    8 -> {
+                        HelpMongContent_8()
+                    }
+
+                    9 -> {
+                        HelpMongContent_9()
+                    }
+
+                    10 -> {
                         HelpCancelContent(cancel = cancel)
                     }
                 }

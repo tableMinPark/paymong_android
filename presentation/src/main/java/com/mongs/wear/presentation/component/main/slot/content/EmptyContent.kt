@@ -54,7 +54,7 @@ fun EmptyContent(
                 ) {
                     Image(
                         modifier = Modifier.size(100.dp),
-                        painter = painterResource(R.drawable.egg_blind),
+                        painter = painterResource(R.drawable.mong_body_blind),
                         contentDescription = null
                     )
                     Text(

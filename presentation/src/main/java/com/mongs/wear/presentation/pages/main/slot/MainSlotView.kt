@@ -14,7 +14,6 @@ import androidx.navigation.NavController
 import com.mongs.wear.core.enums.MongStateCode
 import com.mongs.wear.core.errors.PresentationErrorCode
 import com.mongs.wear.domain.management.vo.MongVo
-import com.mongs.wear.presentation.assets.MongResourceCode
 import com.mongs.wear.presentation.assets.NavItem
 import com.mongs.wear.presentation.component.main.slot.content.DeadContent
 import com.mongs.wear.presentation.component.main.slot.content.DeleteContent
@@ -44,7 +43,7 @@ fun MainSlotView(
         MainSlotContent(
             mongVo = mongVo,
             isPageChanging = isPageChanging.value,
-            onMongClick = {
+            slotInteractionDialog = {
                 mainSlotViewModel.uiState.slotInteractionDialog = true
             },
             navSlotPick = { navController.navigate(NavItem.SlotPick.route) },
@@ -80,16 +79,21 @@ fun MainSlotView(
                     sleeping = {
                         mainSlotViewModel.sleeping(mongId = mongVo.mongId)
                     },
-                    exchangeWalking = {
+                    exchange = {
                         mainSlotViewModel.uiState.slotInteractionDialog = false
-                        navController.navigate(NavItem.ExchangeWalking.route)
+                        navController.navigate(NavItem.ExchangeNested.route)
                     },
                     poopClean = {
                         mainSlotViewModel.poopClean(mongId = mongVo.mongId)
                     },
                     inventory = {
-                        mainSlotViewModel.uiState.slotInteractionDialog = false
-                        navController.navigate(NavItem.Inventory.route)
+                        Toast.makeText(
+                            context,
+                            "인벤 ${PresentationErrorCode.PRESENTATION_UPDATE_SOON.getMessage()}",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        // mainSlotViewModel.uiState.slotInteractionDialog = false
+                        // navController.navigate(NavItem.Inventory.route)
                     },
                     stroke = {
                         mainSlotViewModel.stroke(mongId = mongVo.mongId)
@@ -112,7 +116,7 @@ fun MainSlotView(
 private fun MainSlotContent(
     mongVo: MongVo?,
     isPageChanging: Boolean,
-    onMongClick: () -> Unit,
+    slotInteractionDialog: () -> Unit,
     navSlotPick: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
     uiState: UiState,
@@ -122,13 +126,14 @@ private fun MainSlotContent(
             MongStateCode.NORMAL -> {
                 NormalContent(
                     mongVo = mongVo,
-                    onMongClick = onMongClick,
+                    onMongClick = slotInteractionDialog,
                     modifier = modifier,
                 )
             }
 
             MongStateCode.DEAD -> {
                 DeadContent(
+                    onClick = slotInteractionDialog,
                     modifier = modifier,
                 )
             }
@@ -136,7 +141,7 @@ private fun MainSlotContent(
             MongStateCode.GRADUATE_READY -> {
                 NormalContent(
                     mongVo = mongVo,
-                    onMongClick = onMongClick,
+                    onMongClick = slotInteractionDialog,
                     modifier = modifier,
                 )
             }

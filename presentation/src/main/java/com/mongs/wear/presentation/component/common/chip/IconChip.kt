@@ -95,8 +95,8 @@ fun IconChip(
 @Composable
 private fun StarPointPreview() {
     IconChip(
-        icon = R.drawable.feed,
-        border = R.drawable.interaction_bnt_yellow,
+        icon = R.drawable.icon_satiety,
+        border = R.drawable.btn_border_yellow,
         fontColor = MongsWhite,
         label = "테스트",
         secondaryLabel = "",

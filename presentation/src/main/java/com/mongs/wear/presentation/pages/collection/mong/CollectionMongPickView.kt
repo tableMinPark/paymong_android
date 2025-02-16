@@ -109,7 +109,7 @@ private fun CollectionMongPickContent(
                             if (!mongCollectionVo.isIncluded) {
                                 CircleTextButton(
                                     text = "?",
-                                    border = R.drawable.interaction_bnt_darkpurple,
+                                    border = R.drawable.btn_border_purple_dark,
                                     onClick = {},
                                     modifier = Modifier
                                         .offset(
@@ -120,7 +120,7 @@ private fun CollectionMongPickContent(
                             } else {
                                 CircleImageButton(
                                     icon = MongResourceCode.valueOf(mongCollectionVo.code).pngCode,
-                                    border = R.drawable.interaction_bnt_darkpurple,
+                                    border = R.drawable.btn_border_purple_dark,
                                     onClick = { mongCollectionPick(index - 1) },
                                     modifier = Modifier
                                         .offset(

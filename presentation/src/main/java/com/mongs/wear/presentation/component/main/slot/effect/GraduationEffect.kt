@@ -20,10 +20,10 @@ import com.mongs.wear.presentation.R
 import kotlinx.coroutines.delay
 
 private val imageList = listOf(
-    R.drawable.star_1,
-    R.drawable.star_2,
-    R.drawable.star_3,
-    R.drawable.graduation,
+    R.drawable.effect_graduate_1,
+    R.drawable.effect_graduate_2,
+    R.drawable.effect_graduate_3,
+    R.drawable.icon_graduate,
 )
 private val delayList = listOf(
     300L,

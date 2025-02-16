@@ -2,22 +2,18 @@ package com.mongs.wear.presentation.pages.main.interaction
 
 import android.content.Context
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.navigation.NavController
@@ -33,6 +29,7 @@ import com.mongs.wear.presentation.component.common.button.CircleImageButton
 fun MainInteractionView(
     navController: NavController,
     mongVo: MongVo?,
+    context: Context = LocalContext.current,
 ) {
     Box {
         MainInteractionContent(
@@ -41,19 +38,37 @@ fun MainInteractionView(
                 navController.navigate(NavItem.CollectionNested.route)
             },
             walking = {
-                navController.navigate(NavItem.Walking.route)
+                Toast.makeText(
+                    context,
+                    "산책 ${PresentationErrorCode.PRESENTATION_UPDATE_SOON.getMessage()}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                //navController.navigate(NavItem.Walking.route)
             },
             searchMap = {
-                navController.navigate(NavItem.SearchMap.route)
+                Toast.makeText(
+                    context,
+                    "맵 탐색 ${PresentationErrorCode.PRESENTATION_UPDATE_SOON.getMessage()}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                // navController.navigate(NavItem.SearchMap.route)
             },
             luckyDraw = {
-                navController.navigate(NavItem.LuckyDraw.route)
+                Toast.makeText(
+                    context,
+                    "뽑기 ${PresentationErrorCode.PRESENTATION_UPDATE_SOON.getMessage()}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                // navController.navigate(NavItem.LuckyDraw.route)
             },
             training = {
                 navController.navigate(NavItem.TrainingNested.route)
             },
             battle = {
                 navController.navigate(NavItem.BattleNested.route)
+            },
+            help = {
+                navController.navigate(NavItem.HelpNested.route)
             },
             modifier = Modifier.zIndex(1f)
         )
@@ -69,6 +84,7 @@ private fun MainInteractionContent(
     luckyDraw: () -> Unit,
     training: () -> Unit,
     battle: () -> Unit,
+    help: () -> Unit,
     modifier: Modifier = Modifier.zIndex(0f),
 ) {
     Box(
@@ -84,16 +100,18 @@ private fun MainInteractionContent(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 CircleImageButton(
-                    icon = R.drawable.collection,
-                    border = R.drawable.interaction_bnt_orange,
+                    icon = R.drawable.btn_icon_collection,
+                    border = R.drawable.btn_border_orange,
+                    iconSize = 34f,
                     onClick = collection,
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
                 CircleImageButton(
-                    icon = R.drawable.locker,
-                    border = R.drawable.interaction_bnt_red,
+                    icon = R.drawable.btn_icon_walking,
+                    border = R.drawable.btn_border_red,
+                    iconSize = 34f,
                     onClick = walking,
                 )
             }
@@ -103,29 +121,27 @@ private fun MainInteractionContent(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 CircleImageButton(
-                    icon = R.drawable.map_search,
-                    border = R.drawable.interaction_bnt_blue,
+                    icon = R.drawable.btn_icon_map_search,
+                    border = R.drawable.btn_border_blue,
+                    iconSize = 34f,
                     onClick = searchMap,
                 )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = modifier.size(54.dp)
-                ) {
-                    Image(
-                        painter = painterResource(R.drawable.logo_not_open),
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
+                CircleImageButton(
+                    icon = R.drawable.btn_icon_help,
+                    border = R.drawable.btn_border_purple_dark,
+                    iconSize = 32f,
+                    onClick = help,
+                )
 
                 Spacer(modifier = Modifier.width(8.dp))
 
                 CircleImageButton(
-                    icon = R.drawable.locker,
-                    border = R.drawable.interaction_bnt_purple,
+                    icon = R.drawable.btn_icon_luck_draw,
+                    border = R.drawable.btn_border_purple,
+                    iconSize = 34f,
                     onClick = luckyDraw,
                 )
             }
@@ -135,8 +151,9 @@ private fun MainInteractionContent(
                 modifier = Modifier.fillMaxWidth()
             ) {
                 CircleImageButton(
-                    icon = R.drawable.activity,
-                    border = R.drawable.interaction_bnt_green,
+                    icon = R.drawable.btn_icon_activity,
+                    border = R.drawable.btn_border_green,
+                    iconSize = 34f,
                     disable = mongVo?.let {
                         MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg ||
                         mongVo.stateCode == MongStateCode.DEAD ||
@@ -148,8 +165,9 @@ private fun MainInteractionContent(
                 Spacer(modifier = Modifier.width(8.dp))
 
                 CircleImageButton(
-                    icon = R.drawable.battle,
-                    border = R.drawable.interaction_bnt_pink,
+                    icon = R.drawable.btn_icon_battle,
+                    border = R.drawable.btn_border_pink,
+                    iconSize = 30f,
                     disable = mongVo?.let {
                         MongResourceCode.valueOf(mongVo.mongTypeCode).isEgg ||
                                 mongVo.stateCode == MongStateCode.DEAD ||

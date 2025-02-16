@@ -18,7 +18,7 @@ fun Logo(
 ) {
     if (isOpen) {
         Image(
-            painter = painterResource(R.drawable.logo_open),
+            painter = painterResource(R.drawable.icon_logo_open),
             contentDescription = null,
             modifier = Modifier
                 .height(90.dp)
@@ -27,7 +27,7 @@ fun Logo(
         )
     } else {
         Image(
-            painter = painterResource(R.drawable.logo_not_open),
+            painter = painterResource(R.drawable.icon_logo_not_open),
             contentDescription = null,
             modifier = Modifier
                 .height(95.dp)

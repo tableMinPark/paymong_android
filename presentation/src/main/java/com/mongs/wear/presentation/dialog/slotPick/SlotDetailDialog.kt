@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -249,24 +247,24 @@ private fun StatusTab(
     ) {
         Row {
             SlotDetailCondition(
-                icon = R.drawable.health,
+                icon = R.drawable.icon_healthy,
                 progress = healthy.toFloat(),
                 indicatorColor = MongsPink
             )
             SlotDetailCondition(
-                icon = R.drawable.satiety,
+                icon = R.drawable.icon_satiety,
                 progress = satiety.toFloat(),
                 indicatorColor = MongsYellow
             )
         }
         Row{
             SlotDetailCondition(
-                icon = R.drawable.strength,
+                icon = R.drawable.icon_strength,
                 progress = strength.toFloat(),
                 indicatorColor = MongsGreen
             )
             SlotDetailCondition(
-                icon = R.drawable.sleep,
+                icon = R.drawable.icon_fatigue,
                 progress = sleep.toFloat(),
                 indicatorColor = MongsBlue
             )

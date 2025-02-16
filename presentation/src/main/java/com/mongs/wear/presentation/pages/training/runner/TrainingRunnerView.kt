@@ -149,7 +149,7 @@ private fun TrainingRunnerContent(
                     ) {
                         hurdleList.forEachIndexed { index, hurdle ->
                             Hurdle(
-                                image = R.drawable.poops,
+                                image = R.drawable.icon_poop,
                                 height = hurdle.height,
                                 width = hurdle.width,
                                 modifier = Modifier

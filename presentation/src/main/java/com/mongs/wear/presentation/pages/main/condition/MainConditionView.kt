@@ -65,12 +65,12 @@ private fun MainConditionContent(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 MainConditionCondition(
-                    icon = R.drawable.health,
+                    icon = R.drawable.icon_healthy,
                     progress = mongVo.healthy.toFloat(),
                     indicatorColor = MongsPink
                 )
                 MainConditionCondition(
-                    icon = R.drawable.satiety,
+                    icon = R.drawable.icon_satiety,
                     progress = mongVo.satiety.toFloat(),
                     indicatorColor = MongsYellow
                 )
@@ -80,12 +80,12 @@ private fun MainConditionContent(
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 MainConditionCondition(
-                    icon = R.drawable.strength,
+                    icon = R.drawable.icon_strength,
                     progress = mongVo.strength.toFloat(),
                     indicatorColor = MongsGreen
                 )
                 MainConditionCondition(
-                    icon = R.drawable.sleep,
+                    icon = R.drawable.icon_fatigue,
                     progress = mongVo.sleep.toFloat(),
                     indicatorColor = MongsBlue
                 )

@@ -48,7 +48,7 @@ fun BlueButton(
                 onClick = { if (!disable) onClick() },
             ),
     ) {
-        val buttonImage = if (disable) R.drawable.gray_btn else R.drawable.blue_bnt
+        val buttonImage = if (disable) R.drawable.btn_bg_disable else R.drawable.bnt_bg_blue
 
         Image(
             painter = painterResource(buttonImage),

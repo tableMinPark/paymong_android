@@ -70,8 +70,8 @@ private fun TrainingMenuContent(
         ) {
             item {
                 IconChip(
-                    icon = R.drawable.runner,
-                    border = R.drawable.interaction_bnt_green,
+                    icon = R.drawable.btn_icon_runner,
+                    border = R.drawable.btn_border_green,
                     fontColor = Color.White,
                     backgroundColor = Color.Black,
                     label = "달리기",
@@ -81,8 +81,8 @@ private fun TrainingMenuContent(
 
             item {
                 IconChip(
-                    icon = R.drawable.basketball,
-                    border = R.drawable.interaction_bnt_orange,
+                    icon = R.drawable.btn_icon_basketball,
+                    border = R.drawable.btn_border_orange,
                     fontColor = Color.White,
                     backgroundColor = Color.Black,
                     label = "농구",

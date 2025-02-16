@@ -102,7 +102,7 @@ fun TrainingEndDialog(
                     .weight(0.25f)
             ) {
                 Image(
-                    painter = painterResource(R.drawable.pointlogo),
+                    painter = painterResource(R.drawable.point_icon_pay),
                     contentDescription = null,
                     modifier = Modifier
                         .height(20.dp)

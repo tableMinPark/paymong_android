@@ -49,7 +49,7 @@ fun CircleTextButton(
     ) {
         Image(
             alpha = 0.6f,
-            painter = painterResource(R.drawable.interaction_bnt),
+            painter = painterResource(R.drawable.btn_bg_circle),
             contentDescription = null,
             modifier = Modifier.zIndex(0f)
         )
@@ -75,7 +75,7 @@ fun CircleTextButton(
 private fun CircleTextButtonPreview() {
     CircleTextButton(
         text = "?",
-        border = R.drawable.interaction_bnt_yellow,
+        border = R.drawable.btn_border_yellow,
         onClick = {},
     )
 }

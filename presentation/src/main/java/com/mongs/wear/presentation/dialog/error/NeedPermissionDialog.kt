@@ -79,7 +79,7 @@ fun NeedPermissionDialog(
                     .weight(0.25f)
             ) {
                 Image(
-                    painter = painterResource(R.drawable.locker),
+                    painter = painterResource(R.drawable.btn_icon_locker),
                     contentDescription = null,
                     modifier = Modifier
                         .height(32.dp)

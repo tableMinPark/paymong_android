@@ -56,7 +56,7 @@ fun MatchOverDialog(
                 myMatchPlayerVo?.let {
                     if (myMatchPlayerVo.isWinner) {
                         Image(
-                            painter = painterResource(R.drawable.win),
+                            painter = painterResource(R.drawable.txt_win),
                             contentDescription = null,
                             modifier = Modifier
                                 .zIndex(2f)
@@ -66,7 +66,7 @@ fun MatchOverDialog(
                         )
                     } else {
                         Image(
-                            painter = painterResource(R.drawable.lose),
+                            painter = painterResource(R.drawable.txt_lose),
                             contentDescription = null,
                             modifier = Modifier
                                 .zIndex(2f)
@@ -88,7 +88,7 @@ fun MatchOverDialog(
                 myMatchPlayerVo?.let {
                     if (myMatchPlayerVo.isWinner) {
                         Image(
-                            painter = painterResource(R.drawable.pointlogo),
+                            painter = painterResource(R.drawable.point_icon_pay),
                             contentDescription = null,
                             modifier = Modifier
                                 .height(20.dp)

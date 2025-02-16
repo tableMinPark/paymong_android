@@ -22,7 +22,7 @@ fun LoadingBar(
     val imageLoader = ImageLoader.Builder(LocalContext.current)
         .components { add(ImageDecoderDecoder.Factory()) }
         .build()
-    val loading = R.drawable.loading
+    val loading = R.drawable.icon_loading
 
     Image(
         painter = rememberAsyncImagePainter(model = loading, imageLoader = imageLoader),

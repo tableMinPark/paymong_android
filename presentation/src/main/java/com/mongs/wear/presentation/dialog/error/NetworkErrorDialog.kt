@@ -56,7 +56,7 @@ fun NetworkErrorDialog (
             modifier = Modifier.fillMaxHeight()
         ) {
             Image(
-                painter = painterResource(R.drawable.logo_not_open),
+                painter = painterResource(R.drawable.icon_logo_not_open),
                 contentDescription = null,
                 modifier = Modifier.size(55.dp)
             )

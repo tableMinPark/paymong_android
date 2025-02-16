@@ -49,7 +49,7 @@ fun DeleteContent(
                 modifier = Modifier
                     .padding(bottom = 25.dp)
                     .size(130.dp),
-                painter = painterResource(R.drawable.rip),
+                painter = painterResource(R.drawable.mong_rip),
                 contentDescription = null
             )
         }

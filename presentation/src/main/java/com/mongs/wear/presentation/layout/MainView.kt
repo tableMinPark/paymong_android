@@ -23,6 +23,7 @@ import androidx.wear.compose.navigation.SwipeDismissableNavHost
 import androidx.wear.compose.navigation.composable
 import androidx.wear.compose.navigation.rememberSwipeDismissableNavController
 import com.mongs.wear.presentation.assets.NavItem
+import com.mongs.wear.presentation.pages.charge.ChargeStarPointView
 import com.mongs.wear.presentation.component.background.MainBackground
 import com.mongs.wear.presentation.component.common.bar.LoadingBar
 import com.mongs.wear.presentation.dialog.error.NetworkErrorDialog
@@ -33,7 +34,9 @@ import com.mongs.wear.presentation.pages.battle.menu.BattleMenuView
 import com.mongs.wear.presentation.pages.collection.map.CollectionMapPickView
 import com.mongs.wear.presentation.pages.collection.menu.CollectionMenuView
 import com.mongs.wear.presentation.pages.collection.mong.CollectionMongPickView
-import com.mongs.wear.presentation.pages.exchangeWalking.ExchangeWalkingView
+import com.mongs.wear.presentation.pages.exchange.menu.ExchangeMenuView
+import com.mongs.wear.presentation.pages.exchange.starPoint.ExchangeStarPointView
+import com.mongs.wear.presentation.pages.exchange.walking.ExchangeWalkingView
 import com.mongs.wear.presentation.pages.feed.food.FeedFoodPickView
 import com.mongs.wear.presentation.pages.feed.menu.FeedMenuView
 import com.mongs.wear.presentation.pages.feed.snack.FeedSnackPickView
@@ -46,9 +49,6 @@ import com.mongs.wear.presentation.pages.main.layout.MainPagerView
 import com.mongs.wear.presentation.pages.searchMap.SearchMapView
 import com.mongs.wear.presentation.pages.setting.SettingView
 import com.mongs.wear.presentation.pages.slotPick.SlotPickView
-import com.mongs.wear.presentation.pages.store.chargeStartPoint.StoreChargeStarPointView
-import com.mongs.wear.presentation.pages.store.exchangePayPoint.StoreExchangePayPointView
-import com.mongs.wear.presentation.pages.store.menu.StoreMenuView
 import com.mongs.wear.presentation.pages.training.menu.TrainingMenuView
 import com.mongs.wear.presentation.pages.training.runner.TrainingRunnerView
 import com.mongs.wear.presentation.pages.walking.WalkingView
@@ -145,10 +145,16 @@ fun NavContent(
         startDestination = NavItem.Login.route,
         modifier = modifier
     ) {
+        /**
+         * 로그인
+         */
         composable(route = NavItem.Login.route) {
             LoginView(navController = navController)
         }
 
+        /**
+         * 메인 페이지
+         */
         composable(route = NavItem.MainPager.route) {
 
             DisposableEffect(Unit) {
@@ -167,6 +173,9 @@ fun NavContent(
             )
         }
 
+        /**
+         * 컬렉션
+         */
         navigation(
             startDestination = NavItem.CollectionMenu.route,
             route = NavItem.CollectionNested.route
@@ -182,6 +191,9 @@ fun NavContent(
             }
         }
 
+        /**
+         * 식사
+         */
         navigation(
             startDestination = NavItem.FeedMenu.route,
             route = NavItem.FeedNested.route
@@ -197,19 +209,43 @@ fun NavContent(
             }
         }
 
+        /**
+         * 슬롯 선택
+         */
         composable(route = NavItem.SlotPick.route) {
             SlotPickView(navController = navController)
         }
 
+        /**
+         * 스타 포인트 충전
+         */
+        composable(route = NavItem.ChargeStarPoint.route) {
+            DisposableEffect(Unit) {
+                val window = (context as ComponentActivity).window
+                window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+
+                onDispose {
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+                }
+            }
+
+            ChargeStarPointView(navController = navController)
+        }
+
+        /**
+         * 페이 포인트 환전
+         */
         navigation(
-            startDestination = NavItem.StoreMenu.route,
-            route = NavItem.StoreNested.route
+            startDestination = NavItem.ExchangeMenu.route,
+            route = NavItem.ExchangeNested.route
         ) {
-            composable(route = NavItem.StoreMenu.route) {
-                StoreMenuView(navController = navController)
+            composable(route = NavItem.ExchangeMenu.route) {
+                ExchangeMenuView(navController = navController)
             }
-            composable(route = NavItem.StoreChargeStarPoint.route) {
-
+            composable(route = NavItem.ExchangeWalking.route) {
+                ExchangeWalkingView(navController = navController)
+            }
+            composable(route = NavItem.ExchangeStarPoint.route) {
                 DisposableEffect(Unit) {
                     val window = (context as ComponentActivity).window
                     window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
@@ -219,27 +255,20 @@ fun NavContent(
                     }
                 }
 
-                StoreChargeStarPointView(navController = navController)
-            }
-            composable(route = NavItem.StoreExchangePayPoint.route) {
-
-                DisposableEffect(Unit) {
-                    val window = (context as ComponentActivity).window
-                    window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-
-                    onDispose {
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
-                    }
-                }
-
-                StoreExchangePayPointView(navController = navController)
+                ExchangeStarPointView(navController = navController)
             }
         }
 
+        /**
+         * 오류 신고
+         */
         composable(route = NavItem.Feedback.route) {
             FeedbackView()
         }
 
+        /**
+         * 훈련
+         */
         navigation(
             startDestination = NavItem.TrainingMenu.route,
             route = NavItem.TrainingNested.route
@@ -262,6 +291,9 @@ fun NavContent(
             }
         }
 
+        /**
+         * 배틀
+         */
         navigation(
             startDestination = NavItem.BattleMenu.route,
             route = NavItem.BattleNested.route
@@ -294,6 +326,9 @@ fun NavContent(
             }
         }
 
+        /**
+         * 도움말
+         */
         navigation(
             startDestination = NavItem.HelpMenu.route,
             route = NavItem.HelpNested.route
@@ -303,26 +338,37 @@ fun NavContent(
             }
         }
 
+        /**
+         * 설정
+         */
         composable(route = NavItem.Setting.route) {
             SettingView(navController = navController)
         }
 
-        composable(route = NavItem.ExchangeWalking.route) {
-            ExchangeWalkingView(navController = navController)
-        }
-
+        /**
+         * 인벤토리
+         */
         composable(route = NavItem.Inventory.route) {
             InventoryView()
         }
 
+        /**
+         * 맵 탐색
+         */
         composable(route = NavItem.SearchMap.route) {
             SearchMapView()
         }
 
+        /**
+         * 럭키 드로우
+         */
         composable(route = NavItem.LuckyDraw.route) {
             LuckyDrawView()
         }
 
+        /**
+         * 산책
+         */
         composable(route = NavItem.Walking.route) {
             WalkingView()
         }

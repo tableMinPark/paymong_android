@@ -44,27 +44,27 @@ fun HelpSlotDialog(
             HorizontalPager(state = pagerState) { page ->
                 when (page) {
                     0 -> {
-                        HelpAddSlotContent()
+                        HelpSlotContent_0()
                     }
 
                     1 -> {
-                        HelpPickSlotContent()
+                        HelpSlotContent_1()
                     }
 
                     2 -> {
-                        HelpDeleteSlotContent()
+                        HelpSlotContent_2()
                     }
 
                     3 -> {
-                        HelpGraduateSlotContent()
+                        HelpSlotContent_3()
                     }
 
                     4 -> {
-                        HelpBuySlotContent()
+                        HelpSlotContent_4()
                     }
 
                     5 -> {
-                        HelpDetailSlotContent()
+                        HelpSlotContent_5()
                     }
 
                     6 -> {

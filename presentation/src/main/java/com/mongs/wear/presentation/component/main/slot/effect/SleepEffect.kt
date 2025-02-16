@@ -25,7 +25,7 @@ fun SleepEffect(
             modifier = Modifier
                 .padding(top = 25.dp)
                 .size(17.dp),
-            painter = painterResource(R.drawable.sleep_icon),
+            painter = painterResource(R.drawable.icon_sleep),
             contentDescription = null
         )
     }

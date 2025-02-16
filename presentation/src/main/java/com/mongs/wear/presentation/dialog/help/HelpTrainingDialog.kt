@@ -14,10 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.zIndex
 import com.mongs.wear.presentation.component.common.pagenation.PageIndicator
-import com.mongs.wear.presentation.component.help.content.battle.*
 import com.mongs.wear.presentation.component.help.content.common.*
-import com.mongs.wear.presentation.component.help.content.training.HelpTrainingRunnerContent
-import com.mongs.wear.presentation.component.help.content.training.HelpTrainingRunnerPlayContent
+import com.mongs.wear.presentation.component.help.content.training.HelpTrainingRunnerContent_0
+import com.mongs.wear.presentation.component.help.content.training.HelpTrainingRunnerContent_1
 
 @Composable
 fun HelpTrainingDialog(
@@ -46,11 +45,11 @@ fun HelpTrainingDialog(
             HorizontalPager(state = pagerState) { page ->
                 when (page) {
                     0 -> {
-                        HelpTrainingRunnerContent()
+                        HelpTrainingRunnerContent_0()
                     }
 
                     1 -> {
-                        HelpTrainingRunnerPlayContent()
+                        HelpTrainingRunnerContent_1()
                     }
 
                     2 -> {

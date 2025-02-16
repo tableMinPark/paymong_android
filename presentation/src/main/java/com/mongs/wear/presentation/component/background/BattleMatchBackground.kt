@@ -30,9 +30,9 @@ fun BattleMatchBackground(
     ) {
         Image(
             painter = rememberAsyncImagePainter(
-                model = R.drawable.battle_bg_gif,
+                model = R.drawable.bg_battle_gif,
                 imageLoader = imageLoader,
-                placeholder = painterResource(id = R.drawable.battle_bg),
+                placeholder = painterResource(id = R.drawable.bg_battle),
             ),
             contentDescription = "BattleMatchBackground",
         )

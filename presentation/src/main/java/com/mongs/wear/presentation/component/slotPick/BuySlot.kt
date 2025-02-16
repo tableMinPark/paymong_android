@@ -80,7 +80,7 @@ fun BuySlot(
 
                 ) {
                     Image(
-                        painter = painterResource(R.drawable.starpoint_logo),
+                        painter = painterResource(R.drawable.point_icon_star),
                         contentDescription = null,
                         modifier = Modifier.size(26.dp)
                     )

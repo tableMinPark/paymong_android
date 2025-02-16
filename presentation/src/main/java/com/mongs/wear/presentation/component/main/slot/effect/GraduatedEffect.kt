@@ -25,7 +25,7 @@ fun GraduatedEffect(
             modifier = Modifier
                 .padding(top = 25.dp)
                 .size(35.dp),
-            painter = painterResource(R.drawable.star_3),
+            painter = painterResource(R.drawable.effect_graduate_3),
             contentDescription = null
         )
     }

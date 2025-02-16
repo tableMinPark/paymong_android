@@ -44,27 +44,27 @@ fun HelpBattleDialog(
             HorizontalPager(state = pagerState) { page ->
                 when (page) {
                     0 -> {
-                        HelpBattleContent()
+                        HelpBattleContent_0()
                     }
 
                     1 -> {
-                        HelpMatchingBattleContent()
+                        HelpBattleContent_1()
                     }
 
                     2 -> {
-                        HelpMatchContent()
+                        HelpBattleContent_2()
                     }
 
                     3 -> {
-                        HelpMatchSecondContent()
+                        HelpBattleContent_3()
                     }
 
                     4 -> {
-                        HelpMatchThirdContent()
+                        HelpBattleContent_4()
                     }
 
                     5 -> {
-                        HelpMatchRewardContent()
+                        HelpBattleContent_5()
                     }
 
                     6 -> {
